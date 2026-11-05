@@ -1,0 +1,88 @@
+/* ANDARMA · Fase 3 · Listados adaptativos
+   Solo el administrador. Mantiene los campos, botones y operaciones existentes.
+   Se importa después del sistema base; el diseño de títulos de la Fase 2 sigue vigente. */
+
+/* Escritorio: tablas compactas, sin sacrificar los valores relevantes. */
+.andarma-admin .ad-inventory-responsive,
+.andarma-admin .ad-clients-responsive,
+.andarma-admin .ad-prospects-responsive { width: 100%; }
+.andarma-admin .ad-inventory-responsive td,
+.andarma-admin .ad-clients-responsive td,
+.andarma-admin .ad-prospects-responsive td { vertical-align: middle; }
+.andarma-admin .ad-inventory-responsive tbody tr:hover,
+.andarma-admin .ad-clients-responsive tbody tr:hover,
+.andarma-admin .ad-prospects-responsive tbody tr:hover { background: #f7faff; }
+.andarma-admin .ad-inventory-responsive td:first-child strong,
+.andarma-admin .ad-clients-responsive .crm-person strong,
+.andarma-admin .ad-prospects-responsive .pv-person strong { color:#17324e; font-weight:750; }
+.andarma-admin .ad-inventory-responsive .ad-actions { gap:6px; }
+.andarma-admin .ad-inventory-responsive .ad-actions .ad-btn { padding-inline:9px; }
+
+@media (max-width: 767px) {
+  /* La tabla sigue siendo semántica en el DOM: cada fila se presenta como tarjeta. */
+  .andarma-admin .ad-table-wrap:has(.ad-inventory-responsive),
+  .andarma-admin .crm-tablewrap:has(.ad-clients-responsive),
+  .andarma-admin .pv-table-wrapper:has(.ad-prospects-responsive) { overflow:visible; width:100%; min-width:0; }
+  .andarma-admin :is(.ad-inventory-responsive,.ad-clients-responsive,.ad-prospects-responsive) {
+    display:block!important; width:100%!important; min-width:0!important; border:0!important;
+  }
+  .andarma-admin :is(.ad-inventory-responsive,.ad-clients-responsive,.ad-prospects-responsive) thead { 
+    position:absolute!important; width:1px!important; height:1px!important; padding:0!important;
+    margin:-1px!important; overflow:hidden!important; clip:rect(0,0,0,0)!important;
+    white-space:nowrap!important; border:0!important;
+  }
+  .andarma-admin :is(.ad-inventory-responsive,.ad-clients-responsive,.ad-prospects-responsive) tbody { display:grid!important; gap:12px; }
+  .andarma-admin :is(.ad-inventory-responsive,.ad-clients-responsive,.ad-prospects-responsive) tbody > tr {
+    display:grid!important; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px 13px;
+    background:#fff!important; border:1px solid #dde7f1!important; border-radius:14px!important;
+    padding:15px!important; box-shadow:0 4px 16px rgba(18,44,71,.045);
+    min-width:0!important;
+  }
+  .andarma-admin :is(.ad-inventory-responsive,.ad-clients-responsive,.ad-prospects-responsive) tbody > tr > td {
+    display:flex!important; flex-direction:column!important; align-items:flex-start!important;
+    min-width:0!important; width:100%!important; padding:0!important; margin:0!important;
+    border:0!important; background:transparent!important; font-size:13px!important; line-height:1.5;
+    overflow-wrap:anywhere;
+  }
+  .andarma-admin :is(.ad-inventory-responsive,.ad-clients-responsive,.ad-prospects-responsive) tbody > tr > td::before {
+    content:attr(data-ad-label); font:700 10px/1.35 'DM Sans',sans-serif; letter-spacing:.055em;
+    color:#72879c; text-transform:uppercase; margin-bottom:4px;
+  }
+  .andarma-admin .ad-inventory-responsive tbody > tr > td:nth-child(1),
+  .andarma-admin .ad-inventory-responsive tbody > tr > td:nth-child(2),
+  .andarma-admin .ad-inventory-responsive tbody > tr > td:nth-child(3),
+  .andarma-admin .ad-inventory-responsive tbody > tr > td:nth-child(9),
+  .andarma-admin .ad-clients-responsive tbody > tr > td:nth-child(1),
+  .andarma-admin .ad-clients-responsive tbody > tr > td:nth-child(2),
+  .andarma-admin .ad-clients-responsive tbody > tr > td:nth-child(6),
+  .andarma-admin .ad-prospects-responsive tbody > tr > td:nth-child(1),
+  .andarma-admin .ad-prospects-responsive tbody > tr > td:nth-child(5) { grid-column:1/-1; }
+  .andarma-admin :is(.ad-inventory-responsive,.ad-clients-responsive,.ad-prospects-responsive) tbody > tr > td:last-child {
+    border-top:1px solid #edf2f7!important; padding-top:12px!important; margin-top:4px!important;
+  }
+  .andarma-admin .ad-inventory-responsive td:first-child strong {font-size:17px!important;line-height:1.25}
+  .andarma-admin .ad-clients-responsive .crm-person,
+  .andarma-admin .ad-prospects-responsive .pv-person {min-width:0;max-width:100%;}
+  .andarma-admin .ad-clients-responsive .crm-person > div:last-child,
+  .andarma-admin .ad-prospects-responsive .pv-person > div:last-child {min-width:0;}
+  .andarma-admin .ad-clients-responsive .crm-person small,
+  .andarma-admin .ad-prospects-responsive .pv-person small {overflow-wrap:anywhere;white-space:normal;}
+  .andarma-admin .ad-inventory-responsive .ad-actions,
+  .andarma-admin .ad-clients-responsive .crm-actions,
+  .andarma-admin .ad-prospects-responsive .pv-actions {width:100%;justify-content:flex-start!important; flex-wrap:wrap; gap:8px;}
+  .andarma-admin .ad-inventory-responsive .ad-actions :is(button,a),
+  .andarma-admin .ad-clients-responsive .crm-actions :is(button,a),
+  .andarma-admin .ad-prospects-responsive .pv-actions :is(button,a) {min-height:42px!important;}
+  .andarma-admin :is(.ad-inventory-responsive,.ad-clients-responsive,.ad-prospects-responsive) tbody > tr > td[colspan] {
+    grid-column:1/-1!important; text-align:center; align-items:center!important;
+  }
+  .andarma-admin :is(.ad-inventory-responsive,.ad-clients-responsive,.ad-prospects-responsive) tbody > tr > td[colspan]::before {content:none;}
+  .andarma-admin .ad-inventory-responsive td:nth-child(3) button {max-width:100%;white-space:normal;text-align:left;height:auto;min-height:42px;}
+}
+@media (max-width:400px) {
+  .andarma-admin :is(.ad-inventory-responsive,.ad-clients-responsive,.ad-prospects-responsive) tbody > tr {
+    padding:12px!important; gap:10px!important;
+  }
+  .andarma-admin .ad-inventory-responsive tbody > tr > td:nth-child(4),
+  .andarma-admin .ad-inventory-responsive tbody > tr > td:nth-child(5) {grid-column:auto;}
+}

@@ -13,6 +13,19 @@ export async function api(path, opts={}) {
   if(!response.ok){
     const details=json.errors ? Object.values(json.errors).flat().join(' · ') : ''
     const err=new Error(details || json.message || `Error HTTP ${response.status}`)
+    // ANDARMA_FASE17_TOKEN_SEGURO: un 401 en una ruta protegida invalida
+    // el token local. Nunca borrar sesion por un 403 (permisos insuficientes).
+    if (response.status === 401 && path.startsWith('/admin/') && path !== '/admin/login' && token) {
+      // Evitar que una respuesta antigua de una solicitud invalide un nuevo login.
+      if (getToken() === token) {
+        setToken(null)
+        if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/admin/login')) {
+          const current = window.location.pathname + window.location.search + window.location.hash
+          const redirect = current.startsWith('/admin/') ? current : '/admin/dashboard'
+          window.location.replace('/admin/login?expired=1&redirect=' + encodeURIComponent(redirect))
+        }
+      }
+    }
     err.status=response.status; throw err
   }
   return json

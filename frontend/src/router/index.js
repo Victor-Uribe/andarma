@@ -6,6 +6,7 @@ const routes=[
  {path:'/admin/login',name:'login',component:()=>import('../views/admin/LoginView.vue'),meta:{guest:true}},
  {path:'/admin',component:()=>import('../layouts/AdminLayout.vue'),meta:{requiresAuth:true},children:[
    {path:'',redirect:'/admin/dashboard'},
+   {path:'sin-acceso',name:'sin-acceso',component:()=>import('../views/admin/AccessDeniedView.vue')},
    {path:'dashboard',name:'dashboard',meta:{permission:'dashboard.view'},component:()=>import('../views/admin/DashboardView.vue')},
    {path:'consulta',name:'consulta',meta:{permission:'clients.view'},component:()=>import('../views/admin/LookupView.vue')},
    {path:'contenido',redirect:'/admin/banners'},
@@ -22,6 +23,7 @@ const routes=[
 {path:'prospectos',name:'prospectos',meta:{permission:'prospects.view'},component:()=>import('../views/admin/ProspectsView.vue')},
    {path:'multimedia',name:'multimedia',meta:{permission:'media.view'},component:()=>import('../views/admin/MediaView.vue')},
    {path:'pagos',name:'pagos',meta:{permission:'payments.view'},component:()=>import('../views/admin/PaymentsView.vue')},
+   {path:'auditoria-financiera',name:'auditoria-financiera',meta:{permission:'payments.delete'},component:()=>import('../views/admin/FinanceAuditView.vue')}, // ANDARMA_F19_AUDITORIA_VISUAL
    {path:'configuracion',name:'configuracion',meta:{permission:'settings.view'},component:()=>import('../views/admin/SettingsView.vue')}
  ]},
  {path:'/:pathMatch(.*)*',redirect:'/'}

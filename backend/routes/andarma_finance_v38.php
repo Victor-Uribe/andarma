@@ -5,6 +5,8 @@ use App\Http\Middleware\EnsureAndarmaAdmin;
 
 Route::prefix('admin/finance')->middleware(['auth:sanctum', EnsureAndarmaAdmin::class])->group(function () {
     Route::get('/payments', [Finance::class, 'index']);
+    // ANDARMA_F18_AUDITORIA_FINANCIERA: acceso de lectura protegido por permiso en controlador.
+    Route::get('/audit', [Finance::class, 'audit'])->middleware('throttle:30,1');
     Route::get('/lots', [Finance::class, 'lots']);
     Route::get('/lots/{lotId}', [Finance::class, 'summary'])->whereNumber('lotId');
     Route::put('/lots/{lotId}/terms', [Finance::class, 'saveTerms'])->whereNumber('lotId');

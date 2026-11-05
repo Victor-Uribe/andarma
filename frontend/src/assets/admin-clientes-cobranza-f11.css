@@ -1,0 +1,266 @@
+/* ANDARMA_FASE11_CLIENTES_COBRANZA_UI
+   Capa de presentación. No altera datos, validaciones ni permisos.
+   Aprovecha el design system actual de ANDARMA (#0066E0 y #17324E).
+*/
+
+/* CLIENTES · indicadores compactos, legibles y con el mismo ritmo visual. */
+.andarma-admin .crm-page .crm-stats {
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: 12px;
+}
+.andarma-admin .crm-page .crm-stat {
+  min-width: 0;
+  padding: 17px 19px;
+  gap: 8px;
+  border-radius: 15px;
+  box-shadow: 0 4px 18px rgba(12,41,79,.045);
+}
+.andarma-admin .crm-page .crm-stat__icon {
+  width: 39px;
+  height: 39px;
+  border-radius: 11px;
+}
+.andarma-admin .crm-page .crm-stat span {
+  font-size: 12px;
+  color: #6e869c;
+  line-height: 1.35;
+}
+.andarma-admin .crm-page .crm-stat strong {
+  font-size: clamp(23px,2vw,29px);
+  color: #17324e;
+  line-height: 1.05;
+  font-family: Manrope, sans-serif;
+}
+.andarma-admin .crm-page .crm-card,
+.andarma-admin .crm-page .crm-panelsoft {
+  border-radius: 17px;
+  box-shadow: 0 5px 22px rgba(12,41,79,.045);
+}
+.andarma-admin .crm-page .crm-card__head {
+  gap: 14px;
+}
+.andarma-admin .crm-page .crm-search {
+  min-width: 0;
+}
+.andarma-admin .crm-page .crm-search:focus-within {
+  outline: 3px solid rgba(0,102,224,.14);
+  outline-offset: 1px;
+}
+.andarma-admin .crm-page .crm-tablewrap {
+  max-width: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: #b6cbdf transparent;
+}
+.andarma-admin .crm-page .crm-person strong,
+.andarma-admin .crm-page .crm-contact a {
+  overflow-wrap: anywhere;
+}
+.andarma-admin .crm-page .crm-actions {
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+/* CLIENTES · expediente y propiedades vinculadas. */
+.andarma-admin .crm-modal--xl .crm-detailhero {
+  border-radius: 16px;
+  padding: 16px 18px;
+}
+.andarma-admin .crm-modal--xl .crm-detailhero h3 {
+  font-size: clamp(20px,2.1vw,26px);
+  letter-spacing: -.035em;
+  line-height: 1.2;
+}
+.andarma-admin .crm-modal--xl .crm-detailhero__stats {
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  min-width: min(350px,100%);
+  gap: 9px;
+}
+.andarma-admin .crm-modal--xl .crm-detailhero__stats > div {
+  padding: 12px 13px;
+  border-radius: 12px;
+}
+.andarma-admin .crm-modal--xl .crm-linkeditem {
+  border-radius: 13px;
+  gap: 12px;
+  padding: 12px 14px;
+  min-width: 0;
+}
+.andarma-admin .crm-modal--xl .crm-linkeditem__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.andarma-admin .crm-modal--xl .crm-linkeditem__actions button {
+  min-height: 40px;
+}
+
+/* COBRANZA · indicadores y filtros consistentes. */
+.andarma-admin .andarma-payments .ad-pay-kpis {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+}
+.andarma-admin .andarma-payments .ad-pay-kpi {
+  padding:17px 19px;
+  gap:7px;
+  border-radius:15px;
+  box-shadow:0 4px 18px rgba(12,41,79,.045);
+}
+.andarma-admin .andarma-payments .ad-pay-kpi strong {
+  font-size: clamp(22px,2vw,27px);
+  line-height:1.12;
+}
+.andarma-admin .andarma-payments .ad-pay-filters {
+  align-items: end;
+  gap: 11px;
+}
+.andarma-admin .andarma-payments .ad-pay-filters :is(input,select) {
+  min-height:42px;
+}
+.andarma-admin .andarma-payments .ad-pay-segments {
+  min-height:42px;
+}
+.andarma-admin .andarma-payments .ad-table-wrap {
+  max-width:100%;
+  overflow-x:auto;
+  scrollbar-width:thin;
+  scrollbar-color:#b6cbdf transparent;
+}
+.andarma-admin .andarma-payments .ad-pay-table thead th {
+  position:sticky;
+  top:0;
+  z-index:1;
+  background:#f7faff;
+  white-space:nowrap;
+}
+.andarma-admin .andarma-payments .ad-pay-table tbody tr:hover {
+  background:#f8fbff;
+}
+.andarma-admin .andarma-payments .ad-pay-table td {
+  vertical-align:middle;
+}
+
+/* COBRANZA · lectura prioritaria del saldo y los periodos vencidos. */
+.andarma-admin .andarma-payments .ad-pay-modal--wide {
+  width:min(1120px,calc(100vw - 32px));
+}
+.andarma-admin .andarma-payments .ad-pay-property {
+  border-radius:14px;
+  padding:15px 17px;
+}
+.andarma-admin .andarma-payments .ad-pay-f3-balance {
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+.andarma-admin .andarma-payments .ad-pay-f3-balance article {
+  padding:17px;
+  border-radius:14px;
+  gap:8px;
+}
+.andarma-admin .andarma-payments .ad-pay-f3-balance article strong {
+  line-height:1.16;
+  overflow-wrap:anywhere;
+  font-family:Manrope,sans-serif;
+}
+.andarma-admin .andarma-payments .ad-pay-summarygrid {
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+}
+.andarma-admin .andarma-payments .ad-pay-summarygrid article {
+  min-width:0;
+  border-radius:12px;
+}
+.andarma-admin .andarma-payments .ad-pay-summarygrid article strong {
+  overflow-wrap:anywhere;
+  line-height:1.15;
+}
+.andarma-admin .andarma-payments .ad-pay-period {
+  line-height:1.5;
+}
+.andarma-admin .andarma-payments .ad-pay-traffic {
+  border-radius:12px;
+  line-height:1.5;
+}
+
+/* Accesibilidad de controles en escritorio y dispositivos táctiles. */
+.andarma-admin :is(.crm-page,.andarma-payments) :is(button,a,input,select,textarea):focus-visible,
+.andarma-admin .crm-modal--xl :is(button,a,input,select,textarea):focus-visible {
+  outline:3px solid rgba(0,102,224,.35);
+  outline-offset:2px;
+}
+
+@media(max-width:1100px) {
+  .andarma-admin .andarma-payments .ad-pay-summarygrid {
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+@media(max-width:860px) {
+  .andarma-admin .crm-modal--xl .crm-detailhero__stats {
+    min-width:0;
+    width:100%;
+  }
+  .andarma-admin .crm-modal--xl .crm-linkeditem {
+    flex-wrap:wrap;
+  }
+  .andarma-admin .crm-modal--xl .crm-linkeditem__actions {
+    justify-content:flex-start;
+  }
+}
+@media(max-width:690px) {
+  .andarma-admin .crm-page .crm-stats {
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:9px;
+  }
+  .andarma-admin .crm-page .crm-stat {
+    padding:13px;
+  }
+  .andarma-admin .crm-page .crm-stat:first-child {
+    grid-column:1/-1;
+  }
+  .andarma-admin .crm-page .crm-card__head {
+    align-items:stretch;
+  }
+  .andarma-admin .crm-modal--xl .crm-detailhero__stats {
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+  .andarma-admin .crm-modal--xl .crm-detailhero__stats > div {
+    padding:10px;
+  }
+  .andarma-admin .crm-modal--xl .crm-linkeditem__actions {
+    width:100%;
+  }
+  .andarma-admin .crm-modal--xl .crm-linkeditem__actions button {
+    flex:1 1 auto;
+  }
+  .andarma-admin .andarma-payments .ad-pay-kpis {
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:9px;
+  }
+  .andarma-admin .andarma-payments .ad-pay-kpi {
+    padding:13px;
+  }
+  .andarma-admin .andarma-payments .ad-pay-kpi:first-child {
+    grid-column:1/-1;
+  }
+  .andarma-admin .andarma-payments .ad-pay-filters {
+    align-items:stretch;
+  }
+  .andarma-admin .andarma-payments .ad-pay-f3-balance,
+  .andarma-admin .andarma-payments .ad-pay-summarygrid,
+  .andarma-admin .andarma-payments .ad-pay-two-col {
+    grid-template-columns:1fr;
+  }
+  .andarma-admin .andarma-payments .ad-pay-modal--wide {
+    width:calc(100vw - 16px);
+    max-height:calc(100dvh - 16px);
+  }
+}
+@media(max-width:380px) {
+  .andarma-admin .crm-modal--xl .crm-detailhero__stats {
+    grid-template-columns:1fr;
+  }
+  .andarma-admin .andarma-payments .ad-pay-kpi strong {
+    font-size:22px;
+  }
+}

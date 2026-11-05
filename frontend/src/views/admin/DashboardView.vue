@@ -21,12 +21,14 @@ onMounted(load)
 const number=v=>v===null||v===undefined?'—':Number(v).toLocaleString('es-MX')
 </script>
 <template>
+<div class="ad-dashboard-v4">
 <section class="v28-heading"><div><span class="admin-kicker">CENTRO DE CONTROL</span><h1>Bienvenido a ANDARMA</h1><p>Actividad de tu inmobiliaria, inventario y accesos frecuentes.</p></div><button class="admin-outline" :disabled="loading" @click="load"><RefreshCw :size="16"/> Actualizar</button></section>
 <div v-if="error" class="admin-alert error"><AlertCircle :size="18"/> {{error}}</div>
 <section class="v28-metrics"><component :is="c.to?'RouterLink':'div'" v-for="c in cards" :key="c.label" :to="c.to||undefined" class="v28-metric"><div class="v28-metric-top"><span class="v28-metric-icon"><component :is="c.icon" :size="19"/></span><ArrowUpRight v-if="c.to" :size="16"/></div><div class="v28-number">{{loading?'…':number(c.value)}}</div><strong>{{c.label}}</strong><small>{{c.note}}</small></component></section>
 <div class="v28-dual"><section class="v28-panel"><div class="v28-panel-head"><div><h2><ChartNoAxesColumn :size="19"/> Visitas de los últimos días</h2><p>Seguimiento de tráfico de la página pública</p></div><span class="v28-tag">Últimos 7 días</span></div><div v-if="Array.isArray(analytics?.daily_views)&&analytics.daily_views.length" class="v28-bars"><div v-for="(d,i) in analytics.daily_views" :key="i" class="v28-bar"><span :style="{height:Math.max(5,Math.round(Number(d.views||0)/Math.max(1,...analytics.daily_views.map(x=>Number(x.views||0)))*135))+'px'}"></span><small>{{d.day||d.date}}</small></div></div><div v-else class="v28-empty-chart"><div class="v28-empty-chart__metric"><small>Vistas (si hay datos)</small><strong>{{ Array.isArray(analytics?.daily_views) && analytics.daily_views.length ? number(totalViews7d) : String.fromCharCode(8212) }}</strong><span>Últimos 7 días</span></div><ChartNoAxesColumn :size="35"/><strong>Analítica pendiente de conexión</strong><p>La API actual no registra vistas ni clics de WhatsApp. Estos indicadores se mostrarán cuando Laravel proporcione estadísticas verificables.</p></div></section>
 <section class="v28-panel"><div class="v28-panel-head"><div><h2><Clock3 :size="19"/> Accesos rápidos</h2><p>Las acciones habituales del administrador</p></div></div><div class="v28-shortcuts"><RouterLink v-for="item in shortcuts" :key="item.to" :to="item.to"><span class="v28-shortcut-icon"><component :is="item.icon" :size="18"/></span><span><strong>{{item.title}}</strong><small>{{item.desc}}</small></span><ArrowUpRight :size="16"/></RouterLink></div></section></div>
 <section class="v28-panel v28-overview"><div class="v28-panel-head"><div><h2><CalendarDays :size="19"/> Resumen operativo</h2><p>Información disponible en ANDARMA</p></div></div><div class="v28-operations"><RouterLink to="/admin/propiedades"><House :size="22"/><span>Inventario</span><b>{{number(data.lots)}}</b><small>Propiedades y lotes</small></RouterLink><RouterLink to="/admin/banners"><Image :size="22"/><span>Banners</span><b>{{number(data.banners)}}</b><small>Elementos de portada</small></RouterLink><RouterLink to="/admin/testimonios"><MessageSquareQuote :size="22"/><span>Opiniones</span><b>{{number(data.testimonials)}}</b><small>Testimonios</small></RouterLink></div></section>
+</div>
 </template>
 
 <style>
@@ -46,6 +48,50 @@ const number=v=>v===null||v===undefined?'—':Number(v).toLocaleString('es-MX')
 @media (max-width: 980px){
   .v28-shortcuts{grid-template-columns:1fr}
 }
+
+/* ANDARMA_FASE4_DASHBOARD_LAYOUT */
+.ad-dashboard-v4{
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+  min-height:0;
+}
+.ad-dashboard-v4 .v28-heading,
+.ad-dashboard-v4 .v28-metrics,
+.ad-dashboard-v4 .v28-dual,
+.ad-dashboard-v4 .v28-overview{margin:0}
+.ad-dashboard-v4 .v28-metrics{margin-bottom:0}
+.ad-dashboard-v4 .v28-dual{align-items:stretch}
+.ad-dashboard-v4 .v28-overview{
+  flex:none;
+  display:block;
+}
+.ad-dashboard-v4 .v28-overview .v28-operations{
+  align-items:stretch;
+}
+.ad-dashboard-v4 .v28-overview .v28-operations > a{
+  min-height:138px;
+}
+.ad-dashboard-v4 .v28-dual > .v28-panel:last-child{
+  display:flex;
+  flex-direction:column;
+  height:auto;
+}
+.ad-dashboard-v4 .v28-shortcuts{
+  flex:1;
+  grid-auto-rows:minmax(84px, 1fr);
+  align-content:stretch;
+}
+.ad-dashboard-v4 .v28-shortcuts a{
+  min-height:84px;
+  width:100%;
+  height:100%;
+  box-sizing:border-box;
+}
+@media (max-width:1100px){
+  .ad-dashboard-v4{min-height:0}
+}
+
 </style>
 
 

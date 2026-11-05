@@ -3,7 +3,7 @@ import { Money3Directive } from 'v-money3'
 import { mxnMask, decimalMask } from '../../config/numberMasks'
 const vMoney3 = Money3Directive
 import {computed, onMounted, ref, watch} from 'vue'
-import {useRoute} from 'vue-router'
+import {useRoute,useRouter} from 'vue-router'
 import {can} from '../../utils/andarmaPermissions'
 import Swal from 'sweetalert2'
 import {api, post, put} from '../../services/api'
@@ -12,7 +12,8 @@ import '../../assets/admin-cobranza-fase3.css'
 // ANDARMA_COBRANZA_CLARA_F3
 
 const route = useRoute()
-// ANDARMA_V39_MONEY_NORMALIZATION
+
+const router = useRouter()// ANDARMA_V39_MONEY_NORMALIZATION
 // Las máscaras son únicamente de presentación. Laravel recibe cantidades decimales sin separadores.
 function parseAmount(value) {
   if (typeof value === 'number') return Number.isFinite(value) ? value : NaN
@@ -49,6 +50,7 @@ const rows = ref([]), stats = ref(null), page = ref(1), lastPage = ref(1), total
 const tab = ref('month'), search = ref(''), statusFilter = ref('all')
 const from = ref(''), to = ref(''), clientsLots = ref([]), lotSearch = ref('')
 const chosenLot = ref(''), detail = ref(null), selectedMovement = ref(null), modal = ref(''), error = ref('')
+const lastPayment = ref(null)
 const terms = ref(emptyTerms()), receipt = ref(emptyReceipt()), receiptKey = ref('')
 const periods = computed(() => detail.value?.periods || [])
 const unpaid = computed(() => periods.value.filter(p => Number(p.pending) > 0))
@@ -177,6 +179,7 @@ function setSuggestedAmount(){
  }
 }
 function onPeriodChange(){if(selectedPeriod.value)receipt.value.amount=selectedPeriod.value.pending}
+function goQuickLookup(){modal.value='';router.push('/admin/consulta')}
 function openReceipt(){
  if(!detail.value?.plan){notice('Configura las condiciones de venta','Necesitamos un plan antes de aplicar pagos.','info');return}
  receipt.value=emptyReceipt()
@@ -195,11 +198,14 @@ async function saveReceipt(){
  try{
    const key=receiptKey.value
    if(!key)throw new Error('Tu navegador no permite generar una clave segura de operación.')
+   const confirmedPayment={...receiptPreview.value,amount:numericAmount}
    await post(`/admin/finance/lots/${detail.value.lot.id}/payments`,{...receipt.value,amount:numericAmount,request_key:key})
-   await openSummary(detail.value.lot.id)
-   await load()
-   await notice('Pago registrado','El movimiento quedó aplicado y aparece en el historial.')
- }catch(e){await notice('No se registró el pago',e.message,'error')}
+   lastPayment.value=confirmedPayment
+   modal.value='success'
+   // La actualización de lectura jamás reenvía el pago.
+   const refreshed=await Promise.allSettled([api(`/admin/finance/lots/${detail.value.lot.id}`),load()])
+   if(refreshed[0].status==='fulfilled')detail.value=refreshed[0].value
+  }catch(e){await notice('No se registró el pago',e.message,'error')}
  finally{busy.value=false}
 }
 async function cancelReceipt(payment){
@@ -238,6 +244,8 @@ onMounted(async()=>{
       <p class="ad-pay-muted mt-1">Consulta movimientos registrados y el estado financiero de cada propiedad.</p>
     </div>
     <div class="flex gap-2 flex-wrap">
+      <!-- ANDARMA_F19_AUDITORIA_VISUAL: acceso a historial protegido por permisos -->
+      <RouterLink v-if="can('payments.delete')" class="ad-btn" to="/admin/auditoria-financiera"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Auditoría</RouterLink>
       <button class="ad-btn" :disabled="loading" @click="load"><i class="fa-solid fa-rotate-right"></i> Actualizar</button>
       <button class="ad-btn ad-btn--primary" @click="modal='picker';findLots()"><i class="fa-solid fa-wallet"></i> Consultar o registrar pago</button>
     </div>
@@ -297,13 +305,34 @@ onMounted(async()=>{
       <header class="ad-modal__header">
         <div>
           <span class="ad-pay-kicker">COBRANZA / ANDARMA</span>
-          <h2 id="ad-pay-modal-title" class="ad-pay-modal-title">{{modal==='picker'?'Seleccionar propiedad':modal==='summary'?'Resumen de cobranza':modal==='terms'?'Condiciones de venta':modal==='legacy'?'Detalle del movimiento':'Registrar pago'}}</h2>
+          <h2 id="ad-pay-modal-title" class="ad-pay-modal-title">{{modal==='picker'?'Seleccionar propiedad':modal==='summary'?'Resumen de cobranza':modal==='terms'?'Condiciones de venta':modal==='legacy'?'Detalle del movimiento':modal==='success'?'Pago registrado':'Registrar pago'}}</h2>
           <p class="ad-pay-muted">{{modal==='summary'?(detail?.lot?.client_name||'Expediente del comprador'):'Información financiera de propiedades con cliente asignado'}}</p>
         </div>
         <button class="ad-icon-btn" aria-label="Cerrar modal" @click="closeModal"><i class="fa-solid fa-xmark"></i></button>
       </header>
       <div class="ad-modal__body space-y-4">
-        <template v-if="modal==='picker'">
+        <!-- ANDARMA_FASE13B_POSTPAGO: confirmacion administrativa -->
+        <div v-if="modal==='success' && lastPayment" class="ad-f13b-success" role="status" aria-live="polite">
+          <span class="ad-f13b-icon"><i class="fa-solid fa-check" aria-hidden="true"></i></span>
+          <span class="ad-pay-kicker">MOVIMIENTO REGISTRADO</span>
+          <h3>Pago registrado correctamente</h3>
+          <p>El pago se guardó en ANDARMA. Continúa con el estado de cuenta o con otra propiedad.</p>
+          <div class="ad-f13b-details">
+            <div><small>Comprador</small><strong>{{lastPayment.client}}</strong></div>
+            <div><small>Terreno</small><strong>{{lastPayment.lot}}</strong></div>
+            <div><small>Concepto</small><strong>{{lastPayment.period}}</strong></div>
+            <div><small>Importe</small><strong>{{money(lastPayment.amount)}}</strong></div>
+            <div><small>Fecha</small><strong>{{lastPayment.date}}</strong></div>
+            <div><small>Método</small><strong>{{lastPayment.method}}</strong></div>
+          </div>
+          <div class="ad-f13b-actions">
+            <button class="ad-btn ad-btn--primary" type="button" @click="modal='summary'"><i class="fa-solid fa-file-invoice-dollar"></i> Ver estado de cuenta</button>
+            <button class="ad-btn" type="button" @click="modal='picker';findLots()"><i class="fa-solid fa-magnifying-glass"></i> Elegir otra propiedad</button>
+            <button class="ad-btn" type="button" @click="goQuickLookup"><i class="fa-solid fa-arrow-left"></i> Consulta rápida</button>
+          </div>
+          <small class="ad-f13b-disclaimer">Confirmación administrativa. No es comprobante fiscal ni confirma transferencia bancaria.</small>
+        </div>
+        <template v-else-if="modal==='picker'">
           <label class="ad-label">Buscar propiedad o comprador<input class="ad-input" v-model="lotSearch" placeholder="Cliente, manzana, lote o desarrollo" /></label>
           <div class="ad-pay-picker-list">
             <button v-for="lot in clientsLots" :key="lot.id" class="ad-pay-picker-item" @click="openSummary(lot.id)">
@@ -398,7 +427,7 @@ onMounted(async()=>{
         </form>
       </div>
       <footer class="ad-modal__footer">
-        <button class="ad-btn" @click="['summary','picker','legacy'].includes(modal)?closeModal():(detail?modal='summary':closeModal())">{{modal==='summary'||modal==='picker'||modal==='legacy'?'Cerrar':'Volver'}}</button>
+        <button class="ad-btn" @click="['summary','picker','legacy','success'].includes(modal)?closeModal():(detail?modal='summary':closeModal())">{{modal==='summary'||modal==='picker'||modal==='legacy'?'Cerrar':'Volver'}}</button>
         <button v-if="modal==='terms'" form="termsForm" type="submit" :disabled="busy" class="ad-btn ad-btn--primary"><i class="fa-solid fa-floppy-disk"></i> {{busy?'Guardando...':'Guardar condiciones'}}</button>
         <button v-if="modal==='payment'" form="receiptForm" type="submit" :disabled="busy" class="ad-btn ad-btn--primary"><i class="fa-solid fa-check"></i> {{busy?'Registrando...':'Registrar pago'}}</button>
       </footer>
@@ -406,3 +435,19 @@ onMounted(async()=>{
   </div>
 </section>
 </template>
+
+<style>
+/* ANDARMA_FASE13B_POSTPAGO */
+.andarma-admin .ad-f13b-success{display:grid;gap:13px;text-align:center;justify-items:center;padding:12px 4px;color:#17324e}
+.andarma-admin .ad-f13b-icon{width:54px;height:54px;display:grid;place-items:center;border:1px solid #c7e9d8;border-radius:15px;background:#edfaf3;color:#19835c;font-size:23px}
+.andarma-admin .ad-f13b-success h3{font:800 24px/1.2 Manrope,sans-serif;color:#17324e;letter-spacing:-.03em;margin:0}
+.andarma-admin .ad-f13b-success>p{color:#71869a;font-size:13px;line-height:1.6;margin:0;max-width:500px}
+.andarma-admin .ad-f13b-details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%;gap:10px;text-align:left;margin:7px 0}
+.andarma-admin .ad-f13b-details>div{border:1px solid #dde8f3;background:#f7fbff;border-radius:11px;padding:13px;min-width:0;display:grid;gap:5px}
+.andarma-admin .ad-f13b-details small{font-size:11px;color:#72879c}
+.andarma-admin .ad-f13b-details strong{font-size:13px;color:#17324e;overflow-wrap:anywhere}
+.andarma-admin .ad-f13b-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;width:100%;margin:8px 0}
+.andarma-admin .ad-f13b-actions .ad-btn{min-height:44px}
+.andarma-admin .ad-f13b-disclaimer{font-size:11px;color:#8293a6;line-height:1.6}
+@media(max-width:600px){.andarma-admin .ad-f13b-details{grid-template-columns:1fr}.andarma-admin .ad-f13b-actions{flex-direction:column}.andarma-admin .ad-f13b-actions .ad-btn{width:100%;justify-content:center}}
+</style>

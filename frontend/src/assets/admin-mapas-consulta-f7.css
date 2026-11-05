@@ -1,0 +1,129 @@
+/* ANDARMA_FASE7_MAPAS_CONSULTA_V1
+   Diseño visual de biblioteca y ficha del terreno seleccionado.
+   Importante: NO alterar ad-plan-canvas, ad-plan-svg ni sus dimensiones.
+*/
+.andarma-admin .ad-maps-v8__list{
+  padding:20px 22px;
+}
+.andarma-admin .ad-maps-v8__list-head{
+  margin-bottom:14px;
+}
+.andarma-admin .ad-maps-v8__toolbar{
+  padding:10px 12px;
+  gap:12px;
+  margin-bottom:14px;
+}
+.andarma-admin .ad-maps-v8__search{
+  width:min(460px,100%);
+}
+.andarma-admin .ad-maps-v8__search input{
+  min-height:44px;
+  font-size:13px;
+}
+/* Tres columnas a partir de escritorio ancho, dos en laptop y una en móvil. */
+.andarma-admin .ad-maps-v8__list .ad-mapcards:not(.ad-maps-v8__single){
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+}
+.andarma-admin .ad-maps-v8__list .ad-mapcards:not(.ad-maps-v8__single) .ad-mapcard{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:0 4px 16px rgba(12,41,79,.045);
+}
+.andarma-admin .ad-maps-v8__list .ad-mapcards:not(.ad-maps-v8__single) .ad-maps-v8__thumb img{
+  height:150px;
+  width:100%;
+  object-fit:contain;
+}
+.andarma-admin .ad-maps-v8__list .ad-mapcards:not(.ad-maps-v8__single) .ad-maps-v8__item-body{
+  padding:14px 15px 15px;
+  gap:7px;
+  flex:1;
+}
+.andarma-admin .ad-maps-v8__list .ad-mapcards:not(.ad-maps-v8__single) .ad-maps-v8__item-body h3{
+  font-family:Manrope,'DM Sans',sans-serif;
+  font-size:16px;
+  line-height:1.3;
+  font-weight:750;
+}
+.andarma-admin .ad-maps-v8__list .ad-maps-v8__item-body .ad-muted{
+  font-size:12px;
+  line-height:1.5;
+}
+.andarma-admin .ad-maps-v8__actions{
+  width:100%;
+  display:flex;
+  align-items:stretch;
+  justify-content:flex-start;
+  gap:7px;
+}
+.andarma-admin .ad-maps-v8__actions .ad-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:42px;
+  padding:9px 11px;
+  font-size:12px;
+}
+.andarma-admin .ad-maps-v8__actions .ad-btn--primary{
+  flex:1 1 auto;
+}
+/* Ficha del terreno seleccionado: información y acciones bien distribuidas. */
+.andarma-admin .ad-maps-v8 .ad-f9-card{
+  padding:18px 20px;
+  margin-top:15px;
+  border:1px solid #dce8f4;
+  border-radius:15px;
+  background:#fff;
+  box-shadow:0 5px 16px rgba(12,41,79,.04);
+}
+.andarma-admin .ad-maps-v8 .ad-f9-card .ad-f9-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  flex-wrap:wrap;
+}
+.andarma-admin .ad-maps-v8 .ad-f9-card .ad-f9-edittools{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  justify-content:flex-end;
+}
+.andarma-admin .ad-maps-v8 .ad-f9-card .ad-f9-edittools .ad-btn,
+.andarma-admin .ad-maps-v8 .ad-f9-card .ad-f9-buyer-actions .ad-btn{
+  min-height:42px;
+}
+.andarma-admin .ad-maps-v8 .ad-f9-card .ad-f9-buyer-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+@media(max-width:1280px){
+  .andarma-admin .ad-maps-v8__list .ad-mapcards:not(.ad-maps-v8__single){
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+@media(max-width:760px){
+  .andarma-admin .ad-maps-v8__list{padding:15px;}
+  .andarma-admin .ad-maps-v8__list .ad-mapcards:not(.ad-maps-v8__single){grid-template-columns:1fr;}
+  .andarma-admin .ad-maps-v8__toolbar{align-items:stretch;}
+  .andarma-admin .ad-maps-v8__search{width:100%;}
+  .andarma-admin .ad-maps-v8__list .ad-mapcards:not(.ad-maps-v8__single) .ad-maps-v8__thumb img{height:175px;}
+  .andarma-admin .ad-maps-v8 .ad-f9-card{padding:15px;}
+  .andarma-admin .ad-maps-v8 .ad-f9-card .ad-f9-head{align-items:flex-start;}
+  .andarma-admin .ad-maps-v8 .ad-f9-card .ad-f9-edittools{justify-content:flex-start;width:100%;}
+  .andarma-admin .ad-maps-v8 .ad-f9-card .ad-f9-buyer-actions{justify-content:flex-start;}
+}
+@media(max-width:420px){
+  .andarma-admin .ad-maps-v8__list-head{align-items:flex-start;flex-wrap:wrap;}
+  .andarma-admin .ad-maps-v8__actions .ad-btn{flex:1 1 100%;}
+}
+@media(prefers-reduced-motion:reduce){
+  .andarma-admin .ad-maps-v8 .ad-mapcard{transition:none!important;}
+  .andarma-admin .ad-maps-v8 .ad-mapcard:hover{transform:none!important;}
+}

@@ -37,6 +37,8 @@ Route::prefix('admin')->middleware(['auth:sanctum',EnsureAndarmaAdmin::class])->
     Route::get('/media',[Admin::class,'media']);Route::post('/media',[Admin::class,'upload']);Route::delete('/media/{id}',[Admin::class,'deleteMedia'])->whereNumber('id');
     
 // ANDARMA_CLIENTES_V30_START
+// ANDARMA_FASE20_AUDITORIA_CLIENTES: antes de /clients/{id}
+Route::get('/clients/audit',[\App\Http\Controllers\Api\AndarmaClientsController::class,'auditIndex']);
 Route::get('/clients/available-lots',[\App\Http\Controllers\Api\AndarmaClientsController::class,'availableLots']);
 Route::get('/clients',[\App\Http\Controllers\Api\AndarmaClientsController::class,'index']);
 Route::post('/clients',[\App\Http\Controllers\Api\AndarmaClientsController::class,'store']);

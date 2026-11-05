@@ -62,7 +62,18 @@ class AndarmaAdminController extends Controller {
 
  public function publicBanners(){return response()->json(['data'=>DB::table('andarma_banners')->where('is_active',1)->orderBy('sort_order')->get()]);}
  public function publicDevelopments(){return response()->json(['data'=>DB::table('andarma_developments')->where('status','active')->orderBy('sort_order')->orderBy('id')->get()]);}
- public function publicLots(Request $r){$query=DB::table('andarma_lots')->where('status','available');if($r->filled('development_id'))$query->where('development_id',$r->query('development_id'));return response()->json(['data'=>$query->get()]);}
+ public function publicLots(Request $r){
+  // ANDARMA_FASE16_PUBLIC_LOTS_ALLOWLIST
+  // La API publica solo entrega informacion comercial, nunca comprador, contacto ni campos internos.
+  $filters = $r->validate(['development_id' => 'sometimes|integer|min:1']);
+  $query = DB::table('andarma_lots')
+    ->where('status', 'available')
+    ->select('id', 'development_id', 'code', 'block', 'area_m2', 'price', 'status', 'description');
+  if (isset($filters['development_id'])) {
+    $query->where('development_id', $filters['development_id']);
+  }
+  return response()->json(['data' => $query->get()]);
+ }
  public function publicTestimonials(){return response()->json(['data'=>DB::table('andarma_testimonials')->where('is_active',1)->orderBy('sort_order')->get()]);}
  public function publicLead(Request $r){$d=$r->validate(['name'=>'required|string|max:255','email'=>'nullable|email|max:255','phone'=>'nullable|string|max:50','development_id'=>'nullable|exists:andarma_developments,id','message'=>'nullable|string|max:5000']);DB::table('andarma_leads')->insert([...$d,'status'=>'new','created_at'=>now(),'updated_at'=>now()]);return response()->json(['message'=>'Solicitud recibida.'],201);}
 }

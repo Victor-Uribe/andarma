@@ -1,1 +1,12 @@
-<template><section style="min-height:70vh;display:grid;place-content:center;gap:14px;text-align:center;padding:30px"><h1 style="font-size:28px;font-weight:800;color:#17324e">Acceso restringido</h1><p>No tienes permisos para consultar los módulos del administrador. Solicita acceso a un superadministrador.</p><a href="/admin/login">Volver al inicio de sesión</a></section></template>
+<script setup>
+import {ShieldAlert, ArrowLeft} from 'lucide-vue-next'
+</script>
+<template>
+  <section class="ad-access-denied" role="status">
+    <div class="ad-access-denied__icon"><ShieldAlert :size="30" aria-hidden="true" /></div>
+    <span class="admin-kicker">ADMINISTRACIÓN / PERMISOS</span>
+    <h1>Acceso restringido</h1>
+    <p>Tu cuenta no tiene permisos para consultar los módulos del administrador. Solicita acceso a la persona responsable del sistema.</p>
+    <RouterLink class="ad-btn ad-btn--primary" to="/"><ArrowLeft :size="16" /> Volver al sitio público</RouterLink>
+  </section>
+</template>

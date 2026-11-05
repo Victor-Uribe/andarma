@@ -1,0 +1,155 @@
+/* ANDARMA_FASE5_FORMULARIOS_UNIFICADOS */
+/* Visual: modales de crear/editar (no altera operaciones ni modal de detalle de cliente). */
+.andarma-admin {
+  --ad-form-radius: 16px;
+  --ad-form-field-radius: 10px;
+  --ad-form-control-height: 44px;
+  --ad-form-title-size: 21px;
+  --ad-form-border: #DDE7F1;
+  --ad-form-ink: #17324E;
+}
+/* Contenedores: misma superficie, ancho y borde, sin tocar el orden del DOM. */
+.andarma-admin :is(.ad-modal, .crm-modal--wide, .pv-dialog) {
+  border: 1px solid var(--ad-form-border) !important;
+  border-radius: 20px !important;
+  background: #fff !important;
+  box-shadow: 0 24px 70px rgba(12, 33, 57, .20) !important;
+  max-height: calc(100dvh - 40px) !important;
+  overflow: hidden;
+}
+.andarma-admin :is(.ad-modal-backdrop, .crm-modalbackdrop, .pv-backdrop) {
+  padding: 20px;
+  background: rgba(10,30,52,.56);
+  backdrop-filter: blur(5px);
+}
+/* Encabezados: jerarquia editorial uniforme. */
+.andarma-admin :is(.ad-modal__header, .crm-modal--wide .crm-modal__header, .pv-dialog-header) {
+  padding: 18px 22px !important;
+  border-bottom: 1px solid var(--ad-form-border) !important;
+  background: #fff !important;
+  gap: 14px;
+}
+.andarma-admin :is(.ad-modal__header, .crm-modal--wide .crm-modal__header, .pv-dialog-header) h2 {
+  font-family: 'Manrope', sans-serif !important;
+  font-size: var(--ad-form-title-size) !important;
+  line-height: 1.25 !important;
+  font-weight: 750 !important;
+  letter-spacing: -.035em !important;
+  color: var(--ad-form-ink) !important;
+  margin: 4px 0 5px !important;
+}
+.andarma-admin :is(.ad-modal__header, .crm-modal--wide .crm-modal__header, .pv-dialog-header) p {
+  font-size: 12px !important;
+  line-height: 1.55 !important;
+  color: #72879C !important;
+  margin: 0 !important;
+}
+.andarma-admin :is(.ad-modal__header .ad-kicker, .ad-modal__header .admin-kicker, .crm-modal--wide .crm-kicker, .pv-dialog-header .pv-eyebrow) {
+  font-size: 10px !important;
+  font-weight: 750 !important;
+  color: #0066E0 !important;
+  letter-spacing: .12em !important;
+}
+/* Cuerpo del formulario: campos legibles, sin reducir controles en telefono. */
+.andarma-admin :is(.ad-modal__body, .crm-modal--wide .crm-modal__body, .pv-dialog-body) {
+  padding: 22px !important;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.andarma-admin :is(.ad-form-grid, .crm-modal--wide .crm-formgrid, .pv-form-grid) {
+  column-gap: 16px;
+  row-gap: 15px;
+}
+.andarma-admin :is(.ad-modal__body .ad-label, .crm-modal--wide .crm-formgrid label, .pv-dialog-body .pv-field) {
+  min-width: 0;
+  gap: 7px;
+  color: #35516C !important;
+  font-size: 12px !important;
+  line-height: 1.45;
+  font-weight: 650 !important;
+}
+.andarma-admin :is(.ad-modal__body .ad-input, .ad-modal__body .ad-select, .ad-modal__body .ad-textarea, .crm-modal--wide .crm-formgrid input, .crm-modal--wide .crm-formgrid select, .crm-modal--wide .crm-formgrid textarea, .pv-dialog-body .pv-field input, .pv-dialog-body .pv-field select, .pv-dialog-body .pv-field textarea) {
+  min-height: var(--ad-form-control-height) !important;
+  width: 100%;
+  min-width: 0;
+  background: #fff !important;
+  border: 1px solid #D5E2EF !important;
+  border-radius: var(--ad-form-field-radius) !important;
+  padding: 10px 12px !important;
+  color: var(--ad-form-ink) !important;
+  font-size: 13px !important;
+  font-weight: 450 !important;
+  box-shadow: none;
+  box-sizing: border-box;
+}
+.andarma-admin :is(.ad-modal__body textarea, .crm-modal--wide .crm-formgrid textarea, .pv-dialog-body .pv-field textarea) {
+  min-height: 92px !important;
+  line-height: 1.55;
+}
+.andarma-admin :is(.ad-modal__body .ad-input, .ad-modal__body .ad-select, .ad-modal__body .ad-textarea, .crm-modal--wide .crm-formgrid input, .crm-modal--wide .crm-formgrid select, .crm-modal--wide .crm-formgrid textarea, .pv-dialog-body .pv-field input, .pv-dialog-body .pv-field select, .pv-dialog-body .pv-field textarea):focus-visible {
+  outline: 0 !important;
+  border-color: #0066E0 !important;
+  box-shadow: 0 0 0 3px rgba(0,102,224,.13) !important;
+}
+/* Acciones: siempre legibles, sin afectar botones de otras areas. */
+.andarma-admin :is(.ad-modal__footer, .crm-modal--wide .crm-modal__footer, .pv-dialog-footer) {
+  padding: 15px 22px !important;
+  background: #fff !important;
+  border-top: 1px solid var(--ad-form-border) !important;
+  gap: 10px;
+}
+.andarma-admin :is(.ad-modal__footer .ad-btn, .crm-modal--wide .crm-modal__footer .crm-btn, .pv-dialog-footer .pv-btn) {
+  min-height: 42px !important;
+  height: auto;
+  border-radius: 10px !important;
+  padding: 10px 16px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  line-height: 1.2;
+}
+.andarma-admin :is(.ad-modal__footer .ad-btn--primary, .crm-modal--wide .crm-modal__footer .crm-btn--primary, .pv-dialog-footer .pv-btn-primary) {
+  background: #0066E0 !important;
+  border-color: #0066E0 !important;
+  color: #fff !important;
+}
+.andarma-admin :is(.ad-modal__footer .ad-btn--primary, .crm-modal--wide .crm-modal__footer .crm-btn--primary, .pv-dialog-footer .pv-btn-primary):hover:not(:disabled) {
+  background: #0054BB !important;
+  border-color: #0054BB !important;
+}
+.andarma-admin :is(.ad-modal__header .ad-icon-btn, .crm-modal--wide .crm-modal__header button, .pv-dialog-header .pv-close) {
+  min-width: 40px;
+  min-height: 40px;
+  flex-shrink: 0;
+}
+@media(max-width: 720px) {
+  .andarma-admin :is(.ad-modal-backdrop, .crm-modalbackdrop, .pv-backdrop) {
+    padding: 8px !important;
+  }
+  .andarma-admin :is(.ad-modal, .crm-modal--wide, .pv-dialog) {
+    width: 100% !important;
+    max-height: calc(100dvh - 16px) !important;
+    border-radius: 15px !important;
+  }
+  .andarma-admin :is(.ad-modal__header, .crm-modal--wide .crm-modal__header, .pv-dialog-header) {
+    padding: 15px 16px !important;
+  }
+  .andarma-admin :is(.ad-modal__body, .crm-modal--wide .crm-modal__body, .pv-dialog-body) {
+    padding: 16px !important;
+  }
+  .andarma-admin :is(.ad-form-grid, .crm-modal--wide .crm-formgrid, .pv-form-grid) {
+    grid-template-columns: minmax(0,1fr) !important;
+  }
+  .andarma-admin :is(.ad-modal__footer, .crm-modal--wide .crm-modal__footer, .pv-dialog-footer) {
+    padding: 13px 16px !important;
+    flex-wrap: wrap;
+  }
+  .andarma-admin :is(.ad-modal__footer .ad-btn, .crm-modal--wide .crm-modal__footer .crm-btn, .pv-dialog-footer .pv-btn) {
+    min-height: 44px !important;
+  }
+}
+@media(prefers-reduced-motion: reduce) {
+  .andarma-admin :is(.ad-modal, .crm-modal--wide, .pv-dialog) * {
+    scroll-behavior: auto !important;
+  }
+}

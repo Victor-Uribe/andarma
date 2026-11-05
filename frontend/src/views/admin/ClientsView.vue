@@ -298,7 +298,7 @@ watch(()=>route.query.client,async id=>{
       </div>
 
       <div class="crm-tablewrap">
-        <table class="crm-table">
+        <table class="crm-table ad-clients-responsive">
           <thead>
             <tr>
               <th>Cliente</th>
@@ -311,7 +311,7 @@ watch(()=>route.query.client,async id=>{
           </thead>
           <tbody>
             <tr v-for="client in rows" :key="client.id">
-              <td>
+              <td data-ad-label="Cliente">
                 <div class="crm-person">
                   <div class="crm-avatar">{{ (client.name || '?').slice(0,1).toUpperCase() }}</div>
                   <div>
@@ -320,21 +320,21 @@ watch(()=>route.query.client,async id=>{
                   </div>
                 </div>
               </td>
-              <td>
+              <td data-ad-label="Contacto">
                 <div class="crm-contact">
                   <a v-if="client.phone" :href="'https://wa.me/'+wa(client.phone)" target="_blank" rel="noopener noreferrer"><Phone :size="14"/> {{ client.phone }}</a>
                   <span v-else>Sin teléfono</span>
                   <small>{{ client.alternate_phone || 'Sin teléfono alterno' }}</small>
                 </div>
               </td>
-              <td>
+              <td data-ad-label="Estado">
                 <span class="crm-badge" :class="client.status==='active' ? 'is-success' : 'is-muted'">
                   {{ client.status==='active' ? 'Activo' : 'Inactivo' }}
                 </span>
               </td>
-              <td><span class="crm-pill">{{ client.properties_count || 0 }}</span></td>
-              <td><span class="crm-pill">{{ client.payments_count || 0 }}</span></td>
-              <td>
+              <td data-ad-label="Propiedades"><span class="crm-pill">{{ client.properties_count || 0 }}</span></td>
+              <td data-ad-label="Pagos"><span class="crm-pill">{{ client.payments_count || 0 }}</span></td>
+              <td data-ad-label="Acciones">
                 <div class="crm-actions">
                   <button class="crm-btn crm-btn--table" @click="openDetail(client.id)"><Eye :size="14"/> Ver</button>
                   <button v-can="'clients.edit'" class="crm-btn crm-btn--table" @click="openEdit(client)"><Pencil :size="14"/> Editar</button>

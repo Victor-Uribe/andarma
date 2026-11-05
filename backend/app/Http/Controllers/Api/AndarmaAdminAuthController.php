@@ -18,7 +18,11 @@ class AndarmaAdminAuthController extends Controller {
     $user=User::where('email',$data['email'])->first();
     if (!$user || !$user->is_andarma_admin || !$user->andarma_enabled || !$user->andarma_role_id || !Hash::check($data['password'],$user->password))
         return response()->json(['message'=>'Credenciales incorrectas o sin autorización.'],401);
-    return response()->json(['token'=>$user->createToken('andarma-admin')->plainTextToken,'user'=>$this->identity($user)]);
+    // ANDARMA_FASE17_TOKEN_SEGURO: solo tokens nuevos de este administrador.
+    // Duracion configurable por entorno, limitada a un rango seguro de 1 a 168 horas.
+    $hours = max(1, min(168, (int) env('ANDARMA_ADMIN_TOKEN_HOURS', 12)));
+    $token = $user->createToken('andarma-admin', ['*'], now()->addHours($hours));
+    return response()->json(['token'=>$token->plainTextToken,'user'=>$this->identity($user)]);
   }
   public function me(Request $request){return response()->json(['user'=>$this->identity($request->user())]);}
   public function logout(Request $request){$request->user()->currentAccessToken()?->delete();return response()->json(['message'=>'Sesión finalizada.']);}

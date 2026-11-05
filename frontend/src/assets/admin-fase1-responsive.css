@@ -1,0 +1,63 @@
+/* ANDARMA_FASE1_UIUX_RESPONSIVE_20261105
+   Capa incremental, sin alterar el sitio publico ni las pantallas de escritorio.
+   Cualquier cambio de identidad visual se mantiene en admin-design-system.css.
+*/
+.andarma-admin .admin-main,
+.andarma-admin .admin-workspace,
+.andarma-admin .admin-panel,
+.andarma-admin .ad-card { min-width: 0; }
+.andarma-admin .admin-workspace { overflow-wrap: break-word; }
+.andarma-admin .ad-table-wrap { max-width: 100%; overscroll-behavior-inline: contain; }
+.andarma-admin :is(.ad-input,.ad-select,.ad-textarea) { max-width: 100%; }
+.andarma-admin :is(button,a,input,select,textarea):focus-visible {
+  outline: 3px solid rgba(0,102,224,.42);
+  outline-offset: 2px;
+}
+.andarma-admin .admin-navigation a:focus-visible { outline-color: #77bcff; }
+.andarma-admin .ad-access-denied {
+  min-height: min(64vh,570px); display: grid; align-content: center;
+  justify-items: center; gap: 12px; text-align: center; padding: 30px 20px;
+}
+.andarma-admin .ad-access-denied__icon {
+  display: grid; place-items: center; width: 62px; height: 62px;
+  border-radius: 18px; color: #0066e0; background: #e6f1ff;
+}
+.andarma-admin .ad-access-denied h1 { font-size: clamp(23px,3vw,30px); margin: 0; color: #17324e; }
+.andarma-admin .ad-access-denied p { max-width: 440px; color: #60778e; line-height: 1.6; margin: 0 0 10px; }
+@media (max-width: 850px) {
+  .andarma-admin .admin-sidebar { z-index: 51; max-width: min(88vw,310px); height: 100dvh; overflow: auto; }
+  .andarma-admin .admin-scrim { z-index: 50; }
+  .andarma-admin .admin-topbar { min-width: 0; gap: 10px; }
+  .andarma-admin .admin-main { width: 100%; }
+  .andarma-admin .admin-workspace { width: 100%; }
+  .andarma-admin .admin-menu-btn,
+  .andarma-admin .admin-mobile-close { min-width: 44px; min-height: 44px; place-items: center; }
+  .andarma-admin .admin-navigation a { min-height: 44px; }
+}
+@media (max-width: 640px) {
+  .andarma-admin .admin-workspace { padding: 16px 12px 34px; }
+  .andarma-admin .admin-topbar { padding-inline: 12px; min-height: 60px; }
+  .andarma-admin .admin-top-start,
+  .andarma-admin .admin-top-right { min-width: 0; }
+  .andarma-admin .top-breadcrumb { min-width: 0; overflow: hidden; }
+  .andarma-admin .top-breadcrumb strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .andarma-admin .ad-form-grid { grid-template-columns: minmax(0,1fr); }
+  .andarma-admin .ad-form-span { grid-column: 1 / -1; }
+  .andarma-admin .ad-modal__header,
+  .andarma-admin .ad-modal__footer { padding: 14px 16px; }
+  .andarma-admin .ad-modal__footer { flex-wrap: wrap; }
+  .andarma-admin .ad-modal__footer .ad-btn { min-height: 44px; }
+  .andarma-admin :is(.ad-input,.ad-select,.ad-textarea) { font-size: 16px; }
+  .andarma-admin .ad-btn,
+  .andarma-admin .ad-icon-btn { min-height: 44px; }
+  .andarma-admin .ad-icon-btn { min-width: 44px; }
+  .andarma-admin .ad-table th,
+  .andarma-admin .ad-table td { white-space: nowrap; }
+  .andarma-admin .ad-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .andarma-admin .ad-actions { justify-content: flex-start; }
+  .andarma-admin .admin-footer { padding-inline: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .andarma-admin .admin-sidebar,
+  .andarma-admin :is(.ad-btn,.ad-icon-btn) { transition-duration: .01ms !important; }
+}

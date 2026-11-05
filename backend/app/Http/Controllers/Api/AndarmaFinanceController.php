@@ -266,6 +266,14 @@ class AndarmaFinanceController extends Controller
         ]);
         return DB::transaction(function () use ($request, $d, $lotId) {
             $lot = $this->ownedLot($lotId, true);
+            // ANDARMA_FASE15_VALIDAR_ESTADO_PROPIEDAD
+            // Un registro de pago requiere una propiedad apartada o vendida.
+            // No se modifican ni eliminan pagos previos de propiedades con otro estado.
+            if (!in_array($lot->status, ['reserved', 'sold'], true)) {
+                return response()->json([
+                    'message' => 'No es posible registrar un pago: la propiedad debe estar apartada o vendida.',
+                ], 409);
+            }
             $plan = DB::table('andarma_lot_financing')->where('lot_id', $lotId)->lockForUpdate()->first();
             if (!$plan || (int) $plan->client_id !== (int) $lot->client_id)
                 return response()->json(['message' => 'Configura primero las condiciones de venta de esta propiedad.'], 409);
@@ -310,6 +318,56 @@ class AndarmaFinanceController extends Controller
             return response()->json(['message' => 'Pago registrado correctamente.',
                 'data' => DB::table('andarma_client_payments')->find($id)], 201);
         });
+    }
+
+    // ANDARMA_F18_AUDITORIA_FINANCIERA: historial de solo lectura; no altera pagos.
+    public function audit(Request $request)
+    {
+        // Restringir la consulta a usuarios autorizados para gestionar cancelaciones.
+        abort_unless(\App\Support\AndarmaAccess::can($request->user(), 'payments.delete'),
+            403, 'No tienes permiso para consultar la auditoría financiera.');
+
+        $data = $request->validate([
+            'action' => ['nullable', Rule::in(['all', 'registered', 'cancelled'])],
+            'from' => 'nullable|date_format:Y-m-d',
+            'to' => 'nullable|date_format:Y-m-d',
+            'per_page' => 'nullable|integer|min:1|max:50',
+            'page' => 'nullable|integer|min:1',
+        ]);
+        if (!empty($data['from']) && !empty($data['to']) && $data['to'] < $data['from']) {
+            throw ValidationException::withMessages(['to' => 'La fecha final no puede ser anterior a la inicial.']);
+        }
+
+        // Cada evento incluye únicamente datos de auditoría. Un pago cancelado
+        // aparece dos veces: al registrarlo y al cancelarlo (dos operaciones reales).
+        $registered = DB::table('andarma_client_payments as p')
+            ->leftJoin('users as u', 'u.id', '=', 'p.created_by')
+            ->select('p.id as payment_id', 'p.lot_id', 'p.client_id',
+                'p.amount', 'p.payment_type', 'p.paid_at', 'p.status',
+                'p.created_by as actor_id', 'u.name as actor_name')
+            ->selectRaw("'registered' as action, p.created_at as occurred_at, NULL as reason");
+
+        $cancelled = DB::table('andarma_client_payments as p')
+            ->leftJoin('users as u', 'u.id', '=', 'p.cancelled_by')
+            ->whereNotNull('p.cancelled_at')
+            ->select('p.id as payment_id', 'p.lot_id', 'p.client_id',
+                'p.amount', 'p.payment_type', 'p.paid_at', 'p.status',
+                'p.cancelled_by as actor_id', 'u.name as actor_name')
+            ->selectRaw("'cancelled' as action, p.cancelled_at as occurred_at, p.cancel_reason as reason");
+
+        $query = DB::query()->fromSub($registered->unionAll($cancelled), 'audit');
+        if (($data['action'] ?? 'all') !== 'all') $query->where('action', $data['action']);
+        if (!empty($data['from'])) $query->where('occurred_at', '>=', $data['from'] . ' 00:00:00');
+        if (!empty($data['to'])) $query->where('occurred_at', '<=', $data['to'] . ' 23:59:59');
+        $page = $query->orderByDesc('occurred_at')->orderByDesc('payment_id')
+            ->paginate($data['per_page'] ?? 20);
+
+        return response()->json([
+            'data' => $page->items(),
+            'current_page' => $page->currentPage(),
+            'last_page' => $page->lastPage(),
+            'total' => $page->total(),
+        ]);
     }
 
     public function cancelPayment(Request $request, int $paymentId)

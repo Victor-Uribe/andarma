@@ -1,0 +1,107 @@
+/* ANDARMA | Sistema tipográfico de títulos administrativos | Fase 2
+   Alcance exclusivo: encabezados principales de vistas, NO modales, tarjetas, tablas o web pública.
+   Política: Kicker 10px / H1 30px desktop - 25px móvil / Descripción 13px.
+   Un solo peso H1 (750) y escala responsive sin saltos visuales.
+*/
+.andarma-admin {
+  --ad-page-title-size: 30px;
+  --ad-page-title-weight: 750;
+  --ad-page-title-line-height: 1.18;
+  --ad-page-kicker-size: 10px;
+  --ad-page-description-size: 13px;
+}
+
+/* Componentes con distintos nombres históricos: todos conservan su estructura. */
+.andarma-admin :is(
+  .v28-heading,
+  .ad-lookup__heading,
+  .crm-page__header,
+  .pv-page-header,
+  .ad-users-v52__head,
+  .settings-v50-head,
+  .ad-banner-head,
+  .ad-test-head,
+  .ad-pay-heading,
+  .admin-page-head,
+  .ad-page-header
+) h1,
+.andarma-admin h1.ad-heading {
+  font-family: 'Manrope', 'DM Sans', system-ui, sans-serif !important;
+  font-size: var(--ad-page-title-size) !important;
+  font-weight: var(--ad-page-title-weight) !important;
+  line-height: var(--ad-page-title-line-height) !important;
+  letter-spacing: -.038em !important;
+  color: #17324E !important;
+  text-transform: none !important;
+  margin: 5px 0 7px !important;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+/* La jerarquía es igual aunque el módulo utilice clases ad-kicker, crm o pv. */
+.andarma-admin :is(
+  .v28-heading, .ad-lookup__heading, .crm-page__header,
+  .pv-page-header, .ad-users-v52__head, .settings-v50-head,
+  .ad-banner-head, .ad-test-head, .ad-pay-heading,
+  .admin-page-head, .ad-page-header
+) :is(.ad-kicker, .admin-kicker, .crm-kicker, .crm-eyebrow, .pv-eyebrow),
+.andarma-admin :is(header) > div > .ad-kicker {
+  display: inline-block;
+  font-family: 'DM Sans', system-ui, sans-serif !important;
+  font-size: var(--ad-page-kicker-size) !important;
+  font-weight: 750 !important;
+  line-height: 1.5 !important;
+  letter-spacing: .12em !important;
+  color: #0066E0 !important;
+  text-transform: uppercase !important;
+  margin: 0 !important;
+}
+
+.andarma-admin :is(
+  .v28-heading, .ad-lookup__heading, .crm-page__header,
+  .pv-page-header, .ad-users-v52__head, .settings-v50-head,
+  .ad-banner-head, .ad-test-head, .ad-pay-heading,
+  .admin-page-head, .ad-page-header
+) > div > p,
+.andarma-admin header > div > p.ad-muted {
+  font-family: 'DM Sans', system-ui, sans-serif !important;
+  font-size: var(--ad-page-description-size) !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+  line-height: 1.55 !important;
+  color: #677F97 !important;
+  margin: 0 !important;
+  max-width: 74ch;
+  text-wrap: pretty;
+}
+
+/* El punto decorativo se reserva para la marca; no se usa en títulos de módulos. */
+.andarma-admin :is(
+  .v28-heading, .ad-lookup__heading, .crm-page__header,
+  .pv-page-header, .ad-users-v52__head, .settings-v50-head,
+  .ad-banner-head, .ad-test-head, .admin-page-head
+) h1 .heading-dot { display: none !important; }
+
+/* La cabecera ocupa lo necesario, sin alturas rígidas ni textos centrados artificialmente. */
+.andarma-admin :is(.v28-heading, .ad-lookup__heading, .crm-page__header,
+ .pv-page-header, .ad-users-v52__head, .settings-v50-head,
+ .ad-banner-head, .ad-test-head, .ad-pay-heading) {
+  min-height: 0;
+  row-gap: 12px;
+}
+
+@media (max-width: 767px) {
+  .andarma-admin { --ad-page-title-size: 25px; --ad-page-description-size: 13px; }
+  .andarma-admin :is(.v28-heading, .crm-page__header, .pv-page-header,
+    .ad-users-v52__head, .settings-v50-head, .ad-banner-head,
+    .ad-test-head, .ad-pay-heading) {
+    align-items: flex-start;
+  }
+  .andarma-admin :is(.v28-heading, .ad-lookup__heading, .crm-page__header,
+    .pv-page-header, .ad-users-v52__head, .settings-v50-head,
+    .ad-banner-head, .ad-test-head, .ad-pay-heading) > div { min-width: 0; }
+}
+
+@media (max-width: 390px) {
+  .andarma-admin { --ad-page-title-size: 24px; }
+}

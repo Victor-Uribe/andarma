@@ -7,6 +7,37 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class AndarmaClientsController extends Controller {
+ // ANDARMA_FASE20_AUDITORIA_CLIENTES: registro dentro de la transaccion del cambio.
+ private function auditChange(string $action, ?int $clientId, ?int $lotId, array $changes): void {
+  DB::table('andarma_client_audit')->insert([
+   'actor_user_id'=>auth()->id(), 'action'=>$action, 'client_id'=>$clientId,
+   'lot_id'=>$lotId, 'changes'=>json_encode($changes, JSON_UNESCAPED_UNICODE),
+   'created_at'=>now(),
+  ]);
+ }
+ // Solo responsables con permisos de modificar clientes pueden consultar la bitacora.
+ public function auditIndex(Request $request) {
+  abort_unless(\App\Support\AndarmaAccess::can($request->user(),'clients.edit'),403,
+   'No tienes permiso para consultar la auditoria de clientes.');
+  $d=$request->validate([
+   'action'=>['nullable',Rule::in(['client.updated','lot.assigned','lot.released'])],
+   'client_id'=>'nullable|integer|min:1', 'lot_id'=>'nullable|integer|min:1',
+   'from'=>'nullable|date_format:Y-m-d', 'to'=>'nullable|date_format:Y-m-d',
+   'per_page'=>'nullable|integer|min:1|max:100',
+  ]);
+  if(!empty($d['from']) && !empty($d['to']) && $d['from']>$d['to'])
+   throw ValidationException::withMessages(['to'=>'La fecha final debe ser posterior a la inicial.']);
+  $q=DB::table('andarma_client_audit as a')
+   ->leftJoin('users as u','u.id','=','a.actor_user_id')
+   ->select('a.*','u.name as actor_name');
+  if(!empty($d['action']))$q->where('a.action',$d['action']);
+  if(!empty($d['client_id']))$q->where('a.client_id',$d['client_id']);
+  if(!empty($d['lot_id']))$q->where('a.lot_id',$d['lot_id']);
+  if(!empty($d['from']))$q->whereDate('a.created_at','>=',$d['from']);
+  if(!empty($d['to']))$q->whereDate('a.created_at','<=',$d['to']);
+  return response()->json($q->orderByDesc('a.id')->paginate($d['per_page']??20));
+ }
+
  private function validated(Request $request):array {
   return $request->validate([
    'name'=>'required|string|max:255','phone'=>'required|string|max:50',
@@ -40,7 +71,22 @@ class AndarmaClientsController extends Controller {
   $total=DB::table('andarma_client_payments')->where('client_id',$id)->where('status','applied')->sum('amount');
   return response()->json(['data'=>$c,'properties'=>$lots,'payments'=>$payments,'paid_total'=>(float)$total,'payment_capture_enabled'=>false]);
  }
- public function update(Request $request,int $id){abort_unless(DB::table('andarma_clients')->where('id',$id)->exists(),404);$data=$this->validated($request);DB::table('andarma_clients')->where('id',$id)->update([...$data,'updated_at'=>now()]);return response()->json(['data'=>DB::table('andarma_clients')->find($id)]);}
+ public function update(Request $request,int $id){
+  $data=$this->validated($request);
+  return DB::transaction(function()use($request,$id,$data){
+   $before=DB::table('andarma_clients')->where('id',$id)->lockForUpdate()->first();abort_unless($before,404);
+   $changes=[];
+   // Evitar copiar telefonos, correos o notas a una bitacora adicional.
+   foreach(['name','phone','email','alternate_phone','notes','status'] as $field){
+    if((string)($before->$field??'')!==(string)($data[$field]??''))$changes[]=$field;
+   }
+   if($changes){
+    DB::table('andarma_clients')->where('id',$id)->update([...$data,'updated_at'=>now()]);
+    $this->auditChange('client.updated',$id,null,['fields'=>$changes]);
+   }
+   return response()->json(['data'=>DB::table('andarma_clients')->find($id)]);
+  });
+ }
  public function destroy(int $id){return DB::transaction(function()use($id){$c=DB::table('andarma_clients')->where('id',$id)->lockForUpdate()->first();abort_unless($c,404);
   if(DB::table('andarma_lots')->where('client_id',$id)->exists()||DB::table('andarma_client_payments')->where('client_id',$id)->exists())return response()->json(['message'=>'No se puede eliminar un cliente con propiedades o pagos. Desactívalo para conservar el historial.'],409);
   DB::table('andarma_clients')->where('id',$id)->delete();return response()->json(['message'=>'Cliente eliminado.']);});}
@@ -59,10 +105,18 @@ class AndarmaClientsController extends Controller {
    $lot=DB::table('andarma_lots')->where('id',$data['lot_id'])->lockForUpdate()->first();abort_unless($lot,404);
    if($lot->client_id!==null||!in_array($lot->status,['available','reserved'],true))return response()->json(['message'=>'Esta propiedad ya fue asignada o no está disponible.'],409);
    DB::table('andarma_lots')->where('id',$lot->id)->update(['client_id'=>$id,'status'=>$data['status'],'updated_at'=>now()]);
+   $this->auditChange('lot.assigned',$id,(int)$lot->id,[
+    'previous_client_id'=>$lot->client_id,'new_client_id'=>$id,
+    'previous_status'=>$lot->status,'new_status'=>$data['status'],
+   ]);
    return response()->json(['message'=>'Propiedad asignada correctamente.']);
   });
  }
  public function releaseLot(int $id,int $lotId){return DB::transaction(function()use($id,$lotId){$lot=DB::table('andarma_lots')->where('id',$lotId)->lockForUpdate()->first();abort_unless($lot&& (int)$lot->client_id===$id,404);
   if(DB::table('andarma_client_payments')->where('lot_id',$lotId)->exists())return response()->json(['message'=>'No se puede liberar una propiedad con pagos registrados.'],409);
-  DB::table('andarma_lots')->where('id',$lotId)->update(['client_id'=>null,'status'=>'available','updated_at'=>now()]);return response()->json(['message'=>'Propiedad liberada.']);});}
+  DB::table('andarma_lots')->where('id',$lotId)->update(['client_id'=>null,'status'=>'available','updated_at'=>now()]);
+  $this->auditChange('lot.released',$id,$lotId,[
+   'previous_client_id'=>$id,'new_client_id'=>null,
+   'previous_status'=>$lot->status,'new_status'=>'available',
+  ]);return response()->json(['message'=>'Propiedad liberada.']);});}
 }

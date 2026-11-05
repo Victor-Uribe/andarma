@@ -29,7 +29,7 @@ class AndarmaInventoryMapsController extends Controller
         return response()->json(['data'=>DB::table('andarma_developments')->select('id','name','status')->orderBy('name')->get()]);
     }
     public function inventory(Request $r) {
-        $d=$r->validate(['q'=>'nullable|string|max:120','development_id'=>'nullable|integer','status'=>'nullable|in:available,reserved,sold,inactive','mapped'=>'nullable|in:yes,no','page'=>'nullable|integer|min:1','per_page'=>'nullable|integer|min:1|max:100']);
+        $d=$r->validate(['q'=>'nullable|string|max:120','development_id'=>'nullable|integer','status'=>'nullable|in:available,reserved,sold,inactive','mapped'=>'nullable|in:yes,no','payment_filter'=>'nullable|in:overdue,severe,current','page'=>'nullable|integer|min:1','per_page'=>'nullable|integer|min:1|max:100']);
         $query=DB::table('andarma_lots as l')->join('andarma_developments as d','d.id','=','l.development_id')
           ->leftJoin('andarma_lot_geometries as g','g.lot_id','=','l.id')
           ->leftJoin('andarma_clients as c','c.id','=','l.client_id')
@@ -42,8 +42,36 @@ class AndarmaInventoryMapsController extends Controller
         if(($d['mapped']??'')==='no')$query->whereNull('g.id');
         // ANDARMA_V40_INVENTORY_PAYMENT_TRAFFIC
         // Calculamos solo los terrenos de la página, sin N+1 consultas.
+        // ANDARMA_FASE6_FILTRO_COBRANZA: filtrar antes de paginar, nunca solo en frontend.
+        if (!empty($d['payment_filter'])) {
+            $wanted = $d['payment_filter'];
+            $matchedIds = [];
+            $scan = clone $query;
+            // Solo columnas necesarias para determinar el estado; lotes procesados en bloques.
+            $scan->select('l.id', 'l.client_id', 'l.status');
+            $scan->chunkById(200, function ($batch) use (&$matchedIds, $wanted) {
+                $this->decorateInventoryPayments($batch);
+                foreach ($batch as $lot) {
+                    $tone = (string) ($lot->payment_tone ?? 'neutral');
+                    $label = (string) ($lot->payment_label ?? '');
+                    $matches = match ($wanted) {
+                        'overdue' => in_array($tone, ['yellow', 'red'], true),
+                        'severe' => $tone === 'red',
+                        'current' => $tone === 'green',
+                        default => false,
+                    };
+                    if ($matches) $matchedIds[] = (int) $lot->id;
+                }
+            }, 'l.id', 'id');
+            $query->whereIn('l.id', $matchedIds ?: [-1]);
+        }
         $page = $query->orderByDesc('l.id')->paginate($d['per_page']??20);
         $lots = $page->getCollection();
+        $this->decorateInventoryPayments($lots);
+        return response()->json($page);
+    }
+    // ANDARMA_FASE6_FILTRO_COBRANZA: clasificación compartida entre filtro y página visible.
+    private function decorateInventoryPayments($lots): void {
         $ids = $lots->pluck('id')->all();
         if ($ids) {
             $plans = DB::table('andarma_lot_financing')
@@ -102,8 +130,8 @@ class AndarmaInventoryMapsController extends Controller
                 $lot->payment_label = $overdue === 0 ? 'Al corriente' : ($overdue.' '.($overdue===1?'mes':'meses').' de atraso');
             }
         }
-        return response()->json($page);
     }
+
     private function validatedLot(Request $r,?int $id=null): array {
         return $r->validate([
             'development_id'=>'required|integer|exists:andarma_developments,id',

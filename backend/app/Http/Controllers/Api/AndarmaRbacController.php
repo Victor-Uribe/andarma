@@ -52,8 +52,19 @@ class AndarmaRbacController extends Controller
         if ($role->slug==='administrator' && $d['name']!==$role->name) throw ValidationException::withMessages(['name'=>'El nombre Administrador está reservado; puedes modificar sus permisos.']);
         return DB::transaction(function()use($d,$id){
             DB::table('andarma_roles')->where('id',$id)->update(['name'=>$d['name'],'updated_at'=>now()]);
+            // ANDARMA_F14_REVOKE_ROLE_PERMISSIONS: al cambiar permisos, revocar sesiones del rol.
+            $oldPermissions=DB::table('andarma_role_permissions')->where('role_id',$id)->pluck('permission')->all();
+            $newPermissions=array_values(array_unique($d['permissions']));
+            sort($oldPermissions);
+            sort($newPermissions);
             DB::table('andarma_role_permissions')->where('role_id',$id)->delete();
-            foreach(array_unique($d['permissions']) as $p)DB::table('andarma_role_permissions')->insert(['role_id'=>$id,'permission'=>$p]);
+            foreach($newPermissions as $p)DB::table('andarma_role_permissions')->insert(['role_id'=>$id,'permission'=>$p]);
+            if ($oldPermissions !== $newPermissions) {
+                User::where('is_andarma_admin',true)->where('andarma_role_id',$id)
+                    ->chunkById(100,function($users){
+                        foreach($users as $member) $member->tokens()->delete();
+                    });
+            }
             return response()->json(['data'=>$this->roleRow(DB::table('andarma_roles')->find($id))]);
         });
     }
@@ -116,10 +127,16 @@ class AndarmaRbacController extends Controller
             throw ValidationException::withMessages(['andarma_role_id'=>'No puedes desactivarte o cambiar tu propio rol.']);
         $newSlug=DB::table('andarma_roles')->where('id',$d['andarma_role_id'])->value('slug');
         if ($u->is_andarma_superadmin && ($newSlug!=='superadmin' || !$d['andarma_enabled'])) $this->ensureAnotherSuper($u->id);
+        // ANDARMA_F14_REVOKE_CHANGED_ACCOUNT: cerrar sesiones si cambia el acceso o la identidad.
+        $accessChanged=(int)$u->andarma_role_id !== (int)$d['andarma_role_id']
+            || (bool)$u->andarma_enabled !== (bool)$d['andarma_enabled'];
+        $emailChanged=(string)$u->email !== (string)$d['email'];
         $u->name=$d['name'];$u->email=$d['email'];$u->andarma_role_id=$d['andarma_role_id'];
         $u->andarma_enabled=$d['andarma_enabled'];$u->is_andarma_superadmin=$newSlug==='superadmin';
         if (!empty($d['password'])) $u->password=Hash::make($d['password']);
-        $u->save();if (!empty($d['password']) || !$d['andarma_enabled']) $u->tokens()->delete();
+        $u->save();
+        if (!empty($d['password']) || !$d['andarma_enabled'] || $accessChanged || $emailChanged)
+            $u->tokens()->delete();
         return response()->json(['data'=>$this->userRow($u)]);
     }
     private function ensureAnotherSuper(int $excluding):void {
