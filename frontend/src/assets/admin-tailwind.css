@@ -1,0 +1,3 @@
+@import "tailwindcss/theme.css";
+@import "tailwindcss/utilities.css" source("../");
+/* Sin preflight global: la página pública no recibe resets de Tailwind. */

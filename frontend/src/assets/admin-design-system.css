@@ -1,0 +1,109 @@
+/* ANDARMA · Design System V34
+   ÚNICO archivo para cambiar colores, botones, tablas, modales y formularios del administrador.
+   Uso recomendado en vistas nuevas: ad-btn ad-btn--primary, ad-table, ad-modal, ad-input,
+   ad-card, ad-badge, ad-icon-btn, ad-actions, ad-form-grid.
+   Alcance: solo el contenedor .andarma-admin (incluye reglas puente para vistas pv-* y crm-*).
+   No cambiar por módulo los colores ni los tamaños: editar aquí.
+*/
+.andarma-admin {
+  --ad-primary:#0066E0;
+  --ad-primary-hover:#0054BB;
+  --ad-primary-light:#EEF6FF;
+  --ad-accent:#0891FF;
+  --ad-navy:#003A8C;
+  --ad-ink:#17324E;
+  --ad-text:#35516C;
+  --ad-muted:#72879C;
+  --ad-bg:#F5F8FC;
+  --ad-surface:#FFFFFF;
+  --ad-border:#DDE7F1;
+  --ad-danger:#BE4050;
+  --ad-danger-bg:#FFF1F3;
+  --ad-success:#19835C;
+  --ad-success-bg:#E9F8F1;
+  --ad-warning:#946315;
+  --ad-warning-bg:#FFF6E8;
+  --ad-radius-sm:9px;
+  --ad-radius:12px;
+  --ad-radius-card:18px;
+  --ad-modal-radius:22px;
+  --ad-btn-height:36px;
+  --ad-btn-padding:11px;
+  --ad-icon-size:14px;
+  --ad-font: 'DM Sans','Manrope',system-ui,-apple-system,sans-serif;
+  --ad-shadow:0 6px 24px rgba(18,44,71,.045);
+  font-family:var(--ad-font);
+}
+/* La interfaz se reutiliza en nuevos módulos mediante clases ad-* */
+.andarma-admin .ad-card {background:var(--ad-surface);border:1px solid var(--ad-border);border-radius:var(--ad-radius-card);box-shadow:var(--ad-shadow);padding:20px}
+.andarma-admin .ad-btn,
+.andarma-admin .ad-icon-btn {
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  height:var(--ad-btn-height);min-height:var(--ad-btn-height);box-sizing:border-box;
+  padding:0 var(--ad-btn-padding);border:1px solid var(--ad-border);
+  border-radius:var(--ad-radius-sm);background:var(--ad-surface);
+  color:var(--ad-text);font-family:var(--ad-font);font-size:12px;font-weight:650;
+  line-height:1;white-space:nowrap;cursor:pointer;text-decoration:none;
+  transition:background .16s,border-color .16s,color .16s,box-shadow .16s;
+}
+.andarma-admin .ad-btn i,.andarma-admin .ad-icon-btn i {font-size:var(--ad-icon-size);width:var(--ad-icon-size);text-align:center}
+.andarma-admin .ad-btn:hover:not(:disabled),.andarma-admin .ad-icon-btn:hover:not(:disabled){background:var(--ad-primary-light);border-color:#BCD9F8;color:var(--ad-primary)}
+.andarma-admin .ad-btn--primary{background:var(--ad-primary);border-color:var(--ad-primary);color:#fff}
+.andarma-admin .ad-btn--primary:hover:not(:disabled){background:var(--ad-primary-hover);border-color:var(--ad-primary-hover);color:#fff}
+.andarma-admin .ad-btn--danger:hover:not(:disabled){color:var(--ad-danger);border-color:#F1CCD1;background:var(--ad-danger-bg)}
+.andarma-admin .ad-btn:disabled,.andarma-admin .ad-icon-btn:disabled{opacity:.5;cursor:not-allowed}
+.andarma-admin .ad-icon-btn{width:var(--ad-btn-height);padding:0}
+.andarma-admin .ad-actions{display:flex;justify-content:flex-end;align-items:center;flex-wrap:wrap;gap:7px}
+.andarma-admin .ad-table-wrap{width:100%;overflow-x:auto}
+.andarma-admin .ad-table{width:100%;border-collapse:collapse;text-align:left}
+.andarma-admin .ad-table th{padding:12px;font-size:10px;font-weight:750;letter-spacing:.1em;text-transform:uppercase;color:var(--ad-muted);border-bottom:1px solid var(--ad-border)}
+.andarma-admin .ad-table td{padding:13px 12px;border-bottom:1px solid #EDF2F7;font-size:12px;color:var(--ad-text)}
+.andarma-admin .ad-table tbody tr:hover{background:#FAFCFF}
+.andarma-admin .ad-input,.andarma-admin .ad-select,.andarma-admin .ad-textarea{width:100%;min-height:42px;border:1px solid var(--ad-border);border-radius:var(--ad-radius-sm);background:#fff;color:var(--ad-ink);font:inherit;font-size:13px;padding:10px 12px;outline:none}
+.andarma-admin .ad-textarea{min-height:90px;resize:vertical}
+.andarma-admin .ad-label{display:grid;gap:7px;font-size:12px;font-weight:650;color:var(--ad-text)}
+.andarma-admin .ad-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.andarma-admin .ad-form-span{grid-column:1/-1}
+.andarma-admin :is(.ad-btn,.ad-icon-btn,.ad-input,.ad-select,.ad-textarea):focus-visible{outline:0;box-shadow:0 0 0 3px rgba(0,102,224,.17)}
+.andarma-admin .ad-modal-backdrop{position:fixed;inset:0;z-index:1100;padding:20px;display:grid;place-items:center;background:rgba(10,30,52,.56);backdrop-filter:blur(5px)}
+.andarma-admin .ad-modal{display:flex;flex-direction:column;width:min(800px,100%);max-height:calc(100dvh - 40px);background:#fff;border-radius:var(--ad-modal-radius);border:1px solid var(--ad-border);box-shadow:0 22px 65px rgba(12,33,57,.2);overflow:hidden}
+.andarma-admin .ad-modal__header,.andarma-admin .ad-modal__footer{padding:18px 22px;background:#fff;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.andarma-admin .ad-modal__header{border-bottom:1px solid var(--ad-border)}
+.andarma-admin .ad-modal__footer{border-top:1px solid var(--ad-border);justify-content:flex-end}
+.andarma-admin .ad-modal__body{padding:22px;overflow-y:auto}
+.andarma-admin .ad-badge{display:inline-flex;align-items:center;border:1px solid var(--ad-border);border-radius:999px;padding:5px 10px;font-size:11px;font-weight:700;background:#F4F8FC;color:var(--ad-text)}
+.andarma-admin .ad-badge--success{background:var(--ad-success-bg);color:var(--ad-success);border-color:#CDEBDB}
+.andarma-admin .ad-badge--danger{background:var(--ad-danger-bg);color:var(--ad-danger);border-color:#F0CDD2}
+/* COMPATIBILIDAD V29/V31/V33: se aplican las mismas reglas a listados existentes. */
+.andarma-admin :is(.pv-actions,.crm-actions){display:flex!important;justify-content:flex-end!important;align-items:center!important;flex-wrap:wrap!important;gap:7px!important}
+.andarma-admin :is(.pv-actions,.crm-actions)>:is(a,button),
+.andarma-admin :is(.pv-btn-secondary,.crm-btn--table,.crm-btn--ghost,.crm-btn--soft){
+  box-sizing:border-box!important;height:var(--ad-btn-height)!important;min-height:var(--ad-btn-height)!important;
+  width:auto!important;padding:0 var(--ad-btn-padding)!important;display:inline-flex!important;
+  align-items:center!important;justify-content:center!important;gap:7px!important;
+  background:#fff!important;color:var(--ad-text)!important;border:1px solid var(--ad-border)!important;
+  border-radius:var(--ad-radius-sm)!important;box-shadow:none!important;
+  font-family:var(--ad-font)!important;font-size:12px!important;font-weight:650!important;
+  line-height:1!important;text-decoration:none!important;white-space:nowrap!important;
+}
+.andarma-admin :is(.pv-actions,.crm-actions)>:is(a,button):hover:not(:disabled),
+.andarma-admin :is(.pv-btn-secondary,.crm-btn--table,.crm-btn--ghost,.crm-btn--soft):hover:not(:disabled){background:var(--ad-primary-light)!important;border-color:#BCD9F8!important;color:var(--ad-primary)!important}
+.andarma-admin :is(.pv-actions,.crm-actions)>:is(a,button) svg{width:var(--ad-icon-size)!important;height:var(--ad-icon-size)!important}
+.andarma-admin :is(.pv-actions,.crm-actions)>:is(a,button) i{font-size:var(--ad-icon-size)!important}
+.andarma-admin :is(.pv-actions,.crm-actions)>:is(.pv-delete,.crm-action-delete):hover:not(:disabled){background:var(--ad-danger-bg)!important;color:var(--ad-danger)!important;border-color:#F0CDD2!important}
+.andarma-admin :is(.pv-btn-primary,.crm-btn--primary){min-height:38px!important;background:var(--ad-primary)!important;color:#fff!important;border:1px solid var(--ad-primary)!important;border-radius:var(--ad-radius-sm)!important;box-shadow:none!important;font-size:12px!important;font-weight:700!important}
+.andarma-admin :is(.pv-btn-primary,.crm-btn--primary):hover:not(:disabled){background:var(--ad-primary-hover)!important;border-color:var(--ad-primary-hover)!important;color:#fff!important}
+.andarma-admin :is(.pv-table,.crm-table) th{font-size:10px!important;letter-spacing:.1em!important;text-transform:uppercase!important;color:var(--ad-muted)!important}
+.andarma-admin :is(.pv-table,.crm-table) tbody tr:hover{background:#FAFCFF!important}
+.andarma-admin :is(.pv-panel,.crm-card){border-radius:var(--ad-radius-card)!important;border-color:var(--ad-border)!important;box-shadow:var(--ad-shadow)!important}
+.andarma-admin :is(.pv-dialog,.crm-modal){border-radius:var(--ad-modal-radius)!important}
+/* SweetAlert2 se renderiza fuera del layout: clase global controlada desde JS. */
+.andarma-swal{font-family:'DM Sans','Manrope',system-ui,sans-serif!important;border-radius:20px!important;padding:24px!important;border:1px solid #DDE7F1!important;box-shadow:0 22px 65px rgba(12,33,57,.2)!important}
+.andarma-swal__title{font-size:23px!important;font-weight:750!important;letter-spacing:-.025em!important;color:#17324E!important}
+.andarma-swal__text{font-size:13px!important;color:#60778E!important;line-height:1.6!important}
+.andarma-swal__actions{display:flex!important;gap:9px!important}
+.andarma-swal__confirm,.andarma-swal__cancel{height:36px!important;min-width:105px!important;padding:0 13px!important;border-radius:9px!important;font-size:12px!important;font-weight:700!important;box-shadow:none!important;border:1px solid #DDE7F1!important}
+.andarma-swal__confirm{color:#fff!important;background:#0066E0!important;border-color:#0066E0!important}
+.andarma-swal__confirm.is-danger{background:#BE4050!important;border-color:#BE4050!important}
+.andarma-swal__cancel{color:#35516C!important;background:#fff!important}
+@media(max-width:640px){.andarma-admin .ad-form-grid{grid-template-columns:1fr}.andarma-admin .ad-modal-backdrop{padding:8px}.andarma-admin .ad-modal{max-height:calc(100dvh - 16px)}.andarma-admin .ad-modal__body{padding:16px}.andarma-admin :is(.pv-actions,.crm-actions){justify-content:flex-start!important}}

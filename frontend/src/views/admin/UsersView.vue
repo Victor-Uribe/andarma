@@ -1,0 +1,8 @@
+<script setup>
+import {ref,onMounted} from 'vue'
+import {api} from '../../services/api'
+import {Users,ShieldCheck,AlertCircle,RefreshCw} from 'lucide-vue-next'
+const rows=ref([]),enabled=ref(false),error=ref('')
+async function load(){error.value='';try{const r=await api('/admin/users');rows.value=Array.isArray(r.data)?r.data:r.data?.data||[];enabled.value=true}catch(e){enabled.value=false;if(e.status!==404)error.value=e.message}}
+onMounted(load)
+</script><template><section class="v28-heading"><div><span class="admin-kicker">ADMINISTRACIÓN / SEGURIDAD</span><h1>Usuarios</h1><p>Cuentas del panel y perfiles de acceso.</p></div><button class="admin-outline" @click="load"><RefreshCw :size="16"/> Actualizar</button></section><div v-if="error" class="admin-alert error"><AlertCircle :size="17"/>{{error}}</div><section class="v28-panel"><div class="v28-panel-head"><h2><Users :size="19"/> Usuarios del sistema</h2></div><div v-if="!enabled" class="v28-pending"><ShieldCheck :size="31"/><h3>Administración protegida</h3><p>La API actual solo ofrece el usuario autenticado. Crear, editar, desactivar cuentas y asignar roles necesita rutas privadas con verificación de permisos; no se habilitan acciones visuales que parezcan guardar sin hacerlo.</p></div><div v-else class="admin-table-wrap"><table class="admin-table"><thead><tr><th>NOMBRE</th><th>CORREO</th><th>PERFIL</th></tr></thead><tbody><tr v-for="u in rows" :key="u.id"><td>{{u.name}}</td><td>{{u.email}}</td><td>{{u.role?.name||u.role||'Sin rol asignado'}}</td></tr><tr v-if="!rows.length"><td colspan="3" class="admin-empty">Sin cuentas disponibles.</td></tr></tbody></table></div></section></template>

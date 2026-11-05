@@ -1,0 +1,9 @@
+<script setup>
+import {ref,onMounted,computed} from 'vue'
+import {api} from '../../services/api'
+import {Image as ImageIcon,Search,ShieldCheck} from 'lucide-vue-next'
+const items=ref([]),error=ref(''),query=ref(''),loading=ref(true)
+const filtered=computed(()=>items.value.filter(x=>(x.original_name||'').toLowerCase().includes(query.value.toLowerCase())))
+onMounted(async()=>{try{items.value=(await api('/admin/media')).data||[]}catch(e){error.value=e.message}finally{loading.value=false}})
+</script>
+<template><div class="admin-page-head"><div><span class="admin-kicker">CONTROL DE ALMACENAMIENTO</span><h1>Recursos utilizados<span class="heading-dot">.</span></h1><p>Consulta archivos existentes. Las cargas nuevas se realizan únicamente desde el módulo que necesita la imagen.</p></div></div><div class="ad-form-guidance"><ShieldCheck :size="20"/><span>La carga libre está deshabilitada en el frontend. Banners, desarrollos y testimonios permiten recortar y optimizar antes de subir. Para bloquear cargas directas a la API, se necesita aplicar límites también en Laravel.</span></div><p v-if="error" class="admin-alert error">{{error}}</p><div class="admin-panel admin-library"><label class="admin-search"><Search :size="17"/><input v-model="query" placeholder="Buscar recursos existentes"/></label><p v-if="loading">Cargando recursos…</p><div v-else-if="filtered.length" class="admin-media-grid"><article v-for="item in filtered" :key="item.id" class="admin-media-card"><div class="admin-media-thumb"><img v-if="(item.mime_type||'').startsWith('image/')" :src="item.url" :alt="item.original_name" loading="lazy"/><div v-else class="ad-file-unsupported"><ImageIcon :size="22"/>Archivo registrado</div></div><p>{{item.original_name}}</p><small>{{(item.size/1024).toFixed(0)}} KB · Solo lectura</small></article></div><div v-else class="admin-library-empty">No hay archivos registrados.</div></div></template>

@@ -1,0 +1,58 @@
+# ==========================================
+# ANDARMA - BACKEND LARAVEL
+# ==========================================
+
+# Variables de entorno y credenciales
+.env
+.env.*
+!.env.example
+/auth.json
+
+# Dependencias
+/vendor/
+/node_modules/
+
+# Caché y archivos temporales
+/.phpunit.cache/
+/.phpunit.result.cache
+/.phpunit-watcher.yml
+/public/hot
+/public/build
+/public/storage
+/storage/*.key
+/img/*
+
+# Archivos cargados por usuarios
+/storage/app/public/*
+!/storage/app/public/.gitignore
+
+# Archivos privados generados
+/storage/app/private/*
+!/storage/app/private/.gitignore
+
+# Caché, sesiones y logs
+/storage/framework/cache/data/*
+!/storage/framework/cache/data/.gitignore
+/storage/framework/sessions/*
+!/storage/framework/sessions/.gitignore
+/storage/framework/testing/*
+!/storage/framework/testing/.gitignore
+/storage/framework/views/*
+!/storage/framework/views/.gitignore
+/storage/logs/*
+!/storage/logs/.gitignore
+
+# Bases locales y respaldos
+/database/*.sqlite
+/database/*.sqlite-*
+*.sql.gz
+*.bak
+*.backup
+
+# Sistema operativo y editores
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+frontend/node_modules/
+backend/vendor/

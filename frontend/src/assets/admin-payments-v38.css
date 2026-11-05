@@ -1,0 +1,62 @@
+/* ANDARMA V38 — Estilos complementarios de Pagos.
+   Reutiliza ad-btn, ad-card, ad-table, ad-modal, ad-input y ad-badge del sistema de diseño V34.
+   No altera el sitio público. */
+.andarma-payments{color:var(--ad-ink,#17324e);font-family:var(--ad-font,'DM Sans',sans-serif)}
+.andarma-payments .ad-pay-kicker{color:var(--ad-primary,#0066e0);font-size:10px;font-weight:800;letter-spacing:.14em}
+.andarma-payments .ad-pay-muted{color:var(--ad-muted,#72879c);font-size:12px;line-height:1.55}
+.andarma-payments .ad-pay-error{display:flex;align-items:center;gap:9px;padding:13px 15px;background:#fff0f1;border:1px solid #eccacf;border-radius:12px;color:#a33748;font-size:12px}
+.andarma-payments .ad-pay-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}
+.andarma-payments .ad-pay-kpi{display:grid;gap:8px;padding:19px;min-width:0}
+.andarma-payments .ad-pay-kpi .ad-pay-icon{height:37px;width:37px;border:1px solid #d9e9f8;border-radius:11px;display:grid;place-items:center;color:#0066e0;background:#eef7ff;font-size:15px}
+.andarma-payments .ad-pay-kpi span{font-size:12px;color:#768ba0}
+.andarma-payments .ad-pay-kpi strong{font-size:25px;line-height:1.1;letter-spacing:-.035em;color:#17324e;overflow-wrap:anywhere}
+.andarma-payments .ad-pay-segments{display:inline-flex;align-items:center;padding:3px;gap:3px;background:#eff5fb;border-radius:10px}
+.andarma-payments .ad-pay-segments button{border:none;background:transparent;color:#58718a;padding:10px 13px;border-radius:8px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.andarma-payments .ad-pay-segments button.active{background:#fff;color:#0066e0;box-shadow:0 1px 5px rgba(21,51,80,.12)}
+.andarma-payments .ad-pay-search{min-width:min(270px,100%);flex:1}
+.andarma-payments .ad-pay-filters label{font-size:11px}
+.andarma-payments .ad-pay-filters input,.andarma-payments .ad-pay-filters select{min-height:39px}
+.andarma-payments .ad-pay-table{min-width:1000px}
+.andarma-payments .ad-pay-table strong{color:#24435f;font-size:12px}
+.andarma-payments .ad-pay-empty{text-align:center;color:#7890a8;padding:55px 12px!important;font-size:13px}
+.andarma-payments .ad-pay-empty i{font-size:24px;display:block;margin-bottom:9px}
+.andarma-payments .ad-pay-modal{width:min(770px,100%)}
+.andarma-payments .ad-pay-modal--wide{width:min(1120px,100%)}
+.andarma-payments .ad-pay-modal-title{font-weight:800;letter-spacing:-.04em;color:#142f4a;font-size:23px;margin:5px 0}
+.andarma-payments .ad-pay-property{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 16px;border:1px solid #dfe9f2;border-radius:13px;background:#f8fbfe}
+.andarma-payments .ad-pay-property h3{margin:3px 0;color:#183751;font-size:16px;font-weight:800}
+.andarma-payments .ad-pay-property p{margin:0;color:#6e849b;font-size:12px}
+.andarma-payments .ad-pay-summarygrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.andarma-payments .ad-pay-summarygrid article{background:#fff;border:1px solid #dfe9f2;border-radius:12px;padding:15px 13px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.andarma-payments .ad-pay-summarygrid article span{font-size:11px;color:#6e849b}
+.andarma-payments .ad-pay-summarygrid article strong{font-size:19px;font-weight:800;color:#142e48;letter-spacing:-.04em;overflow-wrap:anywhere}
+.andarma-payments .ad-pay-summarygrid article small{font-size:10px;color:#7c91a5}
+.andarma-payments .ad-pay-summarygrid .is-late{border-color:#ecc6ce;background:#fff7f8}
+.andarma-payments .ad-pay-summarygrid .is-late strong{color:#b53e4d}
+.andarma-payments .ad-pay-meta{display:flex;flex-wrap:wrap;gap:10px;font-size:11px;color:#5c7187}
+.andarma-payments .ad-pay-meta span{background:#f5f9fd;padding:7px 10px;border-radius:9px}
+.andarma-payments .ad-pay-two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.andarma-payments .ad-pay-two-col section{border:1px solid #e0e9f2;background:#fff;border-radius:13px;padding:15px;min-width:0}
+.andarma-payments .ad-pay-section-title{font-size:13px;font-weight:800;color:#183b56;margin:0 0 10px}
+.andarma-payments .ad-pay-scroll{max-height:290px;overflow-y:auto;padding-right:5px}
+.andarma-payments .ad-pay-period{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid #eff2f6;font-size:12px}
+.andarma-payments .ad-pay-period strong{font-weight:700;color:#26455e}
+.andarma-payments .ad-pay-period small{font-size:10px;color:#7f91a2;display:block;margin-top:3px}
+.andarma-payments .ad-pay-period .ad-pay-red{color:#bc4054}
+.andarma-payments .ad-pay-warning{display:flex;align-items:center;gap:8px;background:#f1f7ff;border:1px solid #d6e5f9;padding:10px 12px;border-radius:9px;color:#345c85;font-size:12px;line-height:1.55}
+.andarma-payments .ad-pay-empty-plan{display:grid;place-items:center;gap:11px;text-align:center;padding:38px 24px;border:1px dashed #cedfec;border-radius:13px;background:#f8fbfe}
+.andarma-payments .ad-pay-empty-plan i{font-size:30px;color:#2675b7}
+.andarma-payments .ad-pay-empty-plan h3{font-size:17px;font-weight:800;color:#193850}
+.andarma-payments .ad-pay-empty-plan p{font-size:12px;color:#6a8198;max-width:460px}
+.andarma-payments .ad-pay-picker-list{max-height:440px;overflow-y:auto;display:grid;gap:7px}
+.andarma-payments .ad-pay-picker-item{width:100%;display:flex;align-items:center;justify-content:space-between;text-align:left;gap:12px;border:1px solid #e0eaf3;background:#fff;border-radius:11px;padding:13px 14px;cursor:pointer;color:#31506b;font:inherit}
+.andarma-payments .ad-pay-picker-item:hover{background:#f4f9ff;border-color:#bdd7f3}
+.andarma-payments .ad-pay-picker-item strong{display:block;font-size:12px;color:#173a56}
+.andarma-payments .ad-pay-picker-item small{display:block;font-size:11px;color:#72869d;margin-top:4px}
+.andarma-payments .ad-pay-picker-item>span{min-width:0}
+.andarma-payments .ad-pay-picker-item>.flex{flex-shrink:0}
+@media(max-width:1000px){.andarma-payments .ad-pay-summarygrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:690px){.andarma-payments .ad-pay-kpis{grid-template-columns:1fr}.andarma-payments .ad-pay-summarygrid,.andarma-payments .ad-pay-two-col{grid-template-columns:1fr}.andarma-payments .ad-pay-property{flex-direction:column;align-items:flex-start}.andarma-payments .ad-pay-modal{max-height:calc(100dvh - 16px)}.andarma-payments .ad-pay-filters>label{flex:1 1 150px}.andarma-payments .ad-pay-segments{width:100%;justify-content:space-between}.andarma-payments .ad-pay-segments button{flex:1}.andarma-payments .ad-pay-modal-title{font-size:19px}}
+
+/* Mantener SweetAlert por encima de los modales de cobranza. */
+.swal2-container{z-index:3000!important}
