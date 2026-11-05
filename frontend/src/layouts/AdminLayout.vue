@@ -1,13 +1,16 @@
 <script setup>
-import { ref, onMounted, watch, computed } from 'vue'
+import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { api, post, setToken } from '../services/api'
 import {access,can,setAccess,clearAccess} from '../utils/andarmaPermissions'
+import '../assets/admin-consulta-fase5.css'
+// ANDARMA_FASE5_CONSULTA
 import { LayoutDashboard, PanelsTopLeft, Image as ImageIcon, MapPinned, Grid2X2, MessageSquareQuote, UsersRound, Images, WalletCards, Settings2, LogOut, Menu, X, ExternalLink, ChevronRight, ShieldCheck, Search, PanelLeftClose, UserCircle2 } from 'lucide-vue-next'
 // ANDARMA_V36_NAV
 const sections=[
  {label:'Inicio',items:[{label:'Dashboard',permission:'dashboard.view',url:'/admin/dashboard',icon:'fa-solid fa-gauge-high'}]},
  {label:'Gestión inmobiliaria',items:[
+   {label:'Consulta rápida',permission:'clients.view',url:'/admin/consulta',icon:'fa-solid fa-magnifying-glass'},
    {label:'Desarrollos',permission:'developments.view',url:'/admin/desarrollos',icon:'fa-solid fa-building'},
    {label:'Propiedades',permission:'properties.view',url:'/admin/propiedades',icon:'fa-solid fa-layer-group'},
    {label:'Mapas',permission:'maps.view',url:'/admin/mapas',icon:'fa-solid fa-map'},
@@ -26,6 +29,23 @@ const sections=[
  ]}
 ]
 const router=useRouter(),route=useRoute(),user=ref(null),open=ref(false),loggingOut=ref(false)
+const quickSearch=ref('')
+const canQuickSearch=computed(()=>can('clients.view'))
+function goQuickSearch(){
+  if(!canQuickSearch.value)return
+  const q=quickSearch.value.trim()
+  router.push({path:'/admin/consulta',query:q?{q}:{}})
+  open.value=false
+}
+function handleQuickShortcut(event){
+  if(event.key!=='/' || event.ctrlKey || event.metaKey || event.altKey || !canQuickSearch.value)return
+  const el=event.target
+  if(el?.isContentEditable || ['INPUT','TEXTAREA','SELECT'].includes(el?.tagName))return
+  event.preventDefault()
+  document.getElementById('andarma-top-search')?.focus()
+}
+onMounted(()=>window.addEventListener('keydown',handleQuickShortcut))
+onUnmounted(()=>window.removeEventListener('keydown',handleQuickShortcut))
 const visibleSections=computed(()=>sections.map(s=>({...s,items:s.items.filter(item=>can(item.permission))})).filter(s=>s.items.length))
 const active=computed(()=>sections.flatMap(x=>x.items).find(x=>x.url===route.path||(x.url==='/admin/mapas'&&route.path.startsWith('/admin/mapas/')))?.label||'Administración')
 watch(()=>route.fullPath,()=>{open.value=false})
@@ -40,6 +60,8 @@ async function logout(){if(loggingOut.value)return;loggingOut.value=true;try{awa
     <div class="admin-side-bottom"><a href="/" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> Abrir sitio público</a><button :disabled="loggingOut" @click="logout"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i> Cerrar sesión</button></div>
   </aside>
   <button v-if="open" class="admin-scrim" aria-label="Cerrar menú" @click="open=false"></button>
-  <div class="admin-main"><header class="admin-topbar"><div class="admin-top-start"><button class="admin-icon-btn admin-menu-btn" aria-label="Abrir menú" @click="open=!open"><i class="fa-solid fa-bars" aria-hidden="true"></i></button><div class="top-breadcrumb"><span>ANDARMA</span><i class="fa-solid fa-chevron-right" aria-hidden="true"></i><strong>{{active}}</strong></div></div><div class="admin-top-right"><span class="admin-live-tag"><span class="admin-status-dot"></span> Panel seguro</span><div class="admin-profile"><div class="admin-avatar">{{(user?.name||'A').slice(0,1).toUpperCase()}}</div><div class="admin-profile-label"><strong>{{user?.name||'Administrador'}}</strong><small>{{access.user?.role?.name||'Administrador'}}</small></div></div></div></header><main id="admin-content" class="admin-workspace"><RouterView/></main><footer class="admin-footer"><span>© 2026 ANDARMA · Plataforma administrativa</span><span>Diseñado para administrar con claridad</span></footer></div>
+  <div class="admin-main"><header class="admin-topbar"><div class="admin-top-start"><button class="admin-icon-btn admin-menu-btn" aria-label="Abrir menú" @click="open=!open"><i class="fa-solid fa-bars" aria-hidden="true"></i></button><div class="top-breadcrumb"><span>ANDARMA</span><i class="fa-solid fa-chevron-right" aria-hidden="true"></i><strong>{{active}}</strong></div></div><div class="admin-top-right"><form v-if="canQuickSearch" class="ad-f5-quick-search" role="search" @submit.prevent="goQuickSearch"><label class="ad-f5-sr-only" for="andarma-top-search">Buscar comprador o terreno</label><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input id="andarma-top-search" v-model="quickSearch" type="search" maxlength="120" autocomplete="off" placeholder="Buscar nombre, teléfono o lote…"/><button type="submit" aria-label="Abrir consulta rápida">Buscar</button><kbd aria-hidden="true">/</kbd></form><span class="admin-live-tag"><span class="admin-status-dot"></span> Panel seguro</span><div class="admin-profile"><div class="admin-avatar">{{(user?.name||'A').slice(0,1).toUpperCase()}}</div><div class="admin-profile-label"><strong>{{user?.name||'Administrador'}}</strong><small>{{access.user?.role?.name||'Administrador'}}</small></div></div></div></header><main id="admin-content" class="admin-workspace"><RouterView/></main><footer class="admin-footer"><span>© 2026 ANDARMA · Plataforma administrativa</span><span>Diseñado para administrar con claridad</span></footer></div>
 </div>
 </template>
+
+

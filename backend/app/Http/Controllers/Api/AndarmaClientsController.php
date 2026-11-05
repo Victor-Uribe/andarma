@@ -20,12 +20,22 @@ class AndarmaClientsController extends Controller {
   $query=DB::table('andarma_clients as c')->select('c.*')
    ->selectSub(DB::table('andarma_lots')->selectRaw('count(*)')->whereColumn('client_id','c.id'),'properties_count')
    ->selectSub(DB::table('andarma_client_payments')->selectRaw('count(*)')->whereColumn('client_id','c.id')->where('status','applied'),'payments_count');
-  if($term!==''){$like='%'.str_replace(['%','_'],['\\%','\\_'],$term).'%';$query->where(function($q)use($like){$q->where('c.name','like',$like)->orWhere('c.phone','like',$like)->orWhere('c.email','like',$like);});}
+  if($term!==''){$like='%'.str_replace(['%','_'],['\\%','\\_'],$term).'%';$query->where(function($q)use($like){$q->where('c.name','like',$like)->orWhere('c.phone','like',$like)->orWhere('c.email','like',$like)
+       ->orWhereExists(function ($lots) use ($like) {
+         $lots->selectRaw('1')->from('andarma_lots as l')
+           ->join('andarma_developments as d', 'd.id', '=', 'l.development_id')
+           ->whereColumn('l.client_id', 'c.id')
+           ->where(function ($w) use ($like) {
+             $w->where('l.code', 'like', $like)
+               ->orWhere('l.block', 'like', $like)
+               ->orWhere('d.name', 'like', $like);
+           });
+       });});}
   return response()->json($query->orderByDesc('c.id')->paginate($perPage));
  }
  public function store(Request $request){$data=$this->validated($request);$id=DB::table('andarma_clients')->insertGetId([...$data,'created_at'=>now(),'updated_at'=>now()]);return response()->json(['data'=>DB::table('andarma_clients')->find($id)],201);}
  public function show(int $id){$c=DB::table('andarma_clients')->find($id);abort_unless($c,404);
-  $lots=DB::table('andarma_lots as l')->join('andarma_developments as d','d.id','=','l.development_id')->where('l.client_id',$id)->select('l.id','l.code','l.area_m2','l.price','l.status','l.development_id','d.name as development_name')->orderBy('l.id')->get();
+  $lots=DB::table('andarma_lots as l')->join('andarma_developments as d','d.id','=','l.development_id')->where('l.client_id',$id)->select('l.id','l.code','l.block','l.area_m2','l.price','l.status','l.development_id','d.name as development_name')->orderBy('l.id')->get();
   $payments=DB::table('andarma_client_payments')->where('client_id',$id)->orderByDesc('paid_at')->orderByDesc('id')->get();
   $total=DB::table('andarma_client_payments')->where('client_id',$id)->where('status','applied')->sum('amount');
   return response()->json(['data'=>$c,'properties'=>$lots,'payments'=>$payments,'paid_total'=>(float)$total,'payment_capture_enabled'=>false]);

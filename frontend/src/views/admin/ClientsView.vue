@@ -287,12 +287,12 @@ watch(()=>route.query.client,async id=>{
         <div>
           <span class="crm-eyebrow">Listado principal</span>
           <h2>Directorio de clientes</h2>
-          <p>Desde aquí puedes consultar, editar, convertir prospectos y eliminar solo expedientes sin relaciones activas.</p>
+          <p>Busca por comprador o terreno. Abre el expediente para consultar propiedades y pagos.</p>
         </div>
         <div class="crm-toolbar">
           <label class="crm-search">
             <Search :size="16"/>
-            <input v-model="q" type="search" placeholder="Buscar por nombre, correo o teléfono" />
+            <input v-model="q" type="search" placeholder="Nombre, teléfono, desarrollo, manzana o lote" />
           </label>
         </div>
       </div>
@@ -517,12 +517,15 @@ watch(()=>route.query.client,async id=>{
               <div v-if="detail.properties?.length" class="crm-linkedlist">
                 <article v-for="lot in detail.properties" :key="lot.id" class="crm-linkeditem">
                   <div>
-                    <strong>{{ lot.development_name }} · {{ lot.code }}</strong>
+                    <strong>{{ lot.development_name }} · {{ lot.block ? "Manzana "+lot.block+" · " : "" }}Lote {{ lot.code }}</strong>
                     <small>{{ safe(lot.area_m2,'—') }} m² · {{ money(lot.price) }}</small>
                   </div>
                   <div class="crm-linkeditem__actions">
                     <span class="crm-badge" :class="lot.status==='sold' ? 'is-danger' : 'is-warning'">{{ lot.status==='sold' ? 'Vendida' : 'Apartada' }}</span>
-                    <button v-can="'clients.edit'" class="crm-btn crm-btn--tiny" @click="releaseLot(lot)">Liberar</button>
+                    <button v-can="'payments.view'" type="button" class="crm-btn crm-btn--tiny" :aria-label="'Consultar cobranza del lote '+lot.code" @click="router.push({path:'/admin/pagos',query:{lot:String(lot.id)}})"><Wallet :size="14"/> Ver estado de cuenta</button>
+                     <!-- ANDARMA_CLIENTE_COBRO_F3 -->
+                     <button v-can="'payments.create'" type="button" class="crm-btn crm-btn--tiny" :aria-label="'Registrar pago para lote '+lot.code" @click="router.push({path:'/admin/pagos',query:{lot:String(lot.id),cobrar:'1'}})"><Wallet :size="14"/> Registrar pago</button>
+                     <button v-can="'clients.edit'" class="crm-btn crm-btn--tiny" @click="releaseLot(lot)">Liberar</button>
                   </div>
                 </article>
               </div>
@@ -554,7 +557,7 @@ watch(()=>route.query.client,async id=>{
               <div>
                 <span class="crm-eyebrow">Historial financiero</span>
                 <h2>Pagos relacionados</h2>
-                <p>En este módulo se consultan pagos asociados al expediente; la captura detallada sigue centralizada en el módulo de Pagos.</p>
+                <p>Consulta aquí el historial y abre el estado de cuenta de cualquier terreno para conocer saldo, mensualidades y vencimientos.</p>
               </div>
               <strong class="crm-totalpill">{{ money(detail.paid_total) }}</strong>
             </div>
@@ -691,4 +694,49 @@ watch(()=>route.query.client,async id=>{
 .crm-totalpill{background:#eff8ff;color:#0b6da8;border:1px solid #d7e8fb}
 @media (max-width:1100px){.crm-detailgrid{grid-template-columns:1fr}.crm-detailhero{flex-direction:column;align-items:flex-start}.crm-detailhero__stats{min-width:0;width:100%}}
 @media (max-width:860px){.crm-page__header,.crm-card__head,.crm-pagination,.crm-modal__header{flex-direction:column;align-items:flex-start}.crm-stats{grid-template-columns:1fr}.crm-search{min-width:0;width:100%}.crm-formgrid,.crm-previewcard,.crm-infogrid,.crm-assignbox{grid-template-columns:1fr}.crm-modal,.crm-modal--wide,.crm-modal--xl{width:100%;max-height:96vh}.crm-modalbackdrop{padding:10px}.crm-modal__header,.crm-modal__body,.crm-modal__footer{padding-left:18px;padding-right:18px}.crm-header__actions,.crm-actions,.crm-detailhero__meta{flex-wrap:wrap}.crm-detailhero__stats{grid-template-columns:1fr}.crm-table{min-width:740px}}
+</style>
+
+<style>
+/* ANDARMA_FASE6_UI_UX · Expediente del cliente */
+.crm-modal.crm-modal--xl{width:min(1240px,calc(100vw - 40px));max-width:1240px}
+.crm-modal--xl .crm-modal__header{gap:18px;align-items:flex-start}
+.crm-modal--xl .crm-header__actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:10px}
+.crm-modal--xl .crm-modal__body{padding:22px 28px 28px}
+.crm-detailhero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:center;padding:18px;border-radius:22px}
+.crm-detailhero__main{min-width:0}
+.crm-detailhero__main h3{font-size:19px;line-height:1.2;margin:0 0 8px}
+.crm-detailhero__meta{display:flex;flex-wrap:wrap;gap:14px 18px;align-items:center}
+.crm-detailhero__meta>*{display:inline-flex;align-items:center;gap:6px;min-width:0}
+.crm-detailhero__stats{display:grid;grid-template-columns:repeat(3,minmax(116px,1fr));gap:12px}
+.crm-detailhero__stats>div{min-height:86px;padding:14px 16px;border-radius:18px;display:flex;flex-direction:column;justify-content:center}
+.crm-detailgrid{display:grid;grid-template-columns:minmax(340px,1.02fr) minmax(420px,1.28fr);gap:18px;align-items:start}
+.crm-infogrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.crm-infogrid>div,.crm-notes{border-radius:18px;padding:16px 16px 14px}
+.crm-card--inner .crm-card__head{margin-bottom:14px}
+.crm-linkedlist{display:flex;flex-direction:column;gap:14px}
+.crm-linkeditem{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:center;padding:18px;border-radius:20px}
+.crm-linkeditem>div:first-child{min-width:0}
+.crm-linkeditem strong{display:block;font-size:18px;line-height:1.25;color:#17324E;white-space:normal;word-break:normal;overflow-wrap:anywhere}
+.crm-linkeditem small{display:block;margin-top:7px;font-size:13px;line-height:1.55;color:#6d84a0}
+.crm-linkeditem__actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:10px;align-items:center;min-width:340px}
+.crm-linkeditem__actions .crm-btn,.crm-linkeditem__actions .crm-badge{white-space:nowrap}
+.crm-assignbox{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(180px,.9fr) auto;gap:14px;align-items:end;margin-top:18px;padding-top:16px;border-top:1px solid #e6eef6}
+.crm-assignbox .crm-btn{height:48px;white-space:nowrap;padding-inline:20px}
+.crm-totalpill{display:inline-flex;align-items:center;justify-content:center;min-width:120px;padding:12px 16px;border-radius:16px}
+@media (max-width: 1180px){
+  .crm-detailgrid{grid-template-columns:1fr}
+  .crm-linkeditem{grid-template-columns:1fr}
+  .crm-linkeditem__actions{min-width:0;justify-content:flex-start}
+  .crm-assignbox{grid-template-columns:1fr 1fr}
+  .crm-assignbox .crm-btn{grid-column:1/-1}
+}
+@media (max-width: 760px){
+  .crm-modal.crm-modal--xl{width:min(100vw - 16px,1240px)}
+  .crm-modal--xl .crm-modal__body{padding:18px}
+  .crm-detailhero{grid-template-columns:1fr}
+  .crm-detailhero__stats{grid-template-columns:1fr}
+  .crm-infogrid{grid-template-columns:1fr}
+  .crm-assignbox{grid-template-columns:1fr}
+  .crm-detailhero__meta{gap:10px 12px}
+}
 </style>

@@ -3,6 +3,7 @@ import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { api, post, put, remove } from '../../services/api'
 import { confirmAction, notifyError, notifySuccess } from '../../utils/adminAlerts'
 import { useRouter } from 'vue-router'
+import {can} from '../../utils/andarmaPermissions'
 import { UserRoundPlus, Search, RefreshCw, Plus, X, Phone, MessageCircle, Pencil, Trash2, ChevronLeft, ChevronRight, AlertCircle, CheckCircle2, UsersRound, UserCheck, Clock3, Check, ChevronDown, ClipboardList, ArrowRight, ShieldAlert } from 'lucide-vue-next'
 
 const router = useRouter()
@@ -53,6 +54,27 @@ function waUrl(phone) {const digits=String(phone || '').replace(/\D/g,'');return
 function developmentName(id) {return developments.value.find(d=>String(d.id)===String(id))?.name || (id ? `Desarrollo #${id}` : 'Sin asignar')}
 function converted(row){return Number(row?.converted_client_id||0)>0}
 function openConverted(row){if(!converted(row))return;router.push({path:'/admin/clientes',query:{client:row.converted_client_id}})}
+async function convertToClient(row){
+  if(converted(row)){openConverted(row);return}
+  if(!can('clients.create') || !can('prospects.edit'))return
+  if(!row.phone){notifyError('Falta teléfono','Agrega el teléfono al prospecto antes de convertirlo.');return}
+  if(saving.value)return
+  const confirmed=await confirmAction({
+    title:'Convertir prospecto en cliente',
+    text:`Se creará el expediente de ${row.name}, conservando sus datos de contacto. Después podrás asignarle un terreno.`,
+    confirmText:'Sí, convertir'
+  })
+  if(!confirmed)return
+  saving.value=true
+  try{
+    const response=await post(`/admin/leads/${row.id}/convert`,{})
+    const id=response?.data?.id
+    if(!id)throw new Error('La conversión no devolvió el identificador del cliente.')
+    notifySuccess(response.already_converted?'Cliente encontrado':'Prospecto convertido en cliente')
+    router.push({path:'/admin/clientes',query:{client:String(id)}})
+  }catch(e){notifyError('No se pudo convertir el prospecto',e.message||'Revisa los datos.')}finally{saving.value=false}
+}
+
 async function load() {
   loading.value = true;error.value = ''
   try {
@@ -145,7 +167,7 @@ onUnmounted(()=>window.removeEventListener('keydown',onKey))
     <section class="pv-panel">
       <div class="pv-panel-title"><div><h2>Seguimiento comercial</h2><p>Consulta, contacta o actualiza el estado de cada interesado.</p></div><span class="pv-counter">{{filtered.length}} registros</span></div>
       <div class="pv-toolbar"><label class="pv-search"><Search :size="18"/><input v-model="query" type="search" placeholder="Buscar por nombre, teléfono o correo" aria-label="Buscar prospectos"/></label><select v-model="statusFilter" aria-label="Filtrar por estado"><option value="all">Todos los estados</option><option v-for="s in statuses" :key="s.value" :value="s.value">{{s.label}}</option></select><button class="pv-btn pv-btn-secondary" :disabled="loading" @click="load"><RefreshCw :size="16"/> Actualizar</button></div>
-      <div class="pv-table-wrapper"><table class="pv-table"><thead><tr><th>PROSPECTO</th><th>INTERÉS</th><th>SEGUIMIENTO</th><th>REGISTRO</th><th class="pv-actions-header">ACCIONES</th></tr></thead><tbody><tr v-for="row in paged" :key="row.id"><td><div class="pv-person"><span class="pv-avatar">{{initials(row.name)}}</span><div><strong>{{row.name}}</strong><small>{{row.phone||'Sin teléfono'}}<template v-if="row.email"> · {{row.email}}</template></small><span v-if="converted(row)" class="pv-converted">✓ Convertido a cliente #{{row.converted_client_id}}</span></div></div></td><td><span class="pv-interest">{{developmentName(row.development_id)}}</span></td><td><select class="pv-status" :disabled="converted(row)" :class="`pv-status-${statusClass(row.status)}`" :value="row.status" :aria-label="`Estado de ${row.name}`" @change="updateStatus(row,$event.target.value)"><option v-for="s in statuses" :key="s.value" :value="s.value">{{s.label}}</option></select></td><td class="pv-date">{{displayDate(row.created_at)}}</td><td><div class="pv-actions"><a v-if="waUrl(row.phone)" class="pv-whatsapp" :href="waUrl(row.phone)" target="_blank" rel="noopener noreferrer" :aria-label="`Contactar a ${row.name} por WhatsApp`"><MessageCircle :size="16"/><span>WhatsApp</span></a><button v-if="converted(row)" type="button" class="pv-converted-link" @click="openConverted(row)">Ver cliente</button><button v-can="'prospects.edit'" v-else type="button" class="pv-icon-btn" :aria-label="`Editar a ${row.name}`" title="Editar" @click="openEdit(row)"><Pencil :size="16"/></button><button v-can="'prospects.delete'" type="button" class="pv-icon-btn pv-delete" :disabled="converted(row)" :title="converted(row) ? 'No se puede eliminar: convertido a cliente' : 'Eliminar prospecto'" :aria-label="`Eliminar a ${row.name}`" @click="confirmDelete(row)"><Trash2 :size="16"/></button></div></td></tr><tr v-if="!paged.length"><td colspan="5"><div class="pv-empty"><UsersRound :size="30"/><strong>{{loading?'Cargando prospectos…':'No hay prospectos para mostrar'}}</strong><p>{{query||statusFilter!=='all'?'Prueba con otros filtros.':'Registra al primer interesado para comenzar el seguimiento.'}}</p><button v-can="'prospects.create'" v-if="!loading&&!query&&statusFilter==='all'" class="pv-btn pv-btn-primary" @click="openNew"><Plus :size="16"/> Agregar prospecto</button></div></td></tr></tbody></table></div>
+      <div class="pv-table-wrapper"><table class="pv-table"><thead><tr><th>PROSPECTO</th><th>INTERÉS</th><th>SEGUIMIENTO</th><th>REGISTRO</th><th class="pv-actions-header">ACCIONES</th></tr></thead><tbody><tr v-for="row in paged" :key="row.id"><td><div class="pv-person"><span class="pv-avatar">{{initials(row.name)}}</span><div><strong>{{row.name}}</strong><small>{{row.phone||'Sin teléfono'}}<template v-if="row.email"> · {{row.email}}</template></small><span v-if="converted(row)" class="pv-converted">✓ Convertido a cliente #{{row.converted_client_id}}</span></div></div></td><td><span class="pv-interest">{{developmentName(row.development_id)}}</span></td><td><select class="pv-status" :disabled="converted(row)" :class="`pv-status-${statusClass(row.status)}`" :value="row.status" :aria-label="`Estado de ${row.name}`" @change="updateStatus(row,$event.target.value)"><option v-for="s in statuses" :key="s.value" :value="s.value">{{s.label}}</option></select></td><td class="pv-date">{{displayDate(row.created_at)}}</td><td><div class="pv-actions"><a v-if="waUrl(row.phone)" class="pv-whatsapp" :href="waUrl(row.phone)" target="_blank" rel="noopener noreferrer" :aria-label="`Contactar a ${row.name} por WhatsApp`"><MessageCircle :size="16"/><span>WhatsApp</span></a><button v-if="converted(row)" type="button" class="pv-converted-link" @click="openConverted(row)">Ver cliente</button><button v-if="!converted(row) && can('clients.create') && can('prospects.edit')" type="button" class="pv-converted-link" :disabled="saving" :aria-label="'Convertir en cliente a '+row.name" @click="convertToClient(row)">Convertir en cliente</button><button v-can="'prospects.edit'" v-else type="button" class="pv-icon-btn" :aria-label="`Editar a ${row.name}`" title="Editar" @click="openEdit(row)"><Pencil :size="16"/></button><button v-can="'prospects.delete'" type="button" class="pv-icon-btn pv-delete" :disabled="converted(row)" :title="converted(row) ? 'No se puede eliminar: convertido a cliente' : 'Eliminar prospecto'" :aria-label="`Eliminar a ${row.name}`" @click="confirmDelete(row)"><Trash2 :size="16"/></button></div></td></tr><tr v-if="!paged.length"><td colspan="5"><div class="pv-empty"><UsersRound :size="30"/><strong>{{loading?'Cargando prospectos…':'No hay prospectos para mostrar'}}</strong><p>{{query||statusFilter!=='all'?'Prueba con otros filtros.':'Registra al primer interesado para comenzar el seguimiento.'}}</p><button v-can="'prospects.create'" v-if="!loading&&!query&&statusFilter==='all'" class="pv-btn pv-btn-primary" @click="openNew"><Plus :size="16"/> Agregar prospecto</button></div></td></tr></tbody></table></div>
       <div v-if="filtered.length>perPage" class="pv-pagination"><span>Mostrando {{(page-1)*perPage+1}}–{{Math.min(page*perPage,filtered.length)}} de {{filtered.length}}</span><div><button :disabled="page===1" aria-label="Página anterior" @click="page--"><ChevronLeft :size="18"/></button><span>{{page}} / {{pageCount}}</span><button :disabled="page===pageCount" aria-label="Página siguiente" @click="page++"><ChevronRight :size="18"/></button></div></div>
     </section>
 

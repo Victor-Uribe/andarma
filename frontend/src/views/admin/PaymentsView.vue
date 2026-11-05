@@ -4,9 +4,12 @@ import { mxnMask, decimalMask } from '../../config/numberMasks'
 const vMoney3 = Money3Directive
 import {computed, onMounted, ref, watch} from 'vue'
 import {useRoute} from 'vue-router'
+import {can} from '../../utils/andarmaPermissions'
 import Swal from 'sweetalert2'
 import {api, post, put} from '../../services/api'
 import '../../assets/admin-payments-v38.css'
+import '../../assets/admin-cobranza-fase3.css'
+// ANDARMA_COBRANZA_CLARA_F3
 
 const route = useRoute()
 // ANDARMA_V39_MONEY_NORMALIZATION
@@ -51,6 +54,23 @@ const periods = computed(() => detail.value?.periods || [])
 const unpaid = computed(() => periods.value.filter(p => Number(p.pending) > 0))
 const selectedPeriod = computed(() => periods.value.find(p => p.period === receipt.value.applied_period))
 const periodOptions = computed(() => unpaid.value)
+// Resumen para operaciones cotidianas. Las cantidades vienen del mismo endpoint de
+// cobranza; NO se calculan ni modifican saldos financieros en el navegador.
+const overdueBalance = computed(() => Number(detail.value?.summary?.overdue_amount || 0))
+const pendingBalance = computed(() => Number(detail.value?.summary?.total_balance || 0))
+const nextPeriod = computed(() => unpaid.value.find(p => !p.is_overdue) || null)
+const paidMonths = computed(() => periods.value.filter(p => p.status === 'paid').length)
+const pendingMonths = computed(() => unpaid.value.length)
+const needsReconciliation = computed(() => Number(detail.value?.summary?.unallocated_monthly_amount || 0) > 0)
+const receiptPreview = computed(() => ({
+  client: detail.value?.lot?.client_name || '—',
+  lot: [detail.value?.lot?.development_name,detail.value?.lot?.block,detail.value?.lot?.code].filter(Boolean).join(' · '),
+  period: receipt.value.payment_type === 'monthly' ? (receipt.value.applied_period ? labelPeriod(receipt.value.applied_period) : 'Sin periodo') : 'Enganche',
+  amount: amountForApi(receipt.value.amount),
+  date: formatDate(receipt.value.paid_at),
+  method: methods[receipt.value.payment_method] || receipt.value.payment_method || '—'
+}))
+
 const methods = {cash:'Efectivo',transfer:'Transferencia',deposit:'Depósito',card:'Tarjeta',other:'Otro'}
 const types = {monthly:'Mensualidad',down_payment:'Enganche'}
 const statuses = {applied:'Aplicado',cancelled:'Cancelado'}
@@ -169,7 +189,7 @@ async function saveReceipt(){
  const numericAmount = amountForApi(receipt.value.amount)
  if(numericAmount === null || numericAmount <= 0){await notice('Captura el importe','El pago debe ser un importe válido mayor que cero.','warning');return}
  if(receipt.value.payment_type==='monthly'&&!receipt.value.applied_period){await notice('Selecciona un periodo','Elige la mensualidad a la que se aplicará el cobro.','warning');return}
- const ok=await confirmDialog('Confirmar registro de pago',`Se registrarán ${money(receipt.value.amount)} para ${detail.value.lot.client_name}. Verifica la fecha y el periodo antes de confirmar.`,'Registrar pago')
+ const ok=await confirmDialog('Confirmar registro de pago',`Comprador: ${receiptPreview.value.client} · Terreno: ${receiptPreview.value.lot} · Concepto: ${receiptPreview.value.period} · Importe: ${money(receiptPreview.value.amount)} · Fecha: ${receiptPreview.value.date} · Método: ${receiptPreview.value.method}. Confirma que los datos correspondan al comprobante.`, 'Confirmar y registrar')
  if(!ok)return
  busy.value=true
  try{
@@ -202,7 +222,10 @@ function openFromList(row){if(row.lot_id)openSummary(row.lot_id);else{selectedMo
 
 onMounted(async()=>{
   await Promise.all([load(),findLots()])
-  if(route.query.lot && /^\d+$/.test(String(route.query.lot))) await openSummary(route.query.lot)
+  if(route.query.lot && /^\d+$/.test(String(route.query.lot))){
+    await openSummary(route.query.lot)
+    if(String(route.query.cobrar||'')==='1' && detail.value?.plan && can('payments.create'))openReceipt()
+  }
 })
 </script>
 
@@ -300,8 +323,15 @@ onMounted(async()=>{
               <span v-if="paymentTrafficLight.tone==='yellow'">1 a 3 mensualidades vencidas</span>
               <span v-else-if="paymentTrafficLight.tone==='red'">4 o más mensualidades vencidas</span>
             </div>
-            <div class="ad-pay-summarygrid">
-              <article><span>Mensualidad</span><strong>{{money(detail.summary.monthly_payment)}}</strong><small>Día {{detail.plan.payment_due_day}} de cada mes</small></article>
+            <div class="ad-pay-f3-balance" aria-label="Estado de cuenta resumido">
+               <article><span>Saldo total por pagar</span><strong>{{money(pendingBalance)}}</strong><small>Saldo restante de la compra, no necesariamente vencido.</small></article>
+               <article :class="{'is-overdue':overdueBalance>0}"><span>Importe vencido</span><strong>{{money(overdueBalance)}}</strong><small>{{detail.summary.overdue_periods}} mensualidad(es) atrasada(s)</small></article>
+               <article><span>Próxima mensualidad pendiente</span><strong>{{nextPeriod ? money(nextPeriod.pending) : '—'}}</strong><small>{{nextPeriod ? 'Vence '+formatDate(nextPeriod.due_date) : 'Sin próximo periodo programado'}}</small></article>
+               <article><span>Mensualidades cubiertas</span><strong>{{paidMonths}} / {{periods.length}}</strong><small>{{pendingMonths}} mensualidad(es) con importe pendiente</small></article>
+             </div>
+             <p v-if="needsReconciliation" class="ad-pay-f3-alert" role="alert">Existen pagos históricos sin periodo asignado. Verifica el calendario antes de comunicar el número de mensualidades vencidas.</p>
+             <div class="ad-pay-summarygrid">
+               <article><span>Mensualidad</span><strong>{{money(detail.summary.monthly_payment)}}</strong><small>Día {{detail.plan.payment_due_day}} de cada mes</small></article>
               <article><span>Saldo financiado</span><strong>{{money(detail.summary.financed_balance)}}</strong><small>Mensualidades pendientes</small></article>
               <article><span>Total pagado</span><strong>{{money(detail.summary.total_paid)}}</strong><small>Movimientos aplicados</small></article>
               <article :class="detail.summary.overdue_periods?'is-late':''"><span>Mensualidades vencidas</span><strong>{{detail.summary.overdue_periods}}</strong><small>{{money(detail.summary.overdue_amount)}} vencido</small></article>
@@ -347,8 +377,9 @@ onMounted(async()=>{
 
         <form v-else-if="modal==='payment'" id="receiptForm" class="space-y-4" @submit.prevent="saveReceipt">
           <div class="ad-pay-property"><div><span class="ad-pay-kicker">COMPRADOR</span><h3>{{detail?.lot?.client_name}}</h3><p>{{detail?.lot?.development_name}} · {{detail?.lot?.code}}</p></div><span class="ad-badge ad-badge--success">Registro administrativo</span></div>
-          <div class="ad-form-grid">
-            <label class="ad-label">Fecha real de pago *<input v-model="receipt.paid_at" type="date" required class="ad-input"/></label>
+          <div class="ad-pay-f3-receipt-heading"><strong>Registrar un movimiento</strong><span>Comprueba la fecha, el mes y el importe antes de confirmar.</span></div>
+           <div class="ad-form-grid">
+             <label class="ad-label">Fecha real de pago *<input v-model="receipt.paid_at" type="date" required class="ad-input"/></label>
             <label class="ad-label">Concepto *<select v-model="receipt.payment_type" class="ad-select" @change="setSuggestedAmount"><option value="monthly">Mensualidad</option><option value="down_payment">Enganche</option></select></label>
             <label v-if="receipt.payment_type==='monthly'" class="ad-label ad-form-span">Mes al que se aplica *<select v-model="receipt.applied_period" required class="ad-select" @change="onPeriodChange"><option value="">Seleccionar mensualidad</option><option v-for="p in periodOptions" :key="p.period" :value="p.period">{{labelPeriod(p.period)}} · Pendiente {{money(p.pending)}}</option></select></label>
             <label class="ad-label">Monto registrado (MXN) *<input v-model.lazy="receipt.amount" v-money3="mxnMask" type="text" inputmode="decimal" autocomplete="off" class="ad-input" required/></label>
@@ -357,7 +388,12 @@ onMounted(async()=>{
             <label class="ad-label">Folio<input v-model.trim="receipt.folio" class="ad-input" maxlength="150" placeholder="Folio interno"/></label>
             <label class="ad-label ad-form-span">Notas<textarea v-model.trim="receipt.notes" class="ad-textarea" maxlength="3000" placeholder="Observaciones del cobro"></textarea></label>
           </div>
-          <p v-if="selectedPeriod" class="ad-pay-warning">Para {{labelPeriod(receipt.applied_period)}} quedan {{money(selectedPeriod.pending)}} pendientes. Se admiten abonos parciales.</p>
+          <div class="ad-pay-f3-preview" aria-live="polite">
+             <strong>Resumen antes de guardar</strong>
+             <span>{{receiptPreview.client}} · {{receiptPreview.lot}}</span>
+             <div><span>{{receiptPreview.period}} · {{receiptPreview.date}}</span><strong>{{receiptPreview.amount === null ? 'Importe inválido' : money(receiptPreview.amount)}}</strong></div>
+           </div>
+           <p v-if="selectedPeriod" class="ad-pay-warning">Para {{labelPeriod(receipt.applied_period)}} quedan {{money(selectedPeriod.pending)}} pendientes. Se admiten abonos parciales.</p>
           <p class="ad-pay-muted">Este registro acredita una operación informada por el administrador. No ejecuta cobros bancarios ni emite comprobantes fiscales.</p>
         </form>
       </div>

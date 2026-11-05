@@ -18,6 +18,7 @@ Route::prefix('public')->group(function(){
 
 Route::post('/admin/login',[Auth::class,'login'])->middleware('throttle:20,1');
 Route::prefix('admin')->middleware(['auth:sanctum',EnsureAndarmaAdmin::class])->group(function(){
+    Route::get('/lookup', [\App\Http\Controllers\Api\AndarmaLookupController::class, 'index']);
     Route::get('/me',[Auth::class,'me']);Route::post('/logout',[Auth::class,'logout']);Route::get('/dashboard',[Admin::class,'dashboard']);
     // ANDARMA_RBAC_V48
     Route::get('/roles',[\App\Http\Controllers\Api\AndarmaRbacController::class,'roles']);

@@ -197,8 +197,23 @@ class AndarmaInventoryMapsController extends Controller
     public function plan(int $id) {
         $p=$this->planRow($id);
         $polygons=DB::table('andarma_lot_geometries as g')->join('andarma_lots as l','l.id','=','g.lot_id')
-            ->where('g.plan_id',$id)->select('g.id','g.lot_id','g.points','l.code','l.block','l.area_m2','l.price','l.status')->get();
-        foreach($polygons as $poly)$poly->points=json_decode($poly->points,true)??[];
+            ->where('g.plan_id',$id)->select('g.id','g.lot_id','g.points','l.code','l.block','l.area_m2','l.price','l.status','l.client_id')->get();
+        // ANDARMA_F9_COMPRADOR_MAPA: el nombre y contacto solo se exponen
+        // a usuarios con permiso para consultar clientes.
+        $canViewClients=\App\Support\AndarmaAccess::can(request()->user(),'clients.view');
+        $clients=collect();
+        if($canViewClients) {
+            $clientIds=$polygons->pluck('client_id')->filter()->unique()->values()->all();
+            if($clientIds) $clients=DB::table('andarma_clients')
+                ->whereIn('id',$clientIds)->select('id','name','phone')
+                ->get()->keyBy('id');
+        }
+        foreach($polygons as $poly) {
+            $poly->points=json_decode($poly->points,true)??[];
+            $client=$canViewClients && $poly->client_id ? $clients->get($poly->client_id) : null;
+            $poly->buyer_name=$client?->name;
+            $poly->buyer_phone=$client?->phone;
+        }
         $available=DB::table('andarma_lots as l')->leftJoin('andarma_lot_geometries as g','g.lot_id','=','l.id')
             ->where('l.development_id',$p->development_id)->whereNull('g.id')
             ->select('l.id','l.code','l.block','l.status','l.area_m2')->orderBy('l.code')->limit(2000)->get();

@@ -7,6 +7,7 @@ const routes=[
  {path:'/admin',component:()=>import('../layouts/AdminLayout.vue'),meta:{requiresAuth:true},children:[
    {path:'',redirect:'/admin/dashboard'},
    {path:'dashboard',name:'dashboard',meta:{permission:'dashboard.view'},component:()=>import('../views/admin/DashboardView.vue')},
+   {path:'consulta',name:'consulta',meta:{permission:'clients.view'},component:()=>import('../views/admin/LookupView.vue')},
    {path:'contenido',redirect:'/admin/banners'},
    {path:'banners',name:'banners',meta:{permission:'banners.view'},component:()=>import('../views/admin/BannersView.vue')},
    {path:'desarrollos',name:'desarrollos',meta:{permission:'developments.view'},component:()=>import('../views/admin/DevelopmentsView.vue')},
@@ -33,7 +34,7 @@ router.beforeEach(async to=>{
       const response=await api('/admin/me');setAccess(response.user)
       const needed=to.meta.permission
       if(needed && !can(needed)){
-        const choices=[['dashboard','dashboard.view'],['desarrollos','developments.view'],['propiedades','properties.view'],['mapas','maps.view'],['prospectos','prospects.view'],['clientes','clients.view'],['pagos','payments.view'],['banners','banners.view'],['testimonios','testimonials.view'],['usuarios','users.view'],['permisos','roles.view'],['configuracion','settings.view']]
+        const choices=[['dashboard','dashboard.view'],['consulta','clients.view'],['desarrollos','developments.view'],['propiedades','properties.view'],['mapas','maps.view'],['prospectos','prospects.view'],['clientes','clients.view'],['pagos','payments.view'],['banners','banners.view'],['testimonios','testimonials.view'],['usuarios','users.view'],['permisos','roles.view'],['configuracion','settings.view']]
         const first=choices.find(([,permission])=>can(permission))
         return first?{name:first[0]}:{name:'sin-acceso'}
       }

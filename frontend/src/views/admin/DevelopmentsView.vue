@@ -127,6 +127,7 @@ async function del(row){
   try{await remove('/admin/im/developments/'+row.id);await load();toast('Desarrollo eliminado')}
   catch(e){error(e)}
 }
+// ANDARMA_FASE4_DESARROLLOS: acceso directo a terrenos desde el desarrollo.
 function viewLots(row){router.push({path:'/admin/propiedades',query:{desarrollo:String(row.id)}})}
 function viewMaps(row){router.push({path:'/admin/mapas',query:{desarrollo:String(row.id)}})}
 onMounted(load)
@@ -181,7 +182,7 @@ onMounted(load)
             <td><strong>{{d.lots_count||0}}</strong><small class="ad-dev-secondary">{{d.available_count||0}} disponibles</small></td>
             <td><strong>{{d.plans_count||0}}</strong><small class="ad-dev-secondary">{{d.plans_count===1?'1 plano':(d.plans_count||0)+' planos'}}</small></td>
             <td><div class="ad-actions ad-dev-actions">
-              <button class="ad-btn" @click="viewLots(d)" title="Ver terrenos"><i class="fa-solid fa-list"></i> Terrenos</button>
+              <button class="ad-btn" @click="viewLots(d)" title="Consultar o agregar terrenos"><i class="fa-solid fa-list"></i> Ver / agregar terrenos</button>
               <button class="ad-btn" @click="viewMaps(d)" title="Ver planos"><i class="fa-solid fa-map"></i> Mapas</button>
               <button v-can="'developments.edit'" class="ad-btn" @click="edit(d)" title="Editar desarrollo"><i class="fa-solid fa-pen"></i> Editar</button>
               <button v-can="'developments.delete'" class="ad-btn ad-btn--danger" @click="del(d)" title="Eliminar desarrollo"><i class="fa-solid fa-trash"></i> Eliminar</button>

@@ -1,0 +1,17 @@
+/* ANDARMA_COBRANZA_CLARA_F3 · Estilo del administrador existente. */
+.andarma-admin .ad-pay-f3-balance{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0 15px}
+.andarma-admin .ad-pay-f3-balance article{border:1px solid var(--ad-border,#DDE7F1);border-radius:12px;background:#F8FBFF;padding:14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.andarma-admin .ad-pay-f3-balance article span{font-size:12px;color:var(--ad-text,#35516C);font-weight:650}
+.andarma-admin .ad-pay-f3-balance article strong{font-size:clamp(18px,2.2vw,24px);line-height:1.22;color:var(--ad-ink,#17324E);overflow-wrap:anywhere}
+.andarma-admin .ad-pay-f3-balance article small{font-size:11px;color:var(--ad-muted,#72879C);line-height:1.5}
+.andarma-admin .ad-pay-f3-balance article.is-overdue{background:var(--ad-danger-bg,#FFF1F3);border-color:#F0CDD2}
+.andarma-admin .ad-pay-f3-balance article.is-overdue strong{color:var(--ad-danger,#BE4050)}
+.andarma-admin .ad-pay-f3-alert{border:1px solid #E8CB98;background:#FFF8E9;border-radius:10px;padding:11px 13px;color:#745115;font-size:12px;line-height:1.5;margin:10px 0}
+.andarma-admin .ad-pay-f3-receipt-heading{display:flex;flex-direction:column;gap:4px;margin-bottom:11px}
+.andarma-admin .ad-pay-f3-receipt-heading strong{font-size:14px;color:var(--ad-ink,#17324E)}
+.andarma-admin .ad-pay-f3-receipt-heading span{font-size:12px;color:var(--ad-muted,#72879C)}
+.andarma-admin .ad-pay-f3-preview{display:flex;flex-direction:column;gap:8px;padding:14px;border:1px solid #BEDCFB;background:#F3F9FF;border-radius:12px;margin-top:14px;font-size:12px;color:var(--ad-text,#35516C)}
+.andarma-admin .ad-pay-f3-preview>strong{font-size:13px;color:var(--ad-navy,#003A8C)}
+.andarma-admin .ad-pay-f3-preview>div{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.andarma-admin .ad-pay-f3-preview>div strong{font-size:18px;color:var(--ad-ink,#17324E)}
+@media(max-width:640px){.andarma-admin .ad-pay-f3-balance{grid-template-columns:1fr}.andarma-admin .ad-pay-f3-preview>div{flex-wrap:wrap}}
