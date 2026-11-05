@@ -65,11 +65,34 @@ window.addEventListener('andarma:mounted',()=>{
     {eyebrow:'ANDARMA / DESARROLLOS',title:'<span class="title-line">Tu próximo</span><span class="title-line title-line--shift accent">gran capítulo.</span>',description:'Terrenos y proyectos inmobiliarios para visualizar el futuro que quieres construir, paso a paso.',cta:'Conocer proyectos',href:'#desarrollos'},
     {eyebrow:'ANDARMA / TU PRÓXIMA ETAPA',title:'<span class="title-line">Un lugar.</span><span class="title-line title-line--shift accent">Mil posibilidades.</span>',description:'Conoce nuestras alternativas inmobiliarias y recibe orientación para dar el siguiente paso con confianza.',cta:'Hablar con nosotros',href:'#contacto'}
   ];
+  // ANDARMA_V41: los textos de cada diapositiva se leen del administrador cuando existen.
+  const adminSlides=window.__ANDARMA_HERO_SLIDES__;
+  if(Array.isArray(adminSlides)&&adminSlides.length){
+    const escapeHtml=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    slides.splice(0,slides.length,...adminSlides.map(s=>({
+      ...s,title:'<span class="title-line">'+escapeHtml(s.line1)+'</span>'+(s.line2?'<span class="title-line title-line--shift accent">'+escapeHtml(s.line2)+'</span>':''),
+    })));
+  }
   const panels=[...document.querySelectorAll('.hero-slide')], eyebrow=document.querySelector('#heroEyebrow'),title=document.querySelector('#heroTitle'),desc=document.querySelector('#heroDescription'),cta=document.querySelector('#heroCta'),current=document.querySelector('#slideCurrent'),progress=document.querySelector('#progressBar');
   const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let active=0,locked=false,autoTimer=null,progressTween=null;
   const duration=6.5;
-  function fillContent(index){const d=slides[index];eyebrow.textContent=d.eyebrow;title.innerHTML=d.title;desc.textContent=d.description;cta.querySelector('span').textContent=d.cta;cta.href=d.href;current.textContent=String(index+1).padStart(2,'0');}
+  function fillContent(index){
+    const d=slides[index];
+    eyebrow.textContent=d.eyebrow;title.innerHTML=d.title;desc.textContent=d.description;
+    cta.querySelector('span').textContent=d.cta;cta.href=d.href;
+    cta.style.display=d.cta?'':'none';current.textContent=String(index+1).padStart(2,'0');
+    if(Array.isArray(adminSlides)&&adminSlides.length){
+      const content={'.headline-overline':d.overline,'.headline-foot':d.footnote,'.hero-tag':d.tagline,
+        '.editorial-index > span:nth-child(2)':d.editorial_label,
+        '.side-metadata > span':d.side_title,'.side-metadata > p':d.side_description};
+      for(const [selector,value] of Object.entries(content)){
+        const element=document.querySelector('#inicio '+selector);
+        if(element)element.textContent=value||'';
+      }
+    }
+  }
+  fillContent(0);
   function schedule(){clearTimeout(autoTimer);if(progressTween)progressTween.kill();if(document.hidden||reduce)return;if(typeof gsap!=='undefined'){gsap.set(progress,{width:'0%'});progressTween=gsap.to(progress,{width:'100%',duration,ease:'none'});}autoTimer=setTimeout(()=>goTo((active+1)%slides.length),duration*1000);}
   function goTo(next){if(locked||next===active)return;locked=true;clearTimeout(autoTimer);if(progressTween)progressTween.kill();const prev=panels[active],incoming=panels[next];const old=active;active=next;incoming.style.visibility='visible';incoming.setAttribute('aria-hidden','false');
     if(reduce||typeof gsap==='undefined'){prev.classList.remove('active');prev.setAttribute('aria-hidden','true');incoming.classList.add('active');fillContent(next);locked=false;schedule();return;}

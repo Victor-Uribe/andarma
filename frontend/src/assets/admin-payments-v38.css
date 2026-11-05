@@ -60,3 +60,19 @@
 
 /* Mantener SweetAlert por encima de los modales de cobranza. */
 .swal2-container{z-index:3000!important}
+
+
+/* ANDARMA_V39_TRAFFIC */
+.ad-pay-traffic{display:flex;align-items:center;flex-wrap:wrap;gap:10px;border:1px solid #e2e9f0;border-radius:12px;padding:12px 15px;font-size:12px;line-height:1.4;background:#f8fafc;color:#44546a}
+.ad-pay-traffic>i{font-size:10px}
+.ad-pay-traffic>strong{font-weight:750}
+.ad-pay-traffic>span{margin-left:auto;font-size:11px}
+.ad-pay-traffic--green{color:#176a4b;border-color:#ccebdc;background:#f0faf5}
+.ad-pay-traffic--yellow{color:#976213;border-color:#f3dfaa;background:#fffae9}
+.ad-pay-traffic--red{color:#b63140;border-color:#f1cbd0;background:#fff3f3}
+ .ad-pay-traffic--neutral{color:#546779}
+.ad-pay-traffic-pill{display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:700;border:1px solid #e1e8f0;background:#f5f7fa;color:#576a7e;white-space:nowrap}
+.ad-pay-traffic-pill--green{background:#eaf8f1;border-color:#c9ecda;color:#167448}
+.ad-pay-traffic-pill--yellow{background:#fff4d7;border-color:#f5dd9b;color:#94600f}
+.ad-pay-traffic-pill--red{background:#ffebed;border-color:#f3c5cb;color:#b52c40}
+@media(max-width:600px){.ad-pay-traffic>span{margin-left:0;width:100%}}

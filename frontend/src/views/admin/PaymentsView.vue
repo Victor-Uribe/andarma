@@ -1,4 +1,7 @@
 <script setup>
+import { Money3Directive } from 'v-money3'
+import { mxnMask, decimalMask } from '../../config/numberMasks'
+const vMoney3 = Money3Directive
 import {computed, onMounted, ref, watch} from 'vue'
 import {useRoute} from 'vue-router'
 import Swal from 'sweetalert2'
@@ -6,6 +9,38 @@ import {api, post, put} from '../../services/api'
 import '../../assets/admin-payments-v38.css'
 
 const route = useRoute()
+// ANDARMA_V39_MONEY_NORMALIZATION
+// Las máscaras son únicamente de presentación. Laravel recibe cantidades decimales sin separadores.
+function parseAmount(value) {
+  if (typeof value === 'number') return Number.isFinite(value) ? value : NaN
+  let raw = String(value ?? '').trim().replace(/[^0-9,.-]/g, '')
+  if (!raw || raw === '-') return NaN
+  const comma = raw.lastIndexOf(',')
+  const dot = raw.lastIndexOf('.')
+  if (comma > dot) raw = raw.replace(/\./g, '').replace(',', '.')
+  else raw = raw.replace(/,/g, '')
+  const number = Number(raw)
+  return Number.isFinite(number) ? number : NaN
+}
+function amountForApi(value) {
+  const n = parseAmount(value)
+  return Number.isFinite(n) ? Number(n.toFixed(2)) : null
+}
+function normalizeMoneyPayload(data, names) {
+  const payload = {...data}
+  for (const name of names) payload[name] = amountForApi(payload[name])
+  return payload
+}
+const paymentTrafficLight = computed(() => {
+  if (!detail.value?.plan || !detail.value?.summary) return {tone:'neutral', text:'Sin plan de pagos'}
+  if (Number(detail.value.summary.unallocated_monthly_amount || 0) > 0)
+    return {tone:'neutral', text:'Requiere conciliación'}
+  const overdue = Number(detail.value.summary.overdue_periods || 0)
+  if (overdue >= 4) return {tone:'red', text:`${overdue} meses de atraso`}
+  if (overdue >= 1) return {tone:'yellow', text:`${overdue} ${overdue === 1 ? 'mes' : 'meses'} de atraso`}
+  return {tone:'green', text:'Al corriente'}
+})
+
 const loading = ref(false), busy = ref(false), loadingDetail = ref(false)
 const rows = ref([]), stats = ref(null), page = ref(1), lastPage = ref(1), total = ref(0)
 const tab = ref('month'), search = ref(''), statusFilter = ref('all')
@@ -22,7 +57,7 @@ const statuses = {applied:'Aplicado',cancelled:'Cancelado'}
 
 function localISO(date){const pad = v => String(v).padStart(2,'0');return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}`}
 function localMonth(date){return localISO(date).slice(0,7)}
-function money(value){return new Intl.NumberFormat('es-MX',{style:'currency',currency:'MXN',minimumFractionDigits:2}).format(Number(value || 0))}
+function money(value){return new Intl.NumberFormat('es-MX',{style:'currency',currency:'MXN',minimumFractionDigits:2}).format(parseAmount(value) || 0)}
 function formatDate(value){if(!value)return '—';const d=String(value).slice(0,10);const parts=d.split('-');return parts.length===3?`${parts[2]}/${parts[1]}/${parts[0]}`:d}
 function labelPeriod(value){if(!value)return '—';const d=new Date(`${value.slice(0,7)}-01T12:00:00`);return new Intl.DateTimeFormat('es-MX',{month:'long',year:'numeric'}).format(d)}
 function emptyTerms(){return {sale_price:'',discount_amount:'0',down_payment_amount:'0',monthly_payment_amount:'',payment_due_day:1,first_payment_period:localMonth(new Date()),sale_date:''}}
@@ -102,7 +137,10 @@ async function saveTerms(){
  if(!ok)return
  busy.value=true
  try{
-   await put(`/admin/finance/lots/${detail.value.lot.id}/terms`,terms.value)
+   const payload = normalizeMoneyPayload(terms.value, ['sale_price','discount_amount','down_payment_amount','monthly_payment_amount'])
+    if (['sale_price','discount_amount','down_payment_amount','monthly_payment_amount'].some(key => payload[key] === null))
+      throw new Error('Verifica los importes del plan de pagos.')
+    await put(`/admin/finance/lots/${detail.value.lot.id}/terms`, payload)
    await openSummary(detail.value.lot.id)
    await notice('Plan guardado','Ya puedes registrar enganches y mensualidades.')
  }catch(e){await notice('No se guardó el plan',e.message,'error')}
@@ -128,7 +166,8 @@ function openReceipt(){
 }
 async function saveReceipt(){
  if(busy.value||!detail.value)return
- if(Number(receipt.value.amount)<=0){await notice('Captura el importe','El pago debe ser mayor que cero.','warning');return}
+ const numericAmount = amountForApi(receipt.value.amount)
+ if(numericAmount === null || numericAmount <= 0){await notice('Captura el importe','El pago debe ser un importe válido mayor que cero.','warning');return}
  if(receipt.value.payment_type==='monthly'&&!receipt.value.applied_period){await notice('Selecciona un periodo','Elige la mensualidad a la que se aplicará el cobro.','warning');return}
  const ok=await confirmDialog('Confirmar registro de pago',`Se registrarán ${money(receipt.value.amount)} para ${detail.value.lot.client_name}. Verifica la fecha y el periodo antes de confirmar.`,'Registrar pago')
  if(!ok)return
@@ -136,7 +175,7 @@ async function saveReceipt(){
  try{
    const key=receiptKey.value
    if(!key)throw new Error('Tu navegador no permite generar una clave segura de operación.')
-   await post(`/admin/finance/lots/${detail.value.lot.id}/payments`,{...receipt.value,request_key:key})
+   await post(`/admin/finance/lots/${detail.value.lot.id}/payments`,{...receipt.value,amount:numericAmount,request_key:key})
    await openSummary(detail.value.lot.id)
    await load()
    await notice('Pago registrado','El movimiento quedó aplicado y aparece en el historial.')
@@ -145,7 +184,7 @@ async function saveReceipt(){
 }
 async function cancelReceipt(payment){
  if(busy.value||payment.status!=='applied')return
- const result=await Swal.fire({...swalStyle(),title:`Cancelar pago #${payment.id}`,text:'El movimiento permanecerá en el historial, pero dejará de contar en los saldos y mensualidades.',icon:'warning',input:'textarea',inputLabel:'Motivo de cancelación (obligatorio)',inputPlaceholder:'Explica por qué debe anularse este registro...',inputAttributes:{maxLength:1000},showCancelButton:true,confirmButtonText:'Anular movimiento',cancelButtonText:'Volver',customClass:{...swalStyle().customClass,confirmButton:'andarma-swal__confirm is-danger'},inputValidator:v=>!v||v.trim().length<10?'Escribe un motivo de al menos 10 caracteres.':undefined})
+ const result=await Swal.fire({...swalStyle(),title:`Cancelar pago #${payment.id}`,text:'El movimiento permanecerá en el historial, pero dejará de contar en los saldos y mensualidades.',icon:'warning',input:'textarea',inputLabel:'Motivo de cancelación (obligatorio)',inputPlaceholder:'Explica por qué debe anularse este registro...',inputAttributes:{maxLength:1000},showCancelButton:true,confirmButtonText:'Anular movimiento',cancelButtonText:'Volver',customClass:{...swalStyle().customClass,confirmButton:'andarma-swal__confirm is-danger',popup:'andarma-swal andarma-delete-dialog'},inputValidator:v=>!v||v.trim().length<10?'Escribe un motivo de al menos 10 caracteres.':undefined})
  if(!result.isConfirmed)return
  busy.value=true
  try{
@@ -218,7 +257,7 @@ onMounted(async()=>{
             <td class="text-right"><strong>{{money(p.amount)}}</strong></td>
             <td><div class="ad-actions">
               <button class="ad-btn" @click="openFromList(p)"><i class="fa-solid fa-eye"></i> Ver</button>
-              <button v-if="p.status==='applied'" class="ad-btn ad-btn--danger" :disabled="busy" @click="cancelReceipt(p)"><i class="fa-solid fa-ban"></i> Anular</button>
+              <button v-can="'payments.delete'" v-if="p.status==='applied'" class="ad-btn ad-btn--danger" :disabled="busy" @click="cancelReceipt(p)"><i class="fa-solid fa-ban"></i> Anular</button>
             </div></td>
           </tr>
           <tr v-if="!loading&&!rows.length"><td colspan="7" class="ad-pay-empty"><i class="fa-regular fa-folder-open"></i><p>No hay movimientos para los filtros seleccionados.</p></td></tr>
@@ -255,6 +294,12 @@ onMounted(async()=>{
         <template v-else-if="modal==='summary' && detail">
           <div class="ad-pay-property"><div><span class="ad-pay-kicker">PROPIEDAD</span><h3>{{detail.lot.development_name}} · {{detail.lot.block||''}} {{detail.lot.code}}</h3><p>{{detail.lot.client_name}}</p></div><span class="ad-badge">{{detail.lot.status==='sold'?'Vendida':'Apartada'}}</span></div>
           <template v-if="detail.plan && detail.summary">
+            <div class="ad-pay-traffic" :class="'ad-pay-traffic--'+paymentTrafficLight.tone" role="status">
+              <i class="fa-solid fa-circle" aria-hidden="true"></i>
+              <strong>Estado de cobranza: {{paymentTrafficLight.text}}</strong>
+              <span v-if="paymentTrafficLight.tone==='yellow'">1 a 3 mensualidades vencidas</span>
+              <span v-else-if="paymentTrafficLight.tone==='red'">4 o más mensualidades vencidas</span>
+            </div>
             <div class="ad-pay-summarygrid">
               <article><span>Mensualidad</span><strong>{{money(detail.summary.monthly_payment)}}</strong><small>Día {{detail.plan.payment_due_day}} de cada mes</small></article>
               <article><span>Saldo financiado</span><strong>{{money(detail.summary.financed_balance)}}</strong><small>Mensualidades pendientes</small></article>
@@ -263,13 +308,13 @@ onMounted(async()=>{
             </div>
             <div class="ad-pay-meta"><span>Precio pactado: <strong>{{money(detail.summary.sale_price)}}</strong></span><span>Saldo total pendiente: <strong>{{money(detail.summary.total_balance)}}</strong></span><span>Enganche por pagar: <strong>{{money(detail.summary.down_payment_pending)}}</strong></span></div>
             <p v-if="Number(detail.summary.unallocated_monthly_amount)>0" class="ad-pay-warning"><i class="fa-solid fa-triangle-exclamation"></i> Hay {{money(detail.summary.unallocated_monthly_amount)}} de mensualidades históricas sin periodo asignado. Necesitan conciliación antes de interpretar el calendario como definitivo.</p>
-            <div class="flex gap-2 flex-wrap"><button class="ad-btn ad-btn--primary" @click="openReceipt"><i class="fa-solid fa-plus"></i> Registrar pago</button><button class="ad-btn" :disabled="detail.payments.length>0" @click="openTerms"><i class="fa-solid fa-pen-to-square"></i> Editar condiciones</button><button class="ad-btn" @click="modal='picker'"><i class="fa-solid fa-arrow-left"></i> Elegir otra propiedad</button></div>
+            <div class="flex gap-2 flex-wrap"><button v-can="'payments.create'" class="ad-btn ad-btn--primary" @click="openReceipt"><i class="fa-solid fa-plus"></i> Registrar pago</button><button class="ad-btn" :disabled="detail.payments.length>0" @click="openTerms"><i class="fa-solid fa-pen-to-square"></i> Editar condiciones</button><button class="ad-btn" @click="modal='picker'"><i class="fa-solid fa-arrow-left"></i> Elegir otra propiedad</button></div>
             <div class="ad-pay-two-col">
               <section><h4 class="ad-pay-section-title">Calendario de mensualidades</h4><div class="ad-pay-scroll"><div v-for="period in periods" :key="period.period" class="ad-pay-period"><div><strong>{{labelPeriod(period.period)}}</strong><small>Límite {{formatDate(period.due_date)}}</small></div><div class="text-right"><strong>{{money(period.paid)}} / {{money(period.scheduled)}}</strong><small :class="{'ad-pay-red':period.is_overdue}">{{period.status==='paid'?'Pagado':period.status==='overdue'?'Vencido':period.status==='partial'?'Parcial':'Pendiente'}}</small></div></div><p v-if="!periods.length" class="ad-pay-muted">Venta sin mensualidades programadas.</p></div></section>
               <section><h4 class="ad-pay-section-title">Historial de pagos</h4><div class="ad-pay-scroll"><div v-for="payment in detail.payments" :key="payment.id" class="ad-pay-period"><div><strong>{{types[payment.payment_type]||payment.payment_type}}</strong><small>{{formatDate(payment.paid_at)}} · {{methods[payment.payment_method]||payment.payment_method||'Otro'}}</small></div><div class="text-right"><strong>{{money(payment.amount)}}</strong><small :class="{'ad-pay-red':payment.status==='cancelled'}">{{statuses[payment.status]||payment.status}}</small><small v-if="payment.cancel_reason" class="ad-pay-red" :title="payment.cancel_reason">Motivo: {{payment.cancel_reason}}</small></div></div><p v-if="!detail.payments.length" class="ad-pay-muted">Todavía no hay pagos registrados.</p></div></section>
             </div>
           </template>
-          <div v-else class="ad-pay-empty-plan"><i class="fa-solid fa-file-circle-plus"></i><h3>Sin condiciones financieras</h3><p>Configura primero el precio pactado, enganche, mensualidad y fecha de inicio. No crearemos pagos ficticios.</p><button class="ad-btn ad-btn--primary" @click="openTerms">Configurar plan de pagos</button></div>
+          <div v-else class="ad-pay-empty-plan"><i class="fa-solid fa-file-circle-plus"></i><h3>Sin condiciones financieras</h3><p>Configura primero el precio pactado, enganche, mensualidad y fecha de inicio. No crearemos pagos ficticios.</p><button v-can="'payments.edit'" class="ad-btn ad-btn--primary" @click="openTerms">Configurar plan de pagos</button></div>
         </template>
 
         <template v-else-if="modal==='legacy' && selectedMovement">
@@ -289,10 +334,10 @@ onMounted(async()=>{
         <form v-else-if="modal==='terms'" id="termsForm" class="space-y-4" @submit.prevent="saveTerms">
           <p class="ad-pay-warning"><i class="fa-solid fa-circle-info"></i> El enganche acordado no se considera pagado hasta registrar su movimiento. Las condiciones se bloquean cuando existe historial de pagos.</p>
           <div class="ad-form-grid">
-            <label class="ad-label">Precio de venta (MXN) *<input v-model="terms.sale_price" type="number" min="0.01" step="0.01" required class="ad-input"/></label>
-            <label class="ad-label">Descuento (MXN)<input v-model="terms.discount_amount" type="number" min="0" step="0.01" required class="ad-input"/></label>
-            <label class="ad-label">Enganche acordado (MXN)<input v-model="terms.down_payment_amount" type="number" min="0" step="0.01" required class="ad-input"/></label>
-            <label class="ad-label">Mensualidad (MXN) *<input v-model="terms.monthly_payment_amount" type="number" min="0" step="0.01" required class="ad-input"/></label>
+            <label class="ad-label">Precio de venta (MXN) *<input v-model.lazy="terms.sale_price" v-money3="mxnMask" type="text" inputmode="decimal" autocomplete="off" class="ad-input" required/></label>
+            <label class="ad-label">Descuento (MXN)<input v-model.lazy="terms.discount_amount" v-money3="mxnMask" type="text" inputmode="decimal" autocomplete="off" class="ad-input" required/></label>
+            <label class="ad-label">Enganche acordado (MXN)<input v-model.lazy="terms.down_payment_amount" v-money3="mxnMask" type="text" inputmode="decimal" autocomplete="off" class="ad-input" required/></label>
+            <label class="ad-label">Mensualidad (MXN) *<input v-model.lazy="terms.monthly_payment_amount" v-money3="mxnMask" type="text" inputmode="decimal" autocomplete="off" class="ad-input" required/></label>
             <label class="ad-label">Día límite de pago<input v-model="terms.payment_due_day" type="number" min="1" max="31" required class="ad-input"/></label>
             <label class="ad-label">Primer mes a pagar<input v-model="terms.first_payment_period" type="month" class="ad-input"/></label>
             <label class="ad-label ad-form-span">Fecha de venta (opcional)<input v-model="terms.sale_date" type="date" class="ad-input"/></label>
@@ -306,7 +351,7 @@ onMounted(async()=>{
             <label class="ad-label">Fecha real de pago *<input v-model="receipt.paid_at" type="date" required class="ad-input"/></label>
             <label class="ad-label">Concepto *<select v-model="receipt.payment_type" class="ad-select" @change="setSuggestedAmount"><option value="monthly">Mensualidad</option><option value="down_payment">Enganche</option></select></label>
             <label v-if="receipt.payment_type==='monthly'" class="ad-label ad-form-span">Mes al que se aplica *<select v-model="receipt.applied_period" required class="ad-select" @change="onPeriodChange"><option value="">Seleccionar mensualidad</option><option v-for="p in periodOptions" :key="p.period" :value="p.period">{{labelPeriod(p.period)}} · Pendiente {{money(p.pending)}}</option></select></label>
-            <label class="ad-label">Monto registrado (MXN) *<input v-model="receipt.amount" type="number" min="0.01" step="0.01" required class="ad-input"/></label>
+            <label class="ad-label">Monto registrado (MXN) *<input v-model.lazy="receipt.amount" v-money3="mxnMask" type="text" inputmode="decimal" autocomplete="off" class="ad-input" required/></label>
             <label class="ad-label">Método de pago *<select v-model="receipt.payment_method" required class="ad-select"><option v-for="(name,key) in methods" :key="key" :value="key">{{name}}</option></select></label>
             <label class="ad-label">Referencia<input v-model.trim="receipt.reference" class="ad-input" maxlength="150" placeholder="Referencia bancaria"/></label>
             <label class="ad-label">Folio<input v-model.trim="receipt.folio" class="ad-input" maxlength="150" placeholder="Folio interno"/></label>

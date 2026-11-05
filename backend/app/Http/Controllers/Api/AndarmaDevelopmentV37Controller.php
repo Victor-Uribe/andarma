@@ -18,7 +18,6 @@ class AndarmaDevelopmentV37Controller extends Controller
             'location' => ['nullable','string','max:255'],
             'description' => ['nullable','string','max:10000'],
             'status' => ['required',Rule::in(['active','upcoming','inactive'])],
-            'slug' => ['nullable','string','max:255',Rule::unique('andarma_developments','slug')->ignore($id)],
             'photo' => ['nullable','file','mimes:webp','max:450'],
             'remove_image' => ['nullable','boolean'],
         ]);
@@ -64,8 +63,7 @@ class AndarmaDevelopmentV37Controller extends Controller
         $uploaded=null;
         try {
             if ($request->hasFile('photo')) $uploaded=$request->file('photo')->store('andarma-developments','public');
-            $slug=trim((string)($data['slug']??''));
-            if ($slug==='') $slug=$this->slugFor($data['name']);
+            $slug=$this->slugFor($data['name']);
             $id=DB::table('andarma_developments')->insertGetId([
                 'name'=>trim($data['name']),'slug'=>$slug,
                 'description'=>$data['description']??null,'location'=>$data['location']??null,
@@ -92,8 +90,8 @@ class AndarmaDevelopmentV37Controller extends Controller
             if ($request->hasFile('photo')) $uploaded=$request->file('photo')->store('andarma-developments','public');
             $remove=filter_var($data['remove_image']??false,FILTER_VALIDATE_BOOLEAN);
             $newUrl=$uploaded ? Storage::disk('public')->url($uploaded) : ($remove ? null : $row->image_url);
-            $slug=trim((string)($data['slug']??''));
-            if ($slug==='') $slug=$row->slug ?: $this->slugFor($data['name'],$id);
+            // La URL pública no cambia al renombrar un desarrollo existente.
+            $slug=$row->slug ?: $this->slugFor($data['name'],$id);
             DB::table('andarma_developments')->where('id',$id)->update([
                 'name'=>trim($data['name']),'slug'=>$slug,
                 'description'=>$data['description']??null,'location'=>$data['location']??null,

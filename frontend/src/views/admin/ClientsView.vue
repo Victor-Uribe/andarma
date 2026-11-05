@@ -260,7 +260,7 @@ watch(()=>route.query.client,async id=>{
       </div>
       <div class="crm-header__actions">
         <button class="crm-btn crm-btn--ghost" @click="load"><RefreshCw :size="16"/> Actualizar</button>
-        <button class="crm-btn crm-btn--soft" @click="openCreate"><UserRoundPlus :size="16"/> Nuevo cliente</button>
+        <button v-can="'clients.create'" class="crm-btn crm-btn--soft" @click="openCreate"><UserRoundPlus :size="16"/> Nuevo cliente</button>
       </div>
     </header>
 
@@ -337,8 +337,8 @@ watch(()=>route.query.client,async id=>{
               <td>
                 <div class="crm-actions">
                   <button class="crm-btn crm-btn--table" @click="openDetail(client.id)"><Eye :size="14"/> Ver</button>
-                  <button class="crm-btn crm-btn--table" @click="openEdit(client)"><Pencil :size="14"/> Editar</button>
-                  <button class="crm-btn crm-btn--table" :disabled="!canDelete(client)" :title="canDelete(client) ? 'Eliminar cliente' : 'No disponible: tiene propiedad o pagos'" @click="deleteClient(client)"><Trash2 :size="14"/> Eliminar</button>
+                  <button v-can="'clients.edit'" class="crm-btn crm-btn--table" @click="openEdit(client)"><Pencil :size="14"/> Editar</button>
+                  <button v-can="'clients.delete'" class="crm-btn crm-btn--table" :disabled="!canDelete(client)" :title="canDelete(client) ? 'Eliminar cliente' : 'No disponible: tiene propiedad o pagos'" @click="deleteClient(client)"><Trash2 :size="14"/> Eliminar</button>
                 </div>
               </td>
             </tr>
@@ -461,7 +461,7 @@ watch(()=>route.query.client,async id=>{
             <p>Consulta datos, propiedades vinculadas y pagos desde un mismo modal consistente con el resto del administrador.</p>
           </div>
           <div class="crm-header__actions">
-            <button v-if="detail?.data" class="crm-btn crm-btn--ghost" @click="openEdit(detail.data)"><Pencil :size="14"/> Editar</button>
+            <button v-can="'clients.edit'" v-if="detail?.data" class="crm-btn crm-btn--ghost" @click="openEdit(detail.data)"><Pencil :size="14"/> Editar</button>
             <button v-if="detail?.data" class="crm-btn crm-btn--ghost" :disabled="(detail.properties?.length||0)>0 || (detail.payments?.length||0)>0" :title="(detail.properties?.length||0)>0 || (detail.payments?.length||0)>0 ? 'No se puede eliminar: tiene propiedades o pagos' : 'Eliminar cliente'" @click="deleteClient({...detail.data,properties_count:detail.properties?.length||0,payments_count:detail.payments?.length||0})"><Trash2 :size="14"/> Eliminar</button>
             <button class="crm-close" @click="closeDetail" aria-label="Cerrar"><X :size="18"/></button>
           </div>
@@ -522,7 +522,7 @@ watch(()=>route.query.client,async id=>{
                   </div>
                   <div class="crm-linkeditem__actions">
                     <span class="crm-badge" :class="lot.status==='sold' ? 'is-danger' : 'is-warning'">{{ lot.status==='sold' ? 'Vendida' : 'Apartada' }}</span>
-                    <button class="crm-btn crm-btn--tiny" @click="releaseLot(lot)">Liberar</button>
+                    <button v-can="'clients.edit'" class="crm-btn crm-btn--tiny" @click="releaseLot(lot)">Liberar</button>
                   </div>
                 </article>
               </div>
@@ -544,7 +544,7 @@ watch(()=>route.query.client,async id=>{
                     <option value="sold">Vendida</option>
                   </select>
                 </label>
-                <button class="crm-btn crm-btn--primary" :disabled="!assignId || saving" @click="assign"><Link2 :size="14"/> Asignar propiedad</button>
+                <button v-can="'clients.edit'" class="crm-btn crm-btn--primary" :disabled="!assignId || saving" @click="assign"><Link2 :size="14"/> Asignar propiedad</button>
               </div>
             </section>
           </div>

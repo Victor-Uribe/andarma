@@ -1,0 +1,56 @@
+/* ANDARMA_V45_TESTIMONIALS — scope exclusivo de módulo */
+.andarma-admin .ad-test-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.andarma-admin .ad-test-list{padding:0;overflow:hidden}
+.andarma-admin .ad-test-toolbar{display:flex;align-items:flex-end;flex-wrap:wrap;gap:12px;padding:18px 20px;border-bottom:1px solid #e9eff5}
+.andarma-admin .ad-test-toolbar .ad-test-search{flex:1;min-width:210px}
+.andarma-admin .ad-test-toolbar>.ad-label:not(.ad-test-search){min-width:150px}
+.andarma-admin .ad-test-toolbar>.ad-badge{margin-left:auto;margin-bottom:8px}
+.andarma-admin .ad-test-table-wrap{overflow-x:auto;width:100%}
+.andarma-admin .ad-test-table{min-width:870px}
+.andarma-admin .ad-test-order{display:flex;align-items:center;gap:8px;color:#6a829b}
+.andarma-admin .ad-test-order>strong{background:#eef5ff;border-radius:9px;padding:8px;color:#0066e0}
+.andarma-admin .ad-test-order-buttons{display:grid;gap:3px}
+.andarma-admin .ad-test-order-buttons .ad-icon-btn{width:24px;min-height:22px;height:22px;padding:0}
+.andarma-admin .ad-test-person{display:flex;align-items:center;gap:11px;min-width:172px}
+.andarma-admin .ad-test-person img,.andarma-admin .ad-test-initial{width:43px;height:43px;border-radius:50%;object-fit:cover;flex-shrink:0;border:1px solid #d7e6f3}
+.andarma-admin .ad-test-initial{display:grid;place-items:center;background:#edf6ff;color:#0066e0;font-weight:800;font-size:17px}
+.andarma-admin .ad-test-person strong{display:block;font-size:12px;color:#17324e}
+.andarma-admin .ad-test-person small{display:block;color:#7c90a4;font-size:11px;margin-top:3px}
+.andarma-admin .ad-test-quote{margin:0;font-size:12px;max-width:350px;color:#5c728a;line-height:1.6;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.andarma-admin .ad-test-stars{font-size:18px;white-space:nowrap;color:#0874e8;letter-spacing:1px}
+.andarma-admin .ad-test-actions{flex-wrap:nowrap}
+.andarma-admin .ad-test-actions>.ad-icon-btn{width:36px;flex-shrink:0}
+.andarma-admin .ad-test-empty{text-align:center!important;padding:45px 12px!important}
+.andarma-admin .ad-test-empty>*{display:block;margin:10px auto;color:#71869b}
+.andarma-admin .ad-test-empty>i{font-size:25px;color:#0066e0}
+.andarma-admin .ad-test-empty>strong{color:#17324e}
+.andarma-admin .ad-test-pagination{border-top:1px solid #e9eff5;padding:13px 20px;display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:#72879c}
+.andarma-admin .ad-test-pagination>div{display:flex;gap:8px}
+.andarma-admin .ad-test-dialog{width:min(760px,100%)}
+.andarma-admin .ad-test-form{display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.andarma-admin .ad-test-form>.ad-modal__body{min-height:0;overflow-y:auto}
+.andarma-admin .ad-test-fields{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:17px}
+.andarma-admin .ad-test-full{grid-column:1/-1}
+.andarma-admin .ad-test-count{font-size:11px;color:#8092a5}
+.andarma-admin .ad-test-photo,.andarma-admin .ad-test-score{min-width:0;display:flex;flex-direction:column;gap:9px}
+.andarma-admin .ad-test-label{font-size:12px;color:#35516c;font-weight:700}
+.andarma-admin .ad-test-photo>small{font-size:11px;line-height:1.5;color:#8092a5}
+.andarma-admin .ad-test-rating{display:flex;align-items:center;gap:5px}
+.andarma-admin .ad-test-rating button{font-size:30px;color:#c9d7e5;background:none;border:0;cursor:pointer;line-height:1.3;padding:0 3px}
+.andarma-admin .ad-test-rating button.is-selected{color:#0874e8}
+.andarma-admin .ad-test-rating button:focus-visible{outline:2px solid #0066e0;border-radius:5px}
+.andarma-admin .ad-test-visibility{margin-top:14px;color:#35516c;font-size:12px}
+.andarma-admin .ad-test-visibility input{accent-color:#0066e0;width:16px;height:16px;vertical-align:middle;margin-right:7px}
+.andarma-admin .ad-test-error{padding:10px 13px;border-radius:10px;background:#fff1f3;color:#aa2839;font-size:12px;margin:16px 0 0}
+/* SweetAlert2 vive directamente en body. Los botones destructivos usan SIEMPRE rojo. */
+body .swal2-container:has(.andarma-swal){z-index:1000100!important}
+body .andarma-swal__confirm.is-danger{background:#be4050!important;color:#fff!important;border-color:#be4050!important}
+body .andarma-swal__confirm.is-danger:hover{background:#a92f40!important;border-color:#a92f40!important}
+body .andarma-swal__cancel{background:#fff!important;color:#35516c!important;border:1px solid #dde7f1!important}
+.story-avatar--initials{display:inline-grid!important;place-items:center;background:#e6f1ff;color:#0066e0;font-size:17px;font-weight:800}
+@media(max-width:650px){.andarma-admin .ad-test-toolbar{padding:12px}.andarma-admin .ad-test-fields{grid-template-columns:1fr}.andarma-admin .ad-test-full{grid-column:auto}.andarma-admin .ad-test-dialog{max-height:calc(100dvh - 16px)}}
+
+/* ANDARMA_V46_TEST_PROPERTY */
+.andarma-admin .ad-test-property-photo{min-width:0;display:grid;gap:7px;padding:13px;border:1px solid #dce7f2;border-radius:12px;background:#f9fbff}
+.andarma-admin .ad-test-property-photo>p{margin:0;font-size:12px}
+.andarma-admin .ad-test-property-photo>small{color:#758ca2;font-size:11px}

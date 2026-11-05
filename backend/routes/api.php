@@ -8,6 +8,7 @@ use App\Http\Middleware\EnsureAndarmaAdmin;
 
 Route::prefix('public')->group(function(){
     Route::get('/site-content',[Content::class,'index']);
+    Route::get('/settings',[\App\Http\Controllers\Api\AndarmaSettingsController::class,'publicSettings']);
     Route::get('/banners',[Admin::class,'publicBanners']);
     Route::get('/developments',[Admin::class,'publicDevelopments']);
     Route::get('/lots',[Admin::class,'publicLots']);
@@ -18,6 +19,19 @@ Route::prefix('public')->group(function(){
 Route::post('/admin/login',[Auth::class,'login'])->middleware('throttle:20,1');
 Route::prefix('admin')->middleware(['auth:sanctum',EnsureAndarmaAdmin::class])->group(function(){
     Route::get('/me',[Auth::class,'me']);Route::post('/logout',[Auth::class,'logout']);Route::get('/dashboard',[Admin::class,'dashboard']);
+    // ANDARMA_RBAC_V48
+    Route::get('/roles',[\App\Http\Controllers\Api\AndarmaRbacController::class,'roles']);
+    Route::post('/roles',[\App\Http\Controllers\Api\AndarmaRbacController::class,'storeRole']);
+    Route::put('/roles/{id}',[\App\Http\Controllers\Api\AndarmaRbacController::class,'updateRole'])->whereNumber('id');
+    Route::delete('/roles/{id}',[\App\Http\Controllers\Api\AndarmaRbacController::class,'deleteRole'])->whereNumber('id');
+    Route::get('/users',[\App\Http\Controllers\Api\AndarmaRbacController::class,'users']);
+    // ANDARMA_V50_SETTINGS_AND_USERS
+    Route::get('/user-role-options',[\App\Http\Controllers\Api\AndarmaRbacController::class,'userRoleOptions']);
+    Route::get('/settings',[\App\Http\Controllers\Api\AndarmaSettingsController::class,'index']);
+    Route::put('/settings',[\App\Http\Controllers\Api\AndarmaSettingsController::class,'update']);
+    Route::post('/users',[\App\Http\Controllers\Api\AndarmaRbacController::class,'storeUser']);
+    Route::put('/users/{id}',[\App\Http\Controllers\Api\AndarmaRbacController::class,'updateUser'])->whereNumber('id');
+    Route::delete('/users/{id}',[\App\Http\Controllers\Api\AndarmaRbacController::class,'deleteUser'])->whereNumber('id');
     Route::get('/site-content',[Content::class,'index']);Route::put('/site-content',[Content::class,'update']);
     Route::get('/media',[Admin::class,'media']);Route::post('/media',[Admin::class,'upload']);Route::delete('/media/{id}',[Admin::class,'deleteMedia'])->whereNumber('id');
     
@@ -32,7 +46,8 @@ Route::post('/clients/{id}/lots',[\App\Http\Controllers\Api\AndarmaClientsContro
 Route::delete('/clients/{id}/lots/{lotId}',[\App\Http\Controllers\Api\AndarmaClientsController::class,'releaseLot'])->whereNumber('id')->whereNumber('lotId');
 Route::post('/leads/{leadId}/convert',[\App\Http\Controllers\Api\AndarmaClientsController::class,'convert'])->whereNumber('leadId');
 // ANDARMA_CLIENTES_V30_END
-Route::get('/{resource}',[Admin::class,'index'])->where('resource','banners|developments|lots|testimonials|leads');
+    Route::post('/banners/reorder',[Admin::class,'reorderBanners']);
+    Route::get('/{resource}',[Admin::class,'index'])->where('resource','banners|developments|lots|testimonials|leads');
     Route::post('/{resource}',[Admin::class,'store'])->where('resource','banners|developments|lots|testimonials|leads');
     Route::put('/{resource}/{id}',[Admin::class,'update'])->where('resource','banners|developments|lots|testimonials|leads')->whereNumber('id');
     Route::delete('/{resource}/{id}',[Admin::class,'destroy'])->where('resource','banners|developments|lots|testimonials|leads')->whereNumber('id');

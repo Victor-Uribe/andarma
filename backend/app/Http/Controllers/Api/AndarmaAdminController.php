@@ -23,10 +23,10 @@ class AndarmaAdminController extends Controller {
  }
  private function validated(Request $request,string $resource,?int $id=null):array{
   return match($resource){
-   'banners'=>$request->validate(['title'=>'required|string|max:255','subtitle'=>'nullable|string|max:3000','image_url'=>'nullable|string|max:2048','button_text'=>'nullable|string|max:255','button_url'=>'nullable|string|max:1024','sort_order'=>'nullable|integer|min:0','is_active'=>'boolean']),
+   'banners'=>$request->validate(['title'=>'required|string|max:255','title_accent'=>'nullable|string|max:255','eyebrow'=>'nullable|string|max:255','overline'=>'nullable|string|max:255','footnote'=>'nullable|string|max:255','tagline'=>'nullable|string|max:255','editorial_label'=>'nullable|string|max:255','side_title'=>'nullable|string|max:255','side_description'=>'nullable|string|max:500','subtitle'=>'nullable|string|max:3000','image_url'=>'nullable|string|max:2048','button_text'=>'nullable|string|max:255','button_url'=>'nullable|string|max:1024','sort_order'=>'nullable|integer|min:0','is_active'=>'boolean']),
    'developments'=>$request->validate(['name'=>'required|string|max:255','slug'=>['nullable','string','max:255',Rule::unique('andarma_developments','slug')->ignore($id)],'description'=>'nullable|string|max:10000','location'=>'nullable|string|max:255','image_url'=>'nullable|string|max:2048','status'=>['required',Rule::in(['active','upcoming','inactive'])],'is_featured'=>'boolean']),
    'lots'=>$request->validate(['development_id'=>'required|integer|exists:andarma_developments,id','code'=>['required','string','max:255',Rule::unique('andarma_lots','code')->where('development_id',$request->input('development_id'))->ignore($id)],'area_m2'=>'nullable|numeric|min:0','price'=>'nullable|numeric|min:0','status'=>['required',Rule::in(['available','reserved','sold','inactive'])],'description'=>'nullable|string|max:5000','latitude'=>'nullable|numeric|between:-90,90','longitude'=>'nullable|numeric|between:-180,180']),
-   'testimonials'=>$request->validate(['name'=>'required|string|max:255','role'=>'nullable|string|max:255','quote'=>'required|string|max:4000','image_url'=>'nullable|string|max:2048','rating'=>'required|integer|between:1,5','sort_order'=>'nullable|integer|min:0','is_active'=>'boolean']),
+   'testimonials'=>$request->validate(['name'=>'required|string|max:255','role'=>'nullable|string|max:255','quote'=>'required|string|max:4000','image_url'=>'nullable|string|max:2048','property_image_url'=>'nullable|string|max:2048','rating'=>'required|integer|between:1,5','sort_order'=>'nullable|integer|min:0','is_active'=>'boolean']),
    'leads'=>$request->validate(['name'=>'required|string|max:255','email'=>'nullable|email|max:255','phone'=>'nullable|string|max:50','development_id'=>'nullable|integer|exists:andarma_developments,id','message'=>'nullable|string|max:5000','status'=>['required',Rule::in(['new','contacted','qualified','closed'])],'notes'=>'nullable|string|max:5000']),
    default=>abort(404)
   };
@@ -46,6 +46,20 @@ class AndarmaAdminController extends Controller {
  public function media(){return response()->json(['data'=>DB::table('andarma_media')->orderByDesc('id')->get()->map(fn($m)=>[...((array)$m),'url'=>Storage::disk('public')->url($m->path)])]);}
  public function upload(Request $request){$request->validate(['file'=>'required|file|mimes:jpg,jpeg,png,webp,mp4|max:20480']);$file=$request->file('file');$path=$file->store('andarma-media','public');$id=DB::table('andarma_media')->insertGetId(['original_name'=>$file->getClientOriginalName(),'path'=>$path,'mime_type'=>$file->getMimeType(),'size'=>$file->getSize(),'created_at'=>now(),'updated_at'=>now()]);return response()->json(['id'=>$id,'url'=>Storage::disk('public')->url($path)],201);}
  public function deleteMedia(int $id){$media=DB::table('andarma_media')->find($id);abort_unless($media,404);Storage::disk('public')->delete($media->path);DB::table('andarma_media')->where('id',$id)->delete();return response()->json(['message'=>'Archivo eliminado.']);}
+
+ // ANDARMA_V43: ordenar todas las escenas en una sola transacción.
+ public function reorderBanners(Request $request){
+  $data=$request->validate(['ids'=>'required|array|min:1|max:500','ids.*'=>'required|integer|distinct']);
+  return DB::transaction(function()use($data){
+   $current=DB::table('andarma_banners')->orderBy('id')->lockForUpdate()->pluck('id')->map(fn($id)=>(int)$id)->all();
+   $wanted=array_map('intval',$data['ids']);
+   $expected=$current;$submitted=$wanted;sort($expected);sort($submitted);
+   if($expected!==$submitted)return response()->json(['message'=>'Los banners cambiaron. Actualiza el listado e inténtalo nuevamente.'],409);
+   foreach($wanted as $position=>$id)DB::table('andarma_banners')->where('id',$id)->update(['sort_order'=>$position+1,'updated_at'=>now()]);
+   return response()->json(['message'=>'Orden actualizado correctamente.']);
+  });
+ }
+
  public function publicBanners(){return response()->json(['data'=>DB::table('andarma_banners')->where('is_active',1)->orderBy('sort_order')->get()]);}
  public function publicDevelopments(){return response()->json(['data'=>DB::table('andarma_developments')->where('status','active')->orderBy('sort_order')->orderBy('id')->get()]);}
  public function publicLots(Request $r){$query=DB::table('andarma_lots')->where('status','available');if($r->filled('development_id'))$query->where('development_id',$r->query('development_id'));return response()->json(['data'=>$query->get()]);}

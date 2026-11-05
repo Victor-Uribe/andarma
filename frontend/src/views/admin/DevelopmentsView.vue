@@ -86,18 +86,18 @@ const shown=computed(()=>developments.value.filter(d=>{
   const query=search.value.trim().toLocaleLowerCase('es')
   return (!status.value||d.status===status.value)&&(!query||[d.name,d.location,d.slug].join(' ').toLocaleLowerCase('es').includes(query))
 }))
-function blank(){return {name:'',slug:'',description:'',location:'',image_url:'',status:'active'}}
+function blank(){return {name:'',description:'',location:'',image_url:'',status:'active'}}
 function errorMessage(e){return e?.message||'No se pudo completar la operación.'}
 function toast(title){return Swal.fire({...swalTheme,toast:true,position:'top-end',timer:2200,timerProgressBar:true,showConfirmButton:false,icon:'success',title})}
 function error(e){return Swal.fire({...swalTheme,icon:'error',title:'No se pudo realizar la operación',text:errorMessage(e),confirmButtonText:'Entendido'})}
-async function confirmDelete(row){const r=await Swal.fire({...swalTheme,icon:'warning',title:'Eliminar desarrollo',text:`Se eliminará «${row.name}». Solo es posible si no tiene terrenos, planos ni prospectos relacionados.`,showCancelButton:true,confirmButtonText:'Sí, eliminar',cancelButtonText:'Cancelar',customClass:{...swalTheme.customClass,confirmButton:'andarma-swal__confirm is-danger'}});return r.isConfirmed}
+async function confirmDelete(row){const r=await Swal.fire({...swalTheme,icon:'warning',title:'Eliminar desarrollo',text:`Se eliminará «${row.name}». Solo es posible si no tiene terrenos, planos ni prospectos relacionados.`,showCancelButton:true,confirmButtonText:'Sí, eliminar',cancelButtonText:'Cancelar',customClass:{...swalTheme.customClass,confirmButton:'andarma-swal__confirm is-danger',popup:'andarma-swal andarma-delete-dialog'}});return r.isConfirmed}
 async function load(){
   loading.value=true
   try{const result=await api('/admin/im/developments/summary');developments.value=result.data||[];orderSnapshot.value=developments.value.map(d=>String(d.id))}
   catch(e){error(e)}finally{loading.value=false}
 }
 function add(){editing.value=null;form.value=blank();newPhoto.value=null;removePhoto.value=false;modal.value=true}
-function edit(row){editing.value=row;form.value={name:row.name||'',slug:row.slug||'',description:row.description||'',location:row.location||'',image_url:row.image_url||'',status:row.status||'active'};newPhoto.value=null;removePhoto.value=false;modal.value=true}
+function edit(row){editing.value=row;form.value={name:row.name||'',description:row.description||'',location:row.location||'',image_url:row.image_url||'',status:row.status||'active'};newPhoto.value=null;removePhoto.value=false;modal.value=true}
 function close(){if(!saving.value)modal.value=false}
 async function save(){
   if(saving.value)return
@@ -108,7 +108,6 @@ async function save(){
     body.append('name',form.value.name.trim())
     body.append('location',form.value.location?.trim()||'')
     body.append('description',form.value.description?.trim()||'')
-    body.append('slug',form.value.slug?.trim()||'')
     body.append('status',form.value.status)
     body.append('remove_image',removePhoto.value?'1':'0')
     if(newPhoto.value)body.append('photo',newPhoto.value,newPhoto.value.name)
@@ -143,7 +142,7 @@ onMounted(load)
     </div>
     <div class="ad-actions">
       <button class="ad-btn" :disabled="loading" @click="load"><i class="fa-solid fa-rotate"></i> Actualizar</button>
-      <button class="ad-btn ad-btn--primary" @click="add"><i class="fa-solid fa-plus"></i> Nuevo desarrollo</button>
+      <button v-can="'developments.create'" class="ad-btn ad-btn--primary" @click="add"><i class="fa-solid fa-plus"></i> Nuevo desarrollo</button>
     </div>
   </header>
   <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -165,7 +164,7 @@ onMounted(load)
       <div class="ad-dev37-sort-actions">
         <span v-if="orderChanged" class="ad-badge ad-badge--warning">Orden sin guardar</span>
         <button v-if="orderChanged" type="button" class="ad-btn" @click="undoOrder">Deshacer</button>
-        <button type="button" class="ad-btn ad-btn--primary" :disabled="!orderChanged||isFiltering||orderSaving" @click="saveOrder"><i class="fa-solid fa-floppy-disk"></i> {{orderSaving?'Guardando...':'Guardar orden'}}</button>
+        <button v-can="'developments.edit'" type="button" class="ad-btn ad-btn--primary" :disabled="!orderChanged||isFiltering||orderSaving" @click="saveOrder"><i class="fa-solid fa-floppy-disk"></i> {{orderSaving?'Guardando...':'Guardar orden'}}</button>
       </div>
     </div>
     <div class="ad-table-wrap">
@@ -175,7 +174,7 @@ onMounted(load)
             <td class="ad-dev37-sortcell"><div>
               <button class="ad-dev37-drag" type="button" :draggable="!isFiltering" :disabled="isFiltering" :title="isFiltering?'Limpia los filtros para ordenar':'Arrastra para cambiar el orden'" :aria-label="'Arrastrar '+d.name" @dragstart="dragStart($event,d.id)" @dragend="dragEnd"><i class="fa-solid fa-grip-vertical"></i></button>
               <span class="ad-dev37-position">{{developments.findIndex(x=>x.id===d.id)+1}}</span>
-              <div class="flex flex-col gap-1"><button type="button" class="ad-dev37-move" :disabled="isFiltering||developments[0]?.id===d.id" :aria-label="'Subir '+d.name" @click="moveStep(d.id,-1)"><i class="fa-solid fa-chevron-up"></i></button><button type="button" class="ad-dev37-move" :disabled="isFiltering||developments[developments.length-1]?.id===d.id" :aria-label="'Bajar '+d.name" @click="moveStep(d.id,1)"><i class="fa-solid fa-chevron-down"></i></button></div>
+              <div class="flex flex-col gap-1"><button v-can="'developments.edit'" type="button" class="ad-dev37-move" :disabled="isFiltering||developments[0]?.id===d.id" :aria-label="'Subir '+d.name" @click="moveStep(d.id,-1)"><i class="fa-solid fa-chevron-up"></i></button><button v-can="'developments.edit'" type="button" class="ad-dev37-move" :disabled="isFiltering||developments[developments.length-1]?.id===d.id" :aria-label="'Bajar '+d.name" @click="moveStep(d.id,1)"><i class="fa-solid fa-chevron-down"></i></button></div>
             </div></td>
             <td><div class="ad-dev-name"><div class="ad-dev-thumb"><img v-if="d.image_url" :src="d.image_url" :alt="d.name" loading="lazy"/><i v-else class="fa-regular fa-image"></i></div><div><strong>{{d.name}}</strong><small><i class="fa-solid fa-location-dot"></i> {{d.location||'Ubicación no registrada'}}</small></div></div></td>
             <td><span class="ad-badge" :class="d.status==='active'?'ad-badge--success':d.status==='inactive'?'ad-badge--danger':''">{{statusNames[d.status]||d.status}}</span></td>
@@ -184,8 +183,8 @@ onMounted(load)
             <td><div class="ad-actions ad-dev-actions">
               <button class="ad-btn" @click="viewLots(d)" title="Ver terrenos"><i class="fa-solid fa-list"></i> Terrenos</button>
               <button class="ad-btn" @click="viewMaps(d)" title="Ver planos"><i class="fa-solid fa-map"></i> Mapas</button>
-              <button class="ad-btn" @click="edit(d)" title="Editar desarrollo"><i class="fa-solid fa-pen"></i> Editar</button>
-              <button class="ad-btn ad-btn--danger" @click="del(d)" title="Eliminar desarrollo"><i class="fa-solid fa-trash"></i> Eliminar</button>
+              <button v-can="'developments.edit'" class="ad-btn" @click="edit(d)" title="Editar desarrollo"><i class="fa-solid fa-pen"></i> Editar</button>
+              <button v-can="'developments.delete'" class="ad-btn ad-btn--danger" @click="del(d)" title="Eliminar desarrollo"><i class="fa-solid fa-trash"></i> Eliminar</button>
             </div></td>
           </tr>
           <tr v-if="!loading&&!shown.length"><td colspan="6" class="ad-dev-empty">No encontramos desarrollos con esos filtros.</td></tr>
@@ -218,7 +217,7 @@ onMounted(load)
             <div class="ad-dev37-section"><span class="number">03</span><strong>Estado y publicación</strong></div>
             <div class="ad-dev37-formgrid">
               <label class="ad-label">Estado<select v-model="form.status" class="ad-select"><option value="active">Activo</option><option value="upcoming">Próximamente</option><option value="inactive">Inactivo</option></select><span class="ad-dev37-hint">Solo los desarrollos activos se publican en el sitio público.</span></label>
-              <details class="ad-dev37-advanced"><summary><i class="fa-solid fa-gear"></i> Opciones avanzadas · URL interna</summary><label class="ad-label">Slug<input v-model.trim="form.slug" class="ad-input" maxlength="255" placeholder="Se genera automáticamente"/><span class="ad-dev37-hint">Evita cambiarlo en proyectos existentes: podría alterar sus enlaces.</span></label></details>
+              <div class="ad-dev37-advanced" role="note"><strong><i class="fa-solid fa-link" aria-hidden="true"></i> Dirección web automática</strong><p class="ad-dev37-hint">El sistema genera la dirección del desarrollo a partir de su nombre. No necesitas configurarla.</p></div>
             </div>
           </div>
         </div>

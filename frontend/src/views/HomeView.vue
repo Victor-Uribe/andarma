@@ -5,6 +5,45 @@ import '../assets/andarma.css'
 const API = (import.meta.env.VITE_API_BASE || '/api').replace(/\/$/, '')
 let legacyScript
 let controller
+async function hydrateHeroBanners() {
+  try {
+    const response = await fetch(`${API}/public/banners`, {signal:controller.signal,headers:{Accept:'application/json'}})
+    if (!response.ok) return
+    const payload = await response.json()
+    const banners = (Array.isArray(payload.data)?payload.data:[]).filter(b=>b?.is_active && b.image_url && b.title)
+    if (!banners.length) return // El diseño inicial sigue funcionando si todavía no hay banners.
+    const section = document.querySelector('#inicio.hero')
+    const originals = [...(section?.querySelectorAll('.hero-slide') || [])]
+    if (!section || !originals.length) return
+    const slides = banners.map(b=>({
+      eyebrow:b.eyebrow||'', line1:b.title, line2:b.title_accent||'',
+      description:b.subtitle||'',cta:b.button_text||'',href:b.button_url||'#desarrollos',
+      overline:b.overline||'',footnote:b.footnote||'',tagline:b.tagline||'',
+      editorial_label:b.editorial_label||'',side_title:b.side_title||'',side_description:b.side_description||''
+    }))
+    const anchor = originals[0]
+    for (const b of banners) {
+      const panel=document.createElement('div')
+      panel.className='hero-slide'
+      panel.setAttribute('aria-hidden','true')
+      const img=document.createElement('img')
+      img.className='hero-image';img.alt=b.title
+      img.src=b.image_url;img.decoding='async';img.loading='lazy'
+      const shade=document.createElement('div');shade.className='hero-shade'
+      panel.append(img,shade)
+      anchor.parentNode.insertBefore(panel,anchor)
+    }
+    originals.forEach(panel=>panel.remove())
+    const first=section.querySelector('.hero-slide')
+    first.classList.add('active');first.setAttribute('aria-hidden','false')
+    const image=first.querySelector('img');image.loading='eager';image.fetchPriority='high'
+    const total=section.querySelector('.slide-total')
+    if(total)total.textContent='/ '+String(slides.length).padStart(2,'0')
+    window.__ANDARMA_HERO_SLIDES__=slides
+  } catch(e) {
+    if(e.name!=='AbortError')console.warn('Se conservaron los banners originales:',e)
+  }
+}
 async function hydrateContent() {
   controller = new AbortController()
   try {
@@ -18,9 +57,62 @@ async function hydrateContent() {
     }
   } catch (e) { if (e.name !== 'AbortError') console.warn('Contenido remoto no disponible; se mantiene contenido predeterminado.',e) }
 }
+// ANDARMA_V45_TESTIMONIALS_PUBLIC: usar únicamente testimonios visibles.
+async function hydrateTestimonials() {
+  try {
+    const response = await fetch(`${API}/public/testimonials`, {headers:{Accept:'application/json'}, signal:controller?.signal})
+    if (!response.ok) return
+    const payload = await response.json()
+    const items = Array.isArray(payload.data) ? payload.data : []
+    if (!items.length) return // Se conservan los ejemplos rotulados mientras no existan testimonios reales.
+    const track = document.getElementById('storiesTrack')
+    const sample = track?.querySelector('.story')
+    if (!track || !sample) return
+    const cards = document.createDocumentFragment()
+    for (const item of items) {
+      const card = sample.cloneNode(true)
+      card.querySelector('.story-quote').textContent = '“'+String(item.quote||'').trim()+'”'
+      card.querySelector('.story-name').textContent = String(item.name||'Cliente ANDARMA')
+      card.querySelector('.story-type').textContent = String(item.role||'Cliente')
+      const stars=card.querySelector('.story-rating')
+      const rating=Math.min(5,Math.max(1,Number(item.rating)||5))
+      if (stars) {
+        stars.setAttribute('aria-label',`Calificación de ${rating} estrellas`);
+        [...stars.children].forEach((star,i)=>{star.style.display=i<rating?'':'none'})
+      }
+      const avatar=card.querySelector('.story-avatar')
+      if (avatar) {
+        if (item.image_url) {
+          avatar.src=item.image_url
+          avatar.alt='Fotografía autorizada de '+String(item.name||'cliente')
+        } else {
+          const initials=document.createElement('span')
+          initials.className='story-avatar story-avatar--initials'
+          initials.textContent=String(item.name||'C').trim().slice(0,1).toUpperCase()
+          avatar.replaceWith(initials)
+        }
+      }
+      // V46: imagen horizontal de propiedad independiente de la foto del cliente.
+      const landscape=card.querySelector('.story-photo')
+      if (landscape && item.property_image_url) {
+        landscape.src=item.property_image_url
+        landscape.alt='Fotografía del terreno o vivienda asociada al testimonio'
+      }
+      cards.appendChild(card)
+    }
+    track.replaceChildren(cards)
+    const note=document.querySelector('.stories-note')
+    if (note) note.textContent='Testimonios de clientes compartidos con autorización. Algunas imágenes de propiedades pueden ser ilustrativas.'
+    const viewport=document.getElementById('storiesViewport')
+    viewport?.setAttribute('aria-label','Testimonios de clientes ANDARMA')
+  } catch(e) {if(e.name !== 'AbortError') console.warn('No se pudieron cargar los testimonios publicados.',e)}
+}
+
 onMounted(async () => {
   await nextTick()
   await hydrateContent()
+  await hydrateTestimonials()
+  await hydrateHeroBanners()
   // Original animation controller retained temporarily for visual fidelity in migration stage 1.
   legacyScript = document.createElement('script')
   legacyScript.src = '/andarma-legacy.js'
@@ -29,6 +121,7 @@ onMounted(async () => {
 })
 onBeforeUnmount(() => {
   controller?.abort()
+  delete window.__ANDARMA_HERO_SLIDES__
   legacyScript?.remove()
 })
 </script>

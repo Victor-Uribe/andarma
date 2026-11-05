@@ -1,3 +1,4 @@
+// ANDARMA_V45_DELETE_DESIGN: confirmaciones destructivas mediante variant:danger
 import Swal from 'sweetalert2'
 
 const base = {
@@ -22,6 +23,7 @@ export async function confirmAction({title, text = '', confirmText = 'Confirmar'
     ...base,
     title,
     text,
+    focusCancel: true,
     icon: variant === 'danger' ? 'warning' : 'question',
     showCancelButton: true,
     confirmButtonText: confirmText,
@@ -29,6 +31,7 @@ export async function confirmAction({title, text = '', confirmText = 'Confirmar'
     customClass: {
       ...base.customClass,
       confirmButton: variant === 'danger' ? 'andarma-swal__confirm is-danger' : 'andarma-swal__confirm',
+      popup: variant === 'danger' ? 'andarma-swal andarma-delete-dialog' : 'andarma-swal',
     }
   })
   return result.isConfirmed

@@ -1,0 +1,147 @@
+/* ANDARMA V41 · Editor de banners / diseño administrativo */
+.andarma-admin .ad-banner-page{display:grid;gap:20px}
+.andarma-admin .ad-banner-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;flex-wrap:wrap}
+.andarma-admin .ad-banner-head .ad-muted{max-width:720px}
+.andarma-admin .ad-banner-guide{display:flex;gap:10px;align-items:flex-start;padding:13px 17px;background:#eef6ff;border:1px solid #d4e7fc;border-radius:12px;color:#315c83;font-size:12px}
+.andarma-admin .ad-banner-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:18px}
+.andarma-admin .ad-banner-card{background:#fff;border:1px solid #dde7f1;border-radius:18px;overflow:hidden;box-shadow:0 8px 26px #102f510d}
+.andarma-admin .ad-banner-image{aspect-ratio:16/9;position:relative;background:#ecf3f9;overflow:hidden}
+.andarma-admin .ad-banner-image img{width:100%;height:100%;object-fit:cover}
+.andarma-admin .ad-banner-count{position:absolute;left:16px;top:16px;background:#071f3dcf;color:white;border-radius:8px;padding:7px 10px;font-size:11px;font-weight:700}
+.andarma-admin .ad-banner-empty{display:grid;place-items:center;height:100%;color:#90a8c2}
+.andarma-admin .ad-banner-content{padding:20px;display:grid;gap:12px}
+.andarma-admin .ad-banner-topline,.andarma-admin .ad-banner-card-actions{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.andarma-admin .ad-banner-content h2{font-size:20px;line-height:1.2;color:#17324e;font-weight:800;margin:0;overflow-wrap:anywhere}
+.andarma-admin .ad-banner-content h2 span{color:#0066e0}
+.andarma-admin .ad-banner-content p{font-size:12px;color:#657e98;margin:0;line-height:1.65;min-height:40px}
+.andarma-admin .ad-banner-card-actions{justify-content:flex-start;margin-top:5px}
+.andarma-admin .ad-banner-none{padding:35px;border-radius:18px;background:#fff;display:grid;justify-items:start;gap:12px}
+.andarma-admin .ad-banner-overlay{z-index:1300}
+.andarma-admin .ad-banner-modal{width:min(1160px,100%);max-height:calc(100dvh - 32px)}
+.andarma-admin .ad-banner-modal .ad-modal__header h2{font-size:23px;font-weight:800;color:#17324e}
+.andarma-admin .ad-banner-edit-layout{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(300px,.8fr);gap:22px;padding:22px;min-height:0;overflow:auto}
+.andarma-admin .ad-banner-edit-form{display:grid;gap:19px;min-width:0}
+.andarma-admin .ad-banner-section{display:grid;gap:12px;border-bottom:1px solid #e6edf5;padding-bottom:18px}
+.andarma-admin .ad-banner-section h3{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:800;color:#19344d}
+.andarma-admin .ad-banner-section h3 span{display:grid;place-items:center;background:#eef6ff;color:#0066e0;border-radius:9px;width:29px;height:29px;font-size:11px}
+.andarma-admin .ad-banner-section p,.andarma-admin .ad-banner-section small{font-size:12px;color:#71869a}
+.andarma-admin .ad-banner-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.andarma-admin .ad-banner-wide{grid-column:1/-1}
+.andarma-admin .ad-banner-toggle{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:700;color:#335270;align-self:center}
+.andarma-admin .ad-banner-toggle input{width:18px;height:18px;accent-color:#0066e0}
+.andarma-admin .ad-banner-more{border:1px solid #dce7f1;border-radius:12px;padding:14px;background:#f8fbff}
+.andarma-admin .ad-banner-more summary{cursor:pointer;color:#315b81;font-size:12px;font-weight:800}
+.andarma-admin .ad-banner-more .ad-banner-fields{margin-top:15px}
+.andarma-admin .ad-banner-error{padding:12px;background:#fff1f3;color:#b63140;border-radius:9px;font-size:12px}
+.andarma-admin .ad-banner-preview-col{position:sticky;top:0;align-self:start;display:grid;gap:12px;min-width:0}
+.andarma-admin .ad-banner-preview-heading{display:flex;justify-content:space-between;gap:10px;align-items:center;font-size:12px;color:#35516c}
+.andarma-admin .ad-banner-preview-heading small{color:#8195aa}
+.andarma-admin .ad-banner-preview{aspect-ratio:16/9;border-radius:14px;background-color:#071a31;background-size:cover;background-position:center;display:flex;align-items:center;color:white;padding:clamp(16px,3vw,32px);overflow:hidden}
+.andarma-admin .ad-banner-preview-text{max-width:95%;display:grid;gap:8px}
+.andarma-admin .ad-banner-preview-text small{font-size:clamp(7px,.8vw,10px);font-weight:800;letter-spacing:.12em;color:#bde3ff}
+.andarma-admin .ad-banner-preview-text h3{font-size:clamp(20px,2.3vw,36px);font-weight:850;letter-spacing:-.06em;line-height:1.05;color:#fff;overflow-wrap:anywhere}
+.andarma-admin .ad-banner-preview-text h3 em{font-style:normal;color:#5db7ff}
+.andarma-admin .ad-banner-preview-text p{font-size:clamp(9px,.9vw,12px);color:#e4edfa;line-height:1.5}
+.andarma-admin .ad-banner-preview-button{justify-self:start;border:1px solid #ffffff6e;padding:7px 10px;font-size:10px;font-weight:750}
+.andarma-admin .ad-banner-preview-col>.ad-muted{font-size:11px;line-height:1.6}
+@media(max-width:850px){.andarma-admin .ad-banner-edit-layout{grid-template-columns:1fr}.andarma-admin .ad-banner-preview-col{position:static;grid-row:1}}
+@media(max-width:540px){.andarma-admin .ad-banner-fields{grid-template-columns:1fr}.andarma-admin .ad-banner-edit-layout{padding:14px}.andarma-admin .ad-banner-card-actions .ad-btn{flex:1}.andarma-admin .ad-banner-modal{max-height:calc(100dvh - 16px)}}
+
+
+/* ANDARMA V43 — orden externo y acciones de publicación */
+.andarma-admin .ad-banner-sort-hint{display:flex;align-items:center;gap:9px;padding:11px 14px;color:#43627f;background:#f0f6ff;border:1px solid #dbe9fc;border-radius:11px;font-size:12px}
+.andarma-admin .ad-banner-order{display:flex;align-items:center;gap:7px;color:#607b96;font-size:11px;font-weight:700}
+.andarma-admin .ad-banner-order .ad-btn{width:31px;height:31px;min-height:31px;padding:0}
+.andarma-admin .ad-banner-publish .ad-banner-toggle{align-items:flex-start;justify-content:flex-start;padding:14px;border:1px solid #dbe7f1;background:#f8fbff;border-radius:12px}
+.andarma-admin .ad-banner-publish .ad-banner-toggle>span{display:grid;gap:3px}
+.andarma-admin .ad-banner-publish .ad-banner-toggle small{font-size:11px;font-weight:400;color:#70889e}
+.andarma-admin .ad-banner-preview-eyebrow{padding-top:4px;color:#88c5ff!important}
+@media(max-width:600px){.andarma-admin .ad-banner-order{width:100%;justify-content:flex-end}.andarma-admin .ad-banner-topline{align-items:flex-start}}
+
+/* ANDARMA_BANNERS_LIST_V44 — listado compacto, sin imagen hero sobredimensionada */
+.andarma-admin .ad-banner-list{
+  overflow:hidden;background:#fff;border:1px solid #dbe7f1;border-radius:17px;
+  box-shadow:0 6px 24px rgba(18,44,71,.04)
+}
+.andarma-admin .ad-banner-list-head{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:17px 20px;border-bottom:1px solid #e8eef5
+}
+.andarma-admin .ad-banner-list-head h2{
+  margin:0;color:#17324e;font-size:15px;font-weight:800;letter-spacing:-.02em
+}
+.andarma-admin .ad-banner-list-head p{margin:4px 0 0;font-size:12px;color:#72879c}
+.andarma-admin .ad-banner-list-row{
+  display:grid;grid-template-columns:42px 148px minmax(175px,1fr) 118px 78px auto;
+  gap:16px;align-items:center;min-width:0;padding:15px 19px;
+  border-bottom:1px solid #edf1f6;transition:background .18s ease
+}
+.andarma-admin .ad-banner-list-row:last-of-type{border-bottom:0}
+.andarma-admin .ad-banner-list-row:hover{background:#f9fbff}
+.andarma-admin .ad-banner-list-row.is-inactive{background:#fbfcfe}
+.andarma-admin .ad-banner-list-rank{
+  display:grid;place-items:center;width:38px;height:38px;border-radius:10px;
+  background:#eef5ff;color:#0066e0;font-size:13px;letter-spacing:.01em
+}
+.andarma-admin .ad-banner-list-thumb{
+  width:148px;aspect-ratio:16/9;border-radius:9px;background:#edf3f9;
+  border:1px solid #dbe5ef;overflow:hidden;display:grid;place-items:center;color:#90a5b9
+}
+.andarma-admin .ad-banner-list-thumb img{display:block;width:100%;height:100%;object-fit:cover}
+.andarma-admin .ad-banner-list-details{min-width:0}
+.andarma-admin .ad-banner-list-details h3{
+  display:block;margin:0 0 5px;font-size:14px;line-height:1.35;color:#17324e;
+  font-weight:750;overflow:hidden;text-overflow:ellipsis;white-space:nowrap
+}
+.andarma-admin .ad-banner-list-details h3 span{color:#0066e0}
+.andarma-admin .ad-banner-list-details p{
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+  overflow:hidden;font-size:12px;line-height:1.5;color:#71869b;margin:0 0 5px
+}
+.andarma-admin .ad-banner-list-details small{
+  display:flex;align-items:center;gap:6px;color:#537b9f;font-size:11px;
+  max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap
+}
+.andarma-admin .ad-banner-list-status{display:flex;align-items:center}
+.andarma-admin .ad-banner-list-sort{display:flex;gap:5px}
+.andarma-admin .ad-banner-list-sort .ad-icon-btn{width:32px;height:32px;min-height:32px;padding:0}
+.andarma-admin .ad-banner-list-actions{
+  display:flex;align-items:center;justify-content:flex-end;gap:7px;flex-wrap:wrap
+}
+.andarma-admin .ad-banner-list-actions .ad-icon-btn{width:36px;padding:0}
+.andarma-admin .ad-banner-list-message{padding:38px 20px;display:flex;align-items:center;justify-content:center;gap:12px;color:#72879c;font-size:13px}
+@media(max-width:1150px){
+  .andarma-admin .ad-banner-list-row{
+    grid-template-columns:38px 120px minmax(160px,1fr) auto;
+    gap:12px
+  }
+  .andarma-admin .ad-banner-list-thumb{width:120px}
+  .andarma-admin .ad-banner-list-status{grid-column:3}
+  .andarma-admin .ad-banner-list-sort{grid-column:2;grid-row:2}
+  .andarma-admin .ad-banner-list-actions{grid-column:4;grid-row:1 / span 2}
+}
+@media(max-width:720px){
+  .andarma-admin .ad-banner-list-row{
+    grid-template-columns:34px 94px minmax(0,1fr);
+    gap:10px;padding:13px
+  }
+  .andarma-admin .ad-banner-list-rank{width:32px;height:32px}
+  .andarma-admin .ad-banner-list-thumb{width:94px}
+  .andarma-admin .ad-banner-list-details h3{font-size:12px}
+  .andarma-admin .ad-banner-list-details p{-webkit-line-clamp:1}
+  .andarma-admin .ad-banner-list-details small{display:none}
+  .andarma-admin .ad-banner-list-status{grid-column:3;grid-row:2}
+  .andarma-admin .ad-banner-list-sort{grid-column:1 / 3;grid-row:3}
+  .andarma-admin .ad-banner-list-actions{grid-column:3;grid-row:3;justify-content:flex-end}
+  .andarma-admin .ad-banner-list-actions .ad-btn{padding:0 8px;font-size:11px}
+  .andarma-admin .ad-banner-list-head{padding:14px}
+}
+
+/* ANDARMA_V46_BANNER_ORDER — igual al orden de Testimonios */
+.andarma-admin .ad-banner-list-row{grid-template-columns:75px 148px minmax(175px,1fr) 116px auto}
+.andarma-admin .ad-banner-list-rank--v46{width:auto;min-width:0;height:auto;display:flex;gap:7px;justify-content:flex-start;background:transparent}
+.andarma-admin .ad-banner-list-rank--v46>strong{display:grid;place-items:center;border-radius:9px;background:#eef5ff;color:#0066e0;width:34px;height:34px;flex:none;font-size:12px}
+.andarma-admin .ad-banner-rank-controls{display:grid;gap:3px}
+.andarma-admin .ad-banner-rank-controls .ad-icon-btn{width:24px;height:22px;min-height:22px;padding:0}
+@media(max-width:1150px){.andarma-admin .ad-banner-list-row{grid-template-columns:75px 120px minmax(150px,1fr) auto}.andarma-admin .ad-banner-list-rank--v46{grid-column:1;grid-row:1}}
+@media(max-width:720px){.andarma-admin .ad-banner-list-row{grid-template-columns:75px 94px minmax(0,1fr)}.andarma-admin .ad-banner-list-rank--v46{grid-column:1;grid-row:1}.andarma-admin .ad-banner-list-status{grid-column:3;grid-row:2}.andarma-admin .ad-banner-list-actions{grid-column:2 / -1;grid-row:3;justify-content:flex-end}}

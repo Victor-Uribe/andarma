@@ -8,11 +8,12 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Schema;
+use Carbon\CarbonImmutable;
 
 class AndarmaInventoryMapsController extends Controller
 {
     private function superAdmin(Request $r): void {
-        abort_unless((bool)($r->user()?->is_andarma_superadmin), 403, 'Solo el Superadministrador puede modificar planos y polígonos.');
+        abort_unless(\App\Support\AndarmaAccess::can($r->user(), 'maps.edit') || \App\Support\AndarmaAccess::can($r->user(), 'maps.create') || \App\Support\AndarmaAccess::can($r->user(), 'maps.delete'), 403, 'No tienes permisos para modificar planos y polígonos.');
     }
     private function planRow(int $id) {
         $p=DB::table('andarma_plans as p')->join('andarma_developments as d','d.id','=','p.development_id')
@@ -22,7 +23,7 @@ class AndarmaInventoryMapsController extends Controller
         return $p;
     }
     public function permissions(Request $r) {
-        return response()->json(['superadmin'=>(bool)$r->user()?->is_andarma_superadmin]);
+        return response()->json(['superadmin'=>\App\Support\AndarmaAccess::can($r->user(), 'maps.edit'), 'can_create'=>\App\Support\AndarmaAccess::can($r->user(), 'maps.create'), 'can_delete'=>\App\Support\AndarmaAccess::can($r->user(), 'maps.delete')]);
     }
     public function developments() {
         return response()->json(['data'=>DB::table('andarma_developments')->select('id','name','status')->orderBy('name')->get()]);
@@ -31,13 +32,77 @@ class AndarmaInventoryMapsController extends Controller
         $d=$r->validate(['q'=>'nullable|string|max:120','development_id'=>'nullable|integer','status'=>'nullable|in:available,reserved,sold,inactive','mapped'=>'nullable|in:yes,no','page'=>'nullable|integer|min:1','per_page'=>'nullable|integer|min:1|max:100']);
         $query=DB::table('andarma_lots as l')->join('andarma_developments as d','d.id','=','l.development_id')
           ->leftJoin('andarma_lot_geometries as g','g.lot_id','=','l.id')
-          ->select('l.*','d.name as development_name','g.plan_id as mapped_plan_id');
+          ->leftJoin('andarma_clients as c','c.id','=','l.client_id')
+          ->select('l.*','d.name as development_name','g.plan_id as mapped_plan_id',
+                   'c.name as buyer_name','c.phone as buyer_phone');
         if(!empty($d['q'])) {$like='%'.addcslashes($d['q'],'%_').'%';$query->where(function($w)use($like){$w->where('l.code','like',$like)->orWhere('l.block','like',$like)->orWhere('d.name','like',$like);});}
         if(!empty($d['development_id']))$query->where('l.development_id',$d['development_id']);
         if(!empty($d['status']))$query->where('l.status',$d['status']);
         if(($d['mapped']??'')==='yes')$query->whereNotNull('g.id');
         if(($d['mapped']??'')==='no')$query->whereNull('g.id');
-        return response()->json($query->orderByDesc('l.id')->paginate($d['per_page']??20));
+        // ANDARMA_V40_INVENTORY_PAYMENT_TRAFFIC
+        // Calculamos solo los terrenos de la página, sin N+1 consultas.
+        $page = $query->orderByDesc('l.id')->paginate($d['per_page']??20);
+        $lots = $page->getCollection();
+        $ids = $lots->pluck('id')->all();
+        if ($ids) {
+            $plans = DB::table('andarma_lot_financing')
+                ->whereIn('lot_id', $ids)->get()->keyBy('lot_id');
+            $payments = DB::table('andarma_client_payments')
+                ->whereIn('lot_id', $ids)
+                ->select('lot_id','client_id','status','payment_type','applied_period','amount')
+                ->get()->groupBy('lot_id');
+            $today = CarbonImmutable::now('America/Mexico_City')->startOfDay();
+            foreach ($lots as $lot) {
+                $lot->overdue_months = null;
+                $lot->payment_tone = 'neutral';
+                $lot->payment_label = 'Sin plan';
+                if (!$lot->client_id || !in_array($lot->status, ['sold','reserved'], true)) {
+                    $lot->payment_label = 'No aplica';
+                    continue;
+                }
+                $plan = $plans->get($lot->id);
+                if (!$plan || (int)$plan->client_id !== (int)$lot->client_id) continue;
+                $lotPayments = $payments->get($lot->id, collect())->filter(
+                    fn($p) => (int)$p->client_id === (int)$lot->client_id && $p->status === 'applied'
+                );
+                // No mostrar al corriente sin conocer a qué meses pertenecen pagos antiguos.
+                if ($lotPayments->contains(fn($p) => $p->payment_type === 'monthly' && !$p->applied_period)) {
+                    $lot->payment_label = 'Revisar pagos';
+                    continue;
+                }
+                $installment = (int)round((float)$plan->monthly_payment_amount * 100);
+                $financed = (int)round(((float)$plan->sale_price - (float)$plan->discount_amount - (float)$plan->down_payment_amount) * 100);
+                if ($financed <= 0 || $installment <= 0 || !$plan->first_payment_period) {
+                    $lot->payment_label = 'Sin mensualidades';
+                    continue;
+                }
+                $count = (int)ceil($financed / $installment);
+                if ($count > 600) {
+                    $lot->payment_label = 'Revisar plan';
+                    continue;
+                }
+                $paidByMonth = [];
+                foreach ($lotPayments as $payment) {
+                    if ($payment->payment_type !== 'monthly' || !$payment->applied_period) continue;
+                    $key = substr((string)$payment->applied_period, 0, 7);
+                    $paidByMonth[$key] = ($paidByMonth[$key] ?? 0) + (int)round((float)$payment->amount * 100);
+                }
+                $start = CarbonImmutable::parse($plan->first_payment_period)->startOfMonth();
+                $overdue = 0;
+                for ($i=0; $i<$count; $i++) {
+                    $month = $start->addMonthsNoOverflow($i);
+                    $due = $month->day(min((int)$plan->payment_due_day, $month->daysInMonth));
+                    if ($due->greaterThanOrEqualTo($today)) continue;
+                    $dueCents = min($installment, $financed - $installment*$i);
+                    if ($dueCents > ($paidByMonth[$month->format('Y-m')] ?? 0)) $overdue++;
+                }
+                $lot->overdue_months = $overdue;
+                $lot->payment_tone = $overdue >= 4 ? 'red' : ($overdue >= 1 ? 'yellow' : 'green');
+                $lot->payment_label = $overdue === 0 ? 'Al corriente' : ($overdue.' '.($overdue===1?'mes':'meses').' de atraso');
+            }
+        }
+        return response()->json($page);
     }
     private function validatedLot(Request $r,?int $id=null): array {
         return $r->validate([

@@ -105,8 +105,26 @@ class AndarmaFinanceController extends Controller
                     ->orWhere('d.name', 'like', $like);
             });
         }
-        return response()->json($q->orderBy('d.name')->orderBy('l.block')->orderBy('l.code')
-            ->paginate($data['per_page'] ?? 30));
+        $page = $q->orderBy('d.name')->orderBy('l.block')->orderBy('l.code')
+            ->paginate($data['per_page'] ?? 30);
+        $lotIds = $page->getCollection()->pluck('id')->all();
+        $plans = DB::table('andarma_lot_financing')->whereIn('lot_id', $lotIds)->get()->keyBy('lot_id');
+        $payments = DB::table('andarma_client_payments')->whereIn('lot_id', $lotIds)->get()->groupBy('lot_id');
+        foreach ($page->getCollection() as $lot) {
+            $plan = $plans->get($lot->id);
+            $lot->payment_tone = 'neutral';
+            $lot->payment_label = 'Sin plan';
+            if (!$plan) continue;
+            $lotPayments = $payments->get($lot->id, collect());
+            if ($lotPayments->contains(fn ($p) => $p->status === 'applied' && $p->payment_type === 'monthly' && !$p->applied_period)) {
+                $lot->payment_label = 'Requiere conciliación';
+                continue;
+            }
+            $months = count(array_filter($this->monthRows($plan, $lotPayments), fn ($p) => $p['is_overdue']));
+            $lot->payment_tone = $months >= 4 ? 'red' : ($months >= 1 ? 'yellow' : 'green');
+            $lot->payment_label = $months === 0 ? 'Al corriente' : $months . ($months === 1 ? ' mes de atraso' : ' meses de atraso');
+        }
+        return response()->json($page);
     }
 
     public function index(Request $request)
@@ -251,6 +269,7 @@ class AndarmaFinanceController extends Controller
             $plan = DB::table('andarma_lot_financing')->where('lot_id', $lotId)->lockForUpdate()->first();
             if (!$plan || (int) $plan->client_id !== (int) $lot->client_id)
                 return response()->json(['message' => 'Configura primero las condiciones de venta de esta propiedad.'], 409);
+            $amount = $this->cents($d['amount']);
             $existing = DB::table('andarma_client_payments')->where('request_key', $d['request_key'])->first();
             if ($existing) {
                 if ((int) $existing->lot_id !== $lotId || $existing->payment_type !== $d['payment_type']
@@ -262,7 +281,6 @@ class AndarmaFinanceController extends Controller
                 }
                 return response()->json(['data' => $existing, 'duplicate_request' => true]);
             }
-            $amount = $this->cents($d['amount']);
             $periodDate = null;
             $dueDate = null;
             if ($d['payment_type'] === 'monthly') {
