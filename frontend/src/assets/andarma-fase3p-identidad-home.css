@@ -1,0 +1,212 @@
+/* ANDARMA_FASE3P_IDENTIDAD_HOME
+   Reproduce la composición editorial de "Más que espacios, posibilidades para vivir".
+   Solo sección del mapa público; mapa y acciones inalterados.
+*/
+.adp-map-page > #mapa-de-terrenos.adp-map-page__content {
+  position: relative !important;
+  isolation: isolate !important;
+  background: #fff !important;
+  overflow: hidden !important;
+  padding-top: clamp(62px, 6vw, 108px) !important;
+  padding-bottom: clamp(62px, 6vw, 100px) !important;
+}
+.adp-map-page > #mapa-de-terrenos.adp-map-page__content::before {
+  content: none !important;
+  display: none !important;
+}
+/* Marca editorial gigante, casi imperceptible. Colocación como en Home, arriba a la derecha. */
+.adp-map-page > #mapa-de-terrenos.adp-map-page__content::after {
+  content: 'ANDARMA' !important;
+  display: block !important;
+  position: absolute !important;
+  z-index: 0 !important;
+  top: clamp(20px, 3.8vw, 74px) !important;
+  left: auto !important;
+  right: -1.5vw !important;
+  transform: none !important;
+  width: auto !important;
+  max-width: none !important;
+  height: auto !important;
+  font: 800 clamp(125px, 18.1vw, 325px)/.93 Manrope, sans-serif !important;
+  letter-spacing: -.095em !important;
+  color: rgba(5, 43, 87, .026) !important;
+  filter: none !important;
+  text-align: right !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  pointer-events: none !important;
+  user-select: none !important;
+}
+.adp-map-page #mapa-de-terrenos .ad3l-map {
+  position: relative !important;
+  z-index: 1 !important;
+  width: min(100%, 1600px) !important;
+  max-width: 1600px !important;
+  margin-inline: auto !important;
+  padding: 0 !important;
+  color: #092d57 !important;
+  background: transparent !important;
+}
+.adp-map-page #mapa-de-terrenos .ad3l-map::before {
+  display: none !important;
+  content: none !important;
+}
+/* CABECERA: anchos, espaciado y línea divisoria del bloque institucional. */
+.adp-map-page #mapa-de-terrenos .ad3l-intro {
+  margin: 0 0 clamp(46px, 4.8vw, 88px) !important;
+}
+.adp-map-page #mapa-de-terrenos .ad3l-intro__eyebrow {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex-wrap: wrap !important;
+  gap: 10px 28px !important;
+  font: 800 clamp(9px, .63vw, 11px)/1.65 'DM Sans', sans-serif !important;
+  letter-spacing: .16em !important;
+  color: #0a376a !important;
+}
+.adp-map-page #mapa-de-terrenos .ad3p-brand {
+  color: #123b6e !important;
+  display: inline-flex;
+  align-items: baseline;
+  gap: clamp(8px, .8vw, 14px);
+  white-space: nowrap;
+}
+.adp-map-page #mapa-de-terrenos .ad3p-brand b {
+  font: 900 28px/0.8 Manrope, sans-serif;
+  color: #0066e0 !important;
+  vertical-align: middle;
+  transform: skew(-9deg);
+}
+.adp-map-page #mapa-de-terrenos .ad3p-brand i {
+  color: #0891ff !important;
+  font-style: normal;
+}
+.adp-map-page #mapa-de-terrenos .ad3p-descriptor {
+  color: #617a98 !important;
+  text-align: right;
+  letter-spacing: .13em !important;
+  font-size: clamp(9px, .66vw, 11px) !important;
+}
+.adp-map-page #mapa-de-terrenos .ad3l-intro__rule {
+  margin: clamp(17px, 1.6vw, 25px) 0 clamp(43px, 3.2vw, 58px) !important;
+  border-bottom: 1px solid #dae6f3 !important;
+}
+.adp-map-page #mapa-de-terrenos .ad3l-intro__grid {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.35fr) minmax(310px, .85fr) !important;
+  align-items: center !important;
+  column-gap: clamp(34px, 7vw, 130px) !important;
+  row-gap: 20px !important;
+}
+.adp-map-page #mapa-de-terrenos .ad3l-intro h2 {
+  margin: 0 !important;
+  max-width: none !important;
+  color: #082b59 !important;
+  font: 600 clamp(42px, 4.08vw, 70px)/1.09 Manrope, sans-serif !important;
+  letter-spacing: -.07em !important;
+  text-wrap: balance !important;
+}
+.adp-map-page #mapa-de-terrenos .ad3l-intro h2 em {
+  color: #0066e0 !important;
+  font-style: normal !important;
+}
+.adp-map-page #mapa-de-terrenos .ad3l-intro__grid > p {
+  max-width: 490px !important;
+  margin: 0 !important;
+  padding: 0 0 0 clamp(20px, 2vw, 31px) !important;
+  border-left: 2px solid #9fcaff !important;
+  color: #4b6888 !important;
+  font: 500 clamp(15px, .96vw, 17px)/1.86 'DM Sans', sans-serif !important;
+  letter-spacing: 0 !important;
+  text-wrap: pretty;
+}
+/* Segundo bloque: franja de datos ligera y editorial. No competir con el mapa. */
+.adp-map-page #mapa-de-terrenos .ad3l-story {
+  background: #fff !important;
+  border: 1px solid #dce8f4 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  color: #0b2f5b !important;
+  padding: clamp(22px, 2.2vw, 34px) clamp(22px, 2.9vw, 48px) !important;
+}
+.adp-map-page #mapa-de-terrenos .ad3l-story > .ad3l-eyebrow {
+  color: #0066e0 !important;
+  letter-spacing: .17em !important;
+}
+.adp-map-page #mapa-de-terrenos .ad3l-story h3 {
+  color: #082b59 !important;
+  font: 650 clamp(27px, 2.4vw, 40px)/1.17 Manrope, sans-serif !important;
+  letter-spacing: -.055em !important;
+}
+.adp-map-page #mapa-de-terrenos .ad3l-story__intro,
+.adp-map-page #mapa-de-terrenos .ad3l-story__feature small {
+  color: #5d7690 !important;
+}
+.adp-map-page #mapa-de-terrenos .ad3l-story__feature strong {
+  color: #092e5b !important;
+}
+.adp-map-page #mapa-de-terrenos .ad3l-story__icon {
+  color: #0066e0 !important;
+  background: #eff6fe !important;
+  border-color: #d8e7f8 !important;
+  border-radius: 0 !important;
+}
+.adp-map-page #mapa-de-terrenos .ad3l-story__bottom {
+  border-color: #e0e9f3 !important;
+}
+.adp-map-page #mapa-de-terrenos .ad3l-story__count { color: #148262 !important; }
+.adp-map-page #mapa-de-terrenos .ad3l-story__link { color: #0066e0 !important; }
+/* Plano al 70% y datos al 30%; no tocar dimensiones originales de imagen/SVG. */
+.adp-map-page #mapa-de-terrenos .ad3l-grid {
+  grid-template-columns: minmax(0, 7fr) minmax(295px, 3fr) !important;
+  grid-template-areas: 'story story' 'plan details' !important;
+  gap: clamp(15px, 1.55vw, 24px) !important;
+}
+.adp-map-page #mapa-de-terrenos .ad3l-center {
+  border-radius: 0 !important;
+  border: 1px solid #d7e4f1 !important;
+  box-shadow: 0 15px 44px rgba(9, 42, 88, .08) !important;
+}
+.adp-map-page #mapa-de-terrenos .ad3l-sidebar {
+  border-radius: 0 !important;
+  background: radial-gradient(ellipse at 90% 0%, #0a4a88 0%, transparent 47%),linear-gradient(140deg,#082d59,#061c38 88%) !important;
+}
+.adp-map-page #mapa-de-terrenos .ad3l-sidebar :is(h3, h3 em) { color:#fff !important; }
+.adp-map-page #mapa-de-terrenos .ad3l-sidebar .ad3l-sidebar__intro,
+.adp-map-page #mapa-de-terrenos .ad3l-sidebar .ad3l-sidebar__empty { color:#dbe9f7 !important; }
+@media (max-width: 1060px) {
+  .adp-map-page #mapa-de-terrenos .ad3l-intro__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(250px, .85fr) !important;
+    column-gap: clamp(22px, 4vw, 45px) !important;
+  }
+  .adp-map-page #mapa-de-terrenos .ad3l-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(260px, .43fr) !important;
+  }
+}
+@media (max-width: 860px) {
+  .adp-map-page #mapa-de-terrenos .ad3l-intro__grid { grid-template-columns: 1fr !important; }
+  .adp-map-page #mapa-de-terrenos .ad3l-intro__grid > p { max-width: 670px !important; }
+  .adp-map-page #mapa-de-terrenos .ad3l-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-areas: 'story' 'plan' 'details' !important;
+  }
+  .adp-map-page #mapa-de-terrenos .ad3l-sidebar { position: static !important; }
+}
+@media (max-width: 600px) {
+  .adp-map-page > #mapa-de-terrenos.adp-map-page__content {
+    padding: 49px 18px 64px !important;
+  }
+  .adp-map-page #mapa-de-terrenos .ad3l-intro__eyebrow { align-items: flex-start !important; }
+  .adp-map-page #mapa-de-terrenos .ad3p-descriptor { text-align: left; }
+  .adp-map-page #mapa-de-terrenos .ad3p-brand { white-space: normal; }
+  .adp-map-page #mapa-de-terrenos .ad3l-intro__rule { margin-bottom: 36px !important; }
+  .adp-map-page #mapa-de-terrenos .ad3l-intro h2 { font-size: clamp(36px, 8.7vw, 50px) !important; }
+  .adp-map-page #mapa-de-terrenos .ad3l-intro__grid > p { font-size: 14px !important; }
+  .adp-map-page #mapa-de-terrenos .ad3l-intro { margin-bottom: 38px !important; }
+  .adp-map-page > #mapa-de-terrenos.adp-map-page__content::after {
+    top: 65px !important;
+    font-size: 27vw !important;
+    right: -5vw !important;
+  }
+}

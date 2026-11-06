@@ -1,4 +1,5 @@
 <script setup>
+import '../../assets/andarma-fase3j-hero-texto.css'
 import '../../assets/andarma-development-gallery.css'
 import { ref, computed, watch, onUnmounted } from 'vue'
 const props = defineProps({development:{type:Object,default:null}})
@@ -46,15 +47,29 @@ function touchEnd(e){if(touchStart===null)return;const diff=(e.changedTouches?.[
       <div class="ad3a-hero__shade"></div>
     </div>
     <div class="ad3a-hero__inner">
-      <div class="ad3a-hero__copy" :key="development?.id">
-        <span class="ad3a-hero__eyebrow"><span class="ad3e-hero__eyebrow-line"></span> ANDARMA <b>/</b> DESARROLLOS</span>
-        <h1>{{ development?.name || 'Nuestros desarrollos' }}</h1>
-        <div v-if="development?.location" class="ad3e-hero__location"><i class="fa-solid fa-location-dot" aria-hidden="true"></i><span>{{development.location}}</span></div>
-        <p class="ad3e-hero__statement">Tu próximo patrimonio comienza aquí.</p>
-        <p class="ad3a-hero__description">{{development?.description || 'Conoce el proyecto, explora sus terrenos disponibles y encuentra el espacio ideal para tu futuro.'}}</p>
-        <div class="ad3a-hero__actions">
-          <a class="ad3a-hero__cta" href="#mapa-de-terrenos">Explorar terrenos <i class="fa-solid fa-arrow-down" aria-hidden="true"></i></a>
-          <a class="ad3a-hero__secondary" href="#adp2e-proyecto">Conocer el proyecto <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+      <!-- ANDARMA_FASE3J_TEXTO_HERO: solo contenido editorial, sin tocar carrusel -->
+      <div class="ad3j-hero__copy" :key="development?.id">
+        <div class="ad3j-hero__kicker"><span aria-hidden="true"></span> DESARROLLOS INMOBILIARIOS</div>
+        <h1 class="ad3j-hero__title">{{ development?.name || 'Nuestros desarrollos' }}</h1>
+        <div v-if="development?.location" class="ad3j-hero__location">
+          <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+          <span>{{ development.location }}</span>
+        </div>
+        <div class="ad3j-hero__message">
+          <span class="ad3j-hero__message-line">El lugar donde comienza</span>
+          <strong>tu próximo capítulo.</strong>
+        </div>
+        <p class="ad3j-hero__description">{{ development?.description || 'Conoce el proyecto, explora sus terrenos disponibles y encuentra el espacio ideal para tu futuro.' }}</p>
+        <div class="ad3j-hero__actions">
+          <a class="ad3j-hero__primary" href="#mapa-de-terrenos">
+            <i class="fa-solid fa-map-location-dot" aria-hidden="true"></i>
+            <span>Explorar terrenos</span>
+            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+          </a>
+          <a class="ad3j-hero__secondary" href="#como-comprar">
+            <span>Cómo comprar</span>
+            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+          </a>
         </div>
       </div>
     </div>

@@ -1,0 +1,162 @@
+/* ANDARMA_FASE3J_TEXTO_HERO
+   Diseño de contenido inspirado en la referencia proporcionada.
+   Se aplica SOLO a la composicion textual del hero, sin cambiar imagenes,
+   navbar, slideshow, controles, transiciones ni contenido administrable.
+*/
+.ad3e-hero .ad3a-hero__inner{
+  width:100%;
+  max-width:1360px;
+  margin-inline:auto;
+  padding-left:clamp(24px,4.8vw,76px);
+  padding-right:clamp(24px,4.8vw,76px);
+}
+.ad3e-hero .ad3j-hero__copy{
+  position:relative;
+  z-index:3;
+  width:min(100%,760px);
+  max-width:760px;
+  min-width:0;
+  color:#fff;
+  animation:ad3a-copy .75s ease both;
+}
+.ad3e-hero .ad3j-hero__kicker{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  font:800 clamp(10px,.75vw,12px)/1.5 'DM Sans',sans-serif;
+  letter-spacing:.25em;
+  color:#eaf5ff;
+  text-transform:uppercase;
+  margin:0 0 clamp(19px,2.4vw,32px);
+}
+.ad3e-hero .ad3j-hero__kicker span{
+  width:40px;
+  height:2px;
+  flex:0 0 40px;
+  background:#00bff3;
+}
+.ad3e-hero .ad3j-hero__title{
+  color:#fff;
+  font:800 clamp(56px,7.5vw,114px)/.96 Manrope,'DM Sans',sans-serif;
+  letter-spacing:-.077em;
+  text-wrap:balance;
+  overflow-wrap:anywhere;
+  max-width:720px;
+  margin:0 0 clamp(14px,2.2vw,28px);
+  text-shadow:0 6px 24px rgba(2,12,28,.13);
+}
+.ad3e-hero .ad3j-hero__location{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:0 0 clamp(20px,2.7vw,36px);
+  font:750 clamp(11px,.9vw,14px)/1.5 'DM Sans',sans-serif;
+  color:#deefff;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+}
+.ad3e-hero .ad3j-hero__location i{
+  color:#28c7ff;
+  font-size:14px;
+}
+.ad3e-hero .ad3j-hero__message{
+  display:grid;
+  gap:0;
+  max-width:750px;
+  margin:0 0 clamp(20px,2.5vw,30px);
+  padding:0;
+  color:#f7fbff;
+  font:700 clamp(27px,3.2vw,48px)/1.09 Manrope,'DM Sans',sans-serif;
+  letter-spacing:-.056em;
+  text-wrap:balance;
+}
+.ad3e-hero .ad3j-hero__message-line{display:block}
+.ad3e-hero .ad3j-hero__message strong{
+  display:block;
+  width:fit-content;
+  font:inherit;
+  color:#2bcaff;
+}
+.ad3e-hero .ad3j-hero__description{
+  margin:0;
+  max-width:610px;
+  color:#e6f0fb;
+  font:500 clamp(15px,1.12vw,18px)/1.66 'DM Sans',sans-serif;
+  letter-spacing:0;
+  overflow-wrap:break-word;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:3;
+  overflow:hidden;
+}
+.ad3e-hero .ad3j-hero__actions{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:clamp(14px,2vw,22px);
+  margin-top:clamp(26px,3vw,38px);
+}
+.ad3e-hero .ad3j-hero__primary,
+.ad3e-hero .ad3j-hero__secondary{
+  min-height:54px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:16px;
+  text-decoration:none;
+  font:800 12px/1.3 'DM Sans',sans-serif;
+  border-radius:40px;
+  transition:transform .25s ease,background .25s ease,border-color .25s ease,box-shadow .25s ease;
+}
+.ad3e-hero .ad3j-hero__primary{
+  color:#fff;
+  background:linear-gradient(110deg,#05bdeb,#0066e0);
+  border:1px solid #38c8ff;
+  padding:16px 23px;
+  min-width:242px;
+  box-shadow:0 14px 35px rgba(0,76,169,.26);
+}
+.ad3e-hero .ad3j-hero__primary i:first-child{font-size:18px}
+.ad3e-hero .ad3j-hero__primary i:last-child{margin-left:auto}
+.ad3e-hero .ad3j-hero__secondary{
+  color:#fff;
+  border:1px solid rgba(239,247,255,.68);
+  background:rgba(2,23,45,.23);
+  padding:16px 22px;
+  min-width:164px;
+  backdrop-filter:blur(6px);
+}
+.ad3e-hero .ad3j-hero__primary:hover,
+.ad3e-hero .ad3j-hero__secondary:hover{
+  transform:translateY(-2px);
+  box-shadow:0 16px 36px rgba(0,39,87,.26);
+}
+.ad3e-hero .ad3j-hero__secondary:hover{background:rgba(0,102,224,.32)}
+.ad3e-hero .ad3j-hero__actions a:focus-visible{
+  outline:3px solid #a8e9ff;
+  outline-offset:4px;
+}
+/* La tarjeta textual redundante de 3G se oculta; no se toca el carrusel. */
+.ad3e-hero .ad3g-hero__aside{display:none!important}
+@media(max-width:980px){
+  .ad3e-hero .ad3j-hero__copy{max-width:670px}
+  .ad3e-hero .ad3j-hero__title{font-size:clamp(48px,8.5vw,85px)}
+  .ad3e-hero .ad3j-hero__message{font-size:clamp(28px,4.6vw,40px)}
+}
+@media(max-width:650px){
+  .ad3e-hero .ad3a-hero__inner{padding-inline:22px}
+  .ad3e-hero .ad3j-hero__copy{width:100%}
+  .ad3e-hero .ad3j-hero__kicker{gap:10px;letter-spacing:.16em;margin-bottom:18px}
+  .ad3e-hero .ad3j-hero__kicker span{width:25px;flex-basis:25px}
+  .ad3e-hero .ad3j-hero__title{font-size:clamp(42px,11vw,62px);margin-bottom:16px}
+  .ad3e-hero .ad3j-hero__location{font-size:11px;margin-bottom:23px}
+  .ad3e-hero .ad3j-hero__message{font-size:clamp(25px,7vw,36px);margin-bottom:20px}
+  .ad3e-hero .ad3j-hero__description{font-size:14px;-webkit-line-clamp:4}
+  .ad3e-hero .ad3j-hero__actions{align-items:stretch;gap:10px;margin-top:25px}
+  .ad3e-hero .ad3j-hero__primary,
+  .ad3e-hero .ad3j-hero__secondary{width:100%;max-width:100%;min-width:0;min-height:51px}
+}
+@media(prefers-reduced-motion:reduce){
+  .ad3e-hero .ad3j-hero__copy{animation:none!important}
+  .ad3e-hero .ad3j-hero__actions a{transition:none!important}
+}

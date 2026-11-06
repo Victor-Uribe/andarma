@@ -1,0 +1,23 @@
+/* ANDARMA_FASE3G_IDENTIDAD · cargador compartido sin bloquear scroll persistente. */
+.ad-route-loader {position:fixed;inset:0;z-index:12000;display:grid;place-items:center;background:radial-gradient(circle at 52% 35%,#103e75 0%,#061c39 49%,#020c1e 100%);color:#fff;pointer-events:auto;isolation:isolate}
+.ad-route-loader::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(8,145,255,.08),transparent);animation:adRouteShimmer 1.65s ease-in-out infinite}
+.ad-route-loader__content{position:relative;text-align:center;display:grid;justify-items:center;gap:15px}
+.ad-route-loader__logo{width:86px;height:86px;object-fit:contain;filter:drop-shadow(0 10px 22px #0066e077)}
+.ad-route-loader__name{font:800 20px/1.2 Manrope,'DM Sans',sans-serif;letter-spacing:.23em}
+.ad-route-loader__progress{height:2px;width:114px;overflow:hidden;background:#ffffff35}
+.ad-route-loader__progress::after{content:"";display:block;width:45%;height:100%;background:#0891ff;animation:adRouteProgress 1s ease-in-out infinite alternate}
+.ad-route-fade-enter-active,.ad-route-fade-leave-active{transition:opacity .28s ease}
+.ad-route-fade-enter-from,.ad-route-fade-leave-to{opacity:0}
+/* El loader antiguo sigue montado para compatibilidad con andarma-legacy.js, pero se oculta. */
+/* El cargador original de Home conserva sus estilos y aparece sin cambios.
+   En otras rutas públicas, App.vue reutiliza sus mismas clases y contenido. */
+/* Comparten la navegación original y su estilo responsive. */
+@keyframes adRouteShimmer{from{transform:translateX(-65%)}to{transform:translateX(65%)}}
+@keyframes adRouteProgress{from{transform:translateX(-10%)}to{transform:translateX(130%)}}
+@media(prefers-reduced-motion:reduce){.ad-route-loader::before,.ad-route-loader__progress::after{animation:none}.ad-route-fade-enter-active,.ad-route-fade-leave-active{transition:none}}
+
+/* ANDARMA_FASE3G_FIX_CARGADOR_ORIGINAL: transición final reutilizando la original, sin nuevo diseño. */
+.ad-original-loader-exit-leave-active{transition:opacity .7s cubic-bezier(.22,1,.36,1),visibility .7s}
+.ad-original-loader-exit-leave-to{opacity:0;visibility:hidden}
+/* No bloquear scroll cuando no hay precarga. */
+@media(prefers-reduced-motion:reduce){.ad-original-loader-exit-leave-active{transition:none}}

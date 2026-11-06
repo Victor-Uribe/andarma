@@ -1,0 +1,92 @@
+/* ANDARMA_FASE3L_MAPA_PREMIUM · exclusivamente mapa publico de Desarrollos. */
+.adp-map-page #mapa-de-terrenos.adp-map-page__content { width:100%;max-width:1640px;padding-inline:clamp(18px,3.5vw,58px);background:transparent; }
+.ad3l-map{position:relative;color:#082951;overflow:visible;isolation:isolate;padding-block:clamp(34px,4vw,56px);}
+.ad3l-map::before{content:"";position:absolute;z-index:-1;top:0;bottom:0;left:50%;width:100vw;transform:translateX(-50%);background:linear-gradient(155deg,#f8fbff 0%,#edf4fb 43%,#ffffff 100%);}
+.ad3l-intro{margin:0 0 clamp(28px,4vw,58px);}
+.ad3l-intro__eyebrow{font:800 10px/1.5 'DM Sans',sans-serif;letter-spacing:.15em;color:#173c6a;display:flex;gap:12px;align-items:center}
+.ad3l-intro__eyebrow span{color:#0066e0}
+.ad3l-intro__eyebrow i{color:#0891ff;font-style:normal}
+.ad3l-intro__rule{border-bottom:1px solid #d6e5f5;margin:14px 0 31px}
+.ad3l-intro__grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(250px,.65fr);align-items:center;gap:clamp(20px,5vw,80px)}
+.ad3l-eyebrow{display:block;font:800 10px/1.6 'DM Sans',sans-serif;letter-spacing:.18em;color:#0066e0}
+.ad3l-intro h2{font:600 clamp(34px,4.2vw,64px)/1.08 Manrope,sans-serif;letter-spacing:-.055em;max-width:680px;margin:13px 0 0;color:#072755;text-wrap:balance}
+.ad3l-intro h2 em{font-style:normal;color:#0066e0}
+.ad3l-intro__grid>p{font:500 clamp(14px,1.18vw,18px)/1.72 'DM Sans',sans-serif;color:#59718d;padding-left:23px;border-left:2px solid #9acbfa;max-width:480px}
+.adp-map-page .ad3l-grid{display:grid;grid-template-columns:minmax(205px,.65fr) minmax(0,1.9fr) minmax(260px,.88fr);align-items:start;gap:clamp(14px,1.6vw,24px);min-width:0}
+.ad3l-grid>*{min-width:0}
+.ad3l-story{padding:clamp(14px,2vw,30px) clamp(2px,1vw,12px) 22px 0;display:flex;flex-direction:column;min-height:100%}
+.ad3l-story h3{font:700 clamp(28px,2.6vw,43px)/1.12 Manrope,sans-serif;letter-spacing:-.055em;margin:13px 0;color:#082a56;overflow-wrap:break-word}
+.ad3l-story__intro{font:400 14px/1.78 'DM Sans',sans-serif;color:#5b7692;margin:10px 0 28px;max-width:28ch}
+.ad3l-story__feature{display:flex;gap:12px;align-items:flex-start;margin-bottom:22px}
+.ad3l-story__icon{display:grid;place-items:center;flex:none;width:39px;height:39px;color:#0066e0;font-size:17px;background:#eaf3ff;border:1px solid #e0ecfa;border-radius:9px}
+.ad3l-story__feature strong{display:block;color:#092d57;font:750 13px/1.4 Manrope,sans-serif}
+.ad3l-story__feature small{display:block;color:#607b96;font-size:12px;line-height:1.6;overflow-wrap:break-word;margin-top:3px}
+.ad3l-story__bottom{margin-top:auto;padding-top:24px;border-top:1px solid #dce8f3;display:grid;gap:17px}
+.ad3l-story__count{font-size:11px;color:#12795b;font-weight:800}.ad3l-story__count i{margin-right:6px}
+.ad3l-story__link{font-size:12px;font-weight:800;text-decoration:none;color:#0066e0;display:inline-flex;align-items:center;gap:12px}
+.ad3l-story__link:hover{color:#003a8c}
+.ad3l-center{background:#fff;border:1px solid #d6e7f8;border-radius:0;padding:10px;box-shadow:0 25px 70px rgba(8,50,100,.10);min-width:0}
+.ad3l-toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:9px;min-width:0}
+.adp-map-page .ad3l-toolbar .adp-map-search{min-width:0;width:100%;max-width:none;box-shadow:none;border-radius:11px;min-height:45px;padding:0 12px}
+.adp-map-page .ad3l-toolbar .adp-map-search input{width:100%;font-size:13px;min-width:0}
+.ad3l-map-label{flex:none;font:750 10px/1.4 'DM Sans',sans-serif;letter-spacing:.08em;color:#6182a4;text-align:right;max-width:35%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ad3l-filters{display:flex;flex-wrap:wrap;gap:4px;padding:4px;margin:0 0 10px;border:1px solid #e3edf7;border-radius:11px;align-items:center;background:#f8fbff}
+.ad3l-filters button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:35px;background:transparent;color:#39587c;padding:7px 10px;border:0;border-radius:8px;font:700 11px 'DM Sans',sans-serif;cursor:pointer;transition:.2s}
+.ad3l-filters button:hover,.ad3l-filters button.is-active{color:#fff;background:#0066e0;box-shadow:0 5px 13px #0066e029}
+.ad3l-dot{width:10px;height:10px;border-radius:3px;display:inline-block;flex:none}
+.ad3l-dot.is-available{background:#1e9b70}.ad3l-dot.is-reserved{background:#d9a33a}.ad3l-dot.is-sold{background:#9ca7b5}
+.ad3l-center .adp-map-picture{border-radius:0;border:0;box-shadow:none;overflow:hidden;background:#eef4f9}
+.ad3l-center .adp-map-viewport{height:auto;aspect-ratio:4 / 3;min-height:0;max-height:none;background:#eef4f9}
+.ad3l-center .adp2d-map-stage .adp-map-zoom{top:12px;right:12px;border-radius:10px;box-shadow:0 8px 24px #04274b34}
+.ad3l-center .adp-map-canvas{display:block;position:relative;min-width:100%;line-height:0}
+.ad3l-center .adp-map-canvas img{display:block;width:100%;height:auto;max-width:none}
+.ad3l-center .adp-map-canvas svg{inset:0;width:100%;height:100%}
+.ad3l-center .adp2d-map-stage{display:block}
+.ad3l-center .adp-map-picture,.ad3l-center .adp-map-viewport,.ad3l-center .adp-map-canvas{border-bottom:0}
+.ad3l-center .adp-map-legend{border-top:0;background:#fff;border-radius:8px;display:flex;gap:13px;align-items:center;padding:14px 7px 6px;font-size:11px;color:#566d86}
+.ad3l-center .adp-map-legend small{margin-left:auto;font-size:10px;color:#90a3b8;font-weight:500}
+.adp-map-page #mapa-de-terrenos .ad3l-sidebar{background:radial-gradient(ellipse at 95% 5%,#0a71c4 0%,transparent 42%),linear-gradient(145deg,#052247,#071c38 85%);color:#fff;border:1px solid #184775;border-radius:0;padding:clamp(20px,2vw,28px);box-shadow:0 25px 70px rgba(2,28,66,.22);position:sticky;top:105px;min-width:0;overflow:hidden}
+.ad3l-sidebar .ad3l-eyebrow{color:#8bcaff}
+.adp-map-page .ad3l-sidebar h3{font:750 clamp(25px,2.6vw,39px)/1.12 Manrope,sans-serif;letter-spacing:-.05em;margin:14px 0;color:#fff;overflow-wrap:anywhere}
+.ad3l-sidebar h3 em{font-style:normal;color:#6abaff}
+.ad3l-sidebar__head{display:flex;gap:8px;justify-content:space-between;align-items:flex-start}
+.ad3l-sidebar .adp2c-clear{flex:none;width:32px;height:32px;color:#fff;background:#ffffff12;border-color:#ffffff3f}
+.ad3l-sidebar .adp-map-state{margin-top:6px}.ad3l-sidebar .adp-map-state i{font-size:8px;margin-right:7px}
+.ad3l-sidebar__line{height:1px;background:#ffffff30;margin:24px 0}
+.adp-map-page .ad3l-sidebar .ad3l-details{margin:0;gap:13px}
+.adp-map-page .ad3l-sidebar .ad3l-details>div{border-bottom:1px solid #ffffff25;padding:0 0 12px;gap:10px}
+.adp-map-page .ad3l-sidebar .ad3l-details dt{color:#b9d0ea;font-size:12px}
+.adp-map-page .ad3l-sidebar .ad3l-details dt i{color:#72b8ff}
+.adp-map-page .ad3l-sidebar .ad3l-details dd{color:#fff;font-size:14px;overflow-wrap:anywhere}
+.ad3l-price{margin:24px 0 20px;border-top:1px solid #ffffff30;padding-top:22px;display:grid;gap:8px}
+.ad3l-price span{font-size:12px;font-weight:700;color:#c5d5e8}
+.ad3l-price strong{font:750 clamp(22px,2.1vw,33px)/1.2 Manrope,sans-serif;color:#6dbdff;letter-spacing:-.03em;overflow-wrap:anywhere}
+.ad3l-price small,.ad3l-price__notice{font-size:11px;line-height:1.6;color:#b8cfe7}
+.adp-map-page .ad3l-sidebar .adp-map-whatsapp{background:linear-gradient(105deg,#0891ff,#0066e0);border:1px solid #0891ff;color:#fff;box-shadow:0 9px 22px #00162c66;border-radius:9px;min-height:53px;margin-top:22px;font-size:12px;text-align:center;line-height:1.4;padding:12px;gap:8px}
+.adp-map-page .ad3l-sidebar .adp-map-whatsapp:hover{background:#0066e0;color:#fff}
+.ad3l-sidebar__intro,.ad3l-sidebar__empty,.ad3l-sidebar__quantity,.ad3l-sidebar__disclaimer{font-size:12px;line-height:1.7;color:#c8daf0}
+.ad3l-sidebar__empty{display:flex;gap:14px;align-items:flex-start}.ad3l-sidebar__empty i{font-size:25px;color:#86c4ff}
+.ad3l-sidebar__quantity{font-weight:800;color:#8ad2ff}
+.ad3l-sidebar__disclaimer{margin:17px 0 0;font-size:10px;color:#a3c0d9}
+.ad3l-map :is(button,a,input):focus-visible{outline:3px solid #72baff;outline-offset:3px}
+@media(max-width:1230px){.adp-map-page .ad3l-grid{grid-template-columns:minmax(175px,.62fr) minmax(0,1.55fr) minmax(235px,.85fr);gap:12px}.ad3l-story h3{font-size:29px}.ad3l-center .adp-map-legend small{display:none}}
+@media(max-width:1060px){.adp-map-page .ad3l-grid{grid-template-columns:minmax(0,1fr) minmax(260px,.55fr)}.ad3l-story{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:12px 25px;align-items:start}.ad3l-story h3,.ad3l-story__intro{grid-column:1}.ad3l-story .ad3l-eyebrow{grid-column:1}.ad3l-story__feature{grid-column:2;margin-bottom:5px}.ad3l-story__bottom{grid-column:1/-1;margin-top:0;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center}.ad3l-center .adp-map-viewport{min-height:370px}}
+@media(max-width:760px){.ad3l-intro__grid{grid-template-columns:1fr;gap:13px}.ad3l-intro__grid>p{padding-left:18px;margin:0}.adp-map-page .ad3l-grid{grid-template-columns:minmax(0,1fr)}.ad3l-story{display:block;padding:10px 0}.ad3l-story__intro{max-width:60ch}.ad3l-story__feature{display:inline-flex;width:min(100%,300px);vertical-align:top;margin-right:12px}.ad3l-story__bottom{margin-bottom:10px}.adp-map-page #mapa-de-terrenos .ad3l-sidebar{position:static}.ad3l-map-label{display:none}.ad3l-center .adp-map-viewport{height:56vh;min-height:330px}}
+@media(max-width:450px){.ad3l-filters{gap:2px}.ad3l-filters button{font-size:10px;padding:6px 7px}.ad3l-center{padding:7px}.ad3l-center .adp-map-legend{gap:10px;font-size:10px;flex-wrap:wrap}}
+@media(prefers-reduced-motion:reduce){.ad3l-filters button{transition:none}}
+
+.adp-map-page #mapa-de-terrenos .ad3l-sidebar h3,.adp-map-page #mapa-de-terrenos .ad3l-sidebar h3 em{color:#fff !important;text-shadow:0 2px 14px rgba(0,0,0,.12)}
+.adp-map-page #mapa-de-terrenos .ad3l-sidebar .ad3l-sidebar__intro,.adp-map-page #mapa-de-terrenos .ad3l-sidebar .ad3l-sidebar__quantity,.adp-map-page #mapa-de-terrenos .ad3l-sidebar .ad3l-sidebar__disclaimer,.adp-map-page #mapa-de-terrenos .ad3l-sidebar .ad3l-sidebar__empty{color:#d9e8f8}
+.adp-map-page #mapa-de-terrenos .ad3l-sidebar .ad3l-details dt{color:#c6d9ee}
+.adp-map-page #mapa-de-terrenos .ad3l-sidebar .ad3l-details dd{color:#ffffff;font-weight:700}
+.adp-map-page #mapa-de-terrenos .ad3l-sidebar .adp-map-state{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12)}
+.adp-map-page #mapa-de-terrenos .ad3l-sidebar .adp-map-whatsapp{border-radius:0}
+.ad3l-filters button{border-radius:0}
+.ad3l-center .adp-map-search,.ad3l-filters,.ad3l-center .adp2d-map-stage .adp-map-zoom{border-radius:0}
+.ad3l-center .adp-map-legend{border-radius:0;padding-top:10px}
+.ad3l-toolbar{margin-bottom:10px}
+.ad3l-intro__grid>p,.ad3l-story__intro,.ad3l-story__feature small{color:#486684}
+.ad3l-story h3,.ad3l-intro h2{color:#052a59}
+.ad3l-story__icon{border-radius:0}
+@media(max-width:760px){.ad3l-map{padding-block:28px}.ad3l-center .adp-map-viewport{aspect-ratio:1 / 1;}}
+/* ANDARMA_FASE3M_MAPA_AJUSTE */

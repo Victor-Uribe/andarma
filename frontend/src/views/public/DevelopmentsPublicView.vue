@@ -33,6 +33,8 @@ adScrollUnmounted(() => { adScrollRestore?.(); adScrollRestore = null })
 
 import AndarmaSharedPublicSections from '../../components/public/AndarmaSharedPublicSections.vue'
 import '../../assets/andarma-map-fase3f.css'
+import '../../assets/andarma-fase3h-reticula.css'
+import '../../assets/andarma-fase3k-mapa-editorial.css' // ANDARMA_FASE3K_ESTILO_MAPA // ANDARMA_FASE3H_RETICULA
 
 import {ref,onMounted,computed} from 'vue'
 import {RouterLink} from 'vue-router'
@@ -56,6 +58,8 @@ async function load(){
  }catch(e){error.value=e.message}finally{loading.value=false}
 }
 onMounted(load)
+import '../../assets/andarma-fase3n-v2-mapa-arquitectura.css' // ANDARMA_F3N_V2_MAPA_ARQUITECTURA
+import '../../assets/andarma-fase3p-identidad-home.css' // ANDARMA_FASE3P_IDENTIDAD_HOME
 </script>
 <template>
 <!-- ANDARMA_SHARED_PUBLIC_F3F -->

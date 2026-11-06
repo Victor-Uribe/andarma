@@ -1,6 +1,8 @@
 <script setup>
 import { onMounted, onBeforeUnmount, nextTick } from 'vue'
 import '../../assets/andarma.css'
+import { useAndarmaPublicWhatsApp } from '../../composables/useAndarmaPublicWhatsApp'
+const { whatsAppUrl } = useAndarmaPublicWhatsApp()
 const props = defineProps({ enhance: { type: Boolean, default: false } })
 let requestController
 let observer
@@ -124,7 +126,7 @@ onBeforeUnmount(()=>{requestController?.abort();observer?.disconnect();cleanup.f
 <span class="contact-feature__kicker">HABLEMOS DE TU PROYECTO</span>
 <h2 class="contact-feature__title" data-andarma-content="contacto.h2.1" id="contactTitle">Es momento de construir tu futuro</h2>
 <p class="contact-feature__intro" data-andarma-content="contacto.p.2">Escríbenos por WhatsApp y con gusto te asesoramos para encontrar el terreno o vivienda ideal.</p>
-<a aria-label="Abrir WhatsApp para consultar sobre ANDARMA" class="contact-feature__cta" href="https://api.whatsapp.com/send?text=Hola%2C%20me%20gustar%C3%ADa%20recibir%20informaci%C3%B3n%20sobre%20ANDARMA" rel="noopener noreferrer" target="_blank" title="El número oficial de WhatsApp está pendiente de integración">
+<a aria-label="Abrir WhatsApp para consultar sobre ANDARMA" class="contact-feature__cta" :href="whatsAppUrl || '#contacto'" :target="whatsAppUrl ? '_blank' : undefined" rel="noopener noreferrer" target="_blank" title="El número oficial de WhatsApp está pendiente de integración">
 <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
 <span>Contactar por WhatsApp</span>
 <svg aria-hidden="true" class="contact-feature__arrow" viewbox="0 0 24 24"><path d="M4 12h16m-7-7 7 7-7 7"></path></svg>

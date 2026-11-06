@@ -1,0 +1,208 @@
+/* ANDARMA_FASE3K_ESTILO_MAPA
+   Exclusivo /desarrollos: botones oficiales + fondo editorial del mapa.
+   Sin tocar posiciones del SVG, polígonos, imagen, zoom ni eventos.
+*/
+
+/* Los botones que ya existen en el hero retoman el azul institucional ANDARMA. */
+.adp-map-page .ad3e-hero .ad3j-hero__primary {
+  border-radius: 5px;
+  border: 1px solid #0066e0;
+  background: linear-gradient(112deg, #0891ff 0%, #0066e0 70%, #003a8c 100%);
+  color: #fff;
+  box-shadow: 0 14px 32px rgba(0, 43, 110, .28);
+}
+.adp-map-page .ad3e-hero .ad3j-hero__primary:hover {
+  background: linear-gradient(112deg, #0066e0 0%, #003a8c 100%);
+  border-color: #0891ff;
+  box-shadow: 0 18px 37px rgba(0, 43, 110, .35);
+}
+.adp-map-page .ad3e-hero .ad3j-hero__secondary {
+  border-radius: 5px;
+  background: rgba(3, 32, 65, .36);
+  border: 1px solid rgba(255,255,255,.76);
+  color: #fff;
+}
+.adp-map-page .ad3e-hero .ad3j-hero__secondary:hover {
+  border-color: #89cbff;
+  background: rgba(0, 102, 224, .28);
+}
+
+/* Un fondo de arquitectura ligero y propio, sin sustituir el plano real. */
+.adp-map-page #mapa-de-terrenos.adp-map-page__content {
+  position: relative;
+  isolation: isolate;
+  background-color: #f4f8ff;
+  background-image:
+    radial-gradient(ellipse at 2% 0%, rgba(8,145,255,.13), transparent 42%),
+    radial-gradient(ellipse at 100% 80%, rgba(0,102,224,.10), transparent 45%),
+    linear-gradient(156deg, rgba(255,255,255,.94), rgba(239,247,255,.96) 64%, #f7fbff);
+  border-radius: 0;
+  padding-top: clamp(65px, 7vw, 104px);
+  padding-bottom: clamp(64px, 6vw, 100px);
+}
+/* Líneas arquitectónicas: capa decorativa que no bloquea eventos del mapa. */
+.adp-map-page #mapa-de-terrenos.adp-map-page__content::before,
+.adp-map-page #mapa-de-terrenos.adp-map-page__content::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  z-index: -1;
+  transform: rotate(36deg);
+  /* background: linear-gradient(90deg, transparent, rgba(0,102,224,.075), transparent); */
+}
+.adp-map-page #mapa-de-terrenos.adp-map-page__content::before {
+  top: -15%; right: -15%; width: 43%; height: 100%;
+  border-inline: 1px solid rgba(0,102,224,.05);
+}
+.adp-map-page #mapa-de-terrenos.adp-map-page__content::after {
+  bottom: -30%; left: -22%; width: 35%; height: 80%;
+  border-inline: 1px solid rgba(0,102,224,.045);
+}
+.adp-map-page #mapa-de-terrenos .adp-public-map {
+  position: relative;
+  z-index: 1;
+}
+.adp-map-page #mapa-de-terrenos .adp-public-map__heading {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 0;
+  max-width: 100%;
+  margin: 0 auto clamp(28px, 4vw, 52px);
+}
+.adp-map-page #mapa-de-terrenos .adp-public-map__heading > div:first-child {
+  width: 100%;
+  max-width: 870px;
+}
+.adp-map-page #mapa-de-terrenos .adp-public-map__heading .adp-kicker {
+  display: inline-block;
+  margin-bottom: 7px;
+  color: #0066e0;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .2em;
+}
+.adp-map-page #mapa-de-terrenos .adp-public-map__heading h2 {
+  margin: 8px auto 16px;
+  max-width: 900px;
+  font-size: clamp(34px, 4.1vw, 64px);
+  letter-spacing: -.056em;
+  line-height: 1.09;
+  color: #082b57;
+}
+.adp-map-page #mapa-de-terrenos .adp-public-map__heading h2 em {
+  color: #0066e0;
+}
+.adp-map-page #mapa-de-terrenos .adp-public-map__heading p {
+  max-width: 650px;
+  margin: 0 auto;
+  color: #58718f;
+  line-height: 1.7;
+  font-size: clamp(14px, 1.18vw, 17px);
+}
+.adp-map-page #mapa-de-terrenos .adp-map-availability {
+  margin: 22px auto 0;
+  align-self: center;
+  justify-self: center;
+  background: rgba(225, 248, 239, .94);
+  border: 1px solid #c8e9d8;
+  border-radius: 40px;
+  padding: 10px 17px;
+  color: #08704e;
+}
+
+/* La barra de búsqueda comparte lenguaje visual con los controles premium. */
+.adp-map-page #mapa-de-terrenos .adp-map-toolbar {
+  margin-bottom: 18px;
+}
+.adp-map-page #mapa-de-terrenos .adp-map-search {
+  width: 100%;
+  max-width: min(100%, 540px);
+  min-height: 56px;
+  border-radius: 10px;
+  border: 1px solid #cfdfef;
+  box-shadow: 0 8px 22px rgba(6,43,84,.065);
+}
+.adp-map-page #mapa-de-terrenos .adp-map-search:focus-within {
+  border-color: #0891ff;
+  box-shadow: 0 0 0 3px rgba(8,145,255,.12);
+}
+.adp-map-page #mapa-de-terrenos .adp-map-search input {
+  max-width: 100%;
+}
+.adp-map-page #mapa-de-terrenos .adp-map-picture,
+.adp-map-page #mapa-de-terrenos .adp-map-sidebar {
+  border: 1px solid rgba(199,216,236,.95);
+  border-radius: 18px;
+  box-shadow: 0 20px 55px rgba(4,37,83,.10);
+}
+/* NO ajustar tamaño de canvas, vista SVG o puntos de lotes. */
+.adp-map-page #mapa-de-terrenos .adp-map-legend {
+  background: #fff;
+  border-top: 1px solid #d8e6f4;
+  padding-block: 18px;
+}
+.adp-map-page #mapa-de-terrenos .adp-map-sidebar {
+  background: #fff;
+  overflow-wrap: anywhere;
+}
+.adp-map-page #mapa-de-terrenos .adp-map-sidebar .adp-kicker {
+  color: #0066e0;
+  font-size: 10px;
+  letter-spacing: .13em;
+  font-weight: 800;
+}
+.adp-map-page #mapa-de-terrenos .adp-map-sidebar h3 {
+  color: #082b57;
+  letter-spacing: -.05em;
+}
+.adp-map-page #mapa-de-terrenos .adp-map-sidebar .adp-map-whatsapp {
+  border-radius: 8px;
+  background: #10854d;
+  border: 1px solid #10854d;
+  color: #fff;
+  box-shadow: 0 12px 23px rgba(16,133,77,.20);
+}
+.adp-map-page #mapa-de-terrenos .adp-map-sidebar .adp-map-whatsapp:hover {
+  background: #0b6c3e;
+  border-color: #0b6c3e;
+  color: #fff;
+}
+.adp-map-page #mapa-de-terrenos .adp-map-zoom button:hover:not(:disabled) {
+  background: #e6f1ff;
+  color: #003a8c;
+}
+.adp-map-page #mapa-de-terrenos :is(a,button,input):focus-visible {
+  outline: 3px solid rgba(8,145,255,.4);
+  outline-offset: 2px;
+}
+
+@media (max-width: 900px) {
+  .adp-map-page #mapa-de-terrenos .adp-public-map__heading h2 {
+    font-size: clamp(34px, 7vw, 51px);
+  }
+}
+@media (max-width: 600px) {
+  .adp-map-page #mapa-de-terrenos.adp-map-page__content {
+    padding-top: 55px;
+    padding-bottom: 66px;
+  }
+  .adp-map-page #mapa-de-terrenos .adp-public-map__heading h2 {
+    font-size: clamp(30px, 8.7vw, 43px);
+  }
+  .adp-map-page #mapa-de-terrenos .adp-map-availability {
+    margin-top: 18px;
+  }
+  .adp-map-page #mapa-de-terrenos .adp-map-toolbar {
+    align-items: stretch;
+  }
+  .adp-map-page #mapa-de-terrenos .adp-map-search {max-width:100%;}
+}
+@media (prefers-reduced-motion: reduce) {
+  .adp-map-page .ad3e-hero .ad3j-hero__primary,
+  .adp-map-page .ad3e-hero .ad3j-hero__secondary {
+    transition: none;
+  }
+}
