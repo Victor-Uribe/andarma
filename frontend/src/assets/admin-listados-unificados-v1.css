@@ -1,0 +1,160 @@
+/* ANDARMA_UI_LISTADOS_UNIFICADOS_V1
+   Patron transversal de cabecera, indicadores, filtros, tablas y botones.
+   Exclusivo del panel; los modales y el portal publico no se alteran.
+   Los indicadores conservan sus fuentes de datos y funciones existentes.
+*/
+.andarma-admin .ad-u-list {
+  --u-blue: var(--ad-primary, #0066e0);
+  --u-text: var(--ad-ink, #17324e);
+  --u-muted: #647d96;
+  --u-line: var(--ad-border, #dde7f1);
+  --u-panel: #fff;
+  --u-radius: 17px;
+  --u-shadow: 0 7px 28px rgba(15, 48, 83, .045);
+  min-width: 0;
+}
+/* Encabezado: titulo a la izquierda, acciones a la derecha. */
+.andarma-admin .ad-u-list > :is(header, .pv-page-header, .crm-page__header, .ad-lookup__heading) {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  column-gap: 20px; row-gap: 13px;
+}
+.andarma-admin .ad-u-list > :is(header, .pv-page-header, .crm-page__header, .ad-lookup__heading) > div:first-child {
+  min-width: 0; flex: 1 1 340px;
+}
+.andarma-admin .ad-u-list > :is(header, .pv-page-header, .crm-page__header) h1 {
+  margin: 4px 0 6px; color: var(--u-text); line-height: 1.16;
+}
+.andarma-admin .ad-u-list > :is(header, .pv-page-header, .crm-page__header) p {
+  max-width: 78ch; color: var(--u-muted);
+}
+.andarma-admin .ad-u-list > :is(header, .pv-page-header, .crm-page__header) :is(.ad-actions, .crm-header__actions, .flex) {
+  display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+}
+/* Botones de pagina, barra de filtros y filas. No se incluyen modales ni editores de mapa. */
+.andarma-admin .ad-u-list > header :is(.ad-btn, .crm-btn, .pv-btn),
+.andarma-admin .ad-u-list :is(.ad-pay-filters, .pv-toolbar, .ad-dev-filters, .ad-maps-v8__toolbar) :is(.ad-btn, .pv-btn),
+.andarma-admin .ad-u-list :is(.ad-inventory-responsive, .ad-clients-responsive, .ad-prospects-responsive, .ad-dev-table, .ad-pay-table) :is(.ad-btn, .crm-btn, .pv-btn) {
+  min-height: 38px; border-radius: 9px; font-weight: 700;
+  font-size: 12px; line-height: 1.25; box-shadow: none;
+  transition: background-color .16s, border-color .16s, color .16s;
+}
+/* Accion principal unificada: azul ANDARMA; acciones auxiliares en blanco. */
+.andarma-admin .ad-u-list > header :is(.ad-btn--primary, .crm-btn--primary, .pv-btn-primary),
+.andarma-admin .ad-u-list > header .pv-btn-primary {
+  background: var(--u-blue) !important; border: 1px solid var(--u-blue) !important;
+  color: #fff !important; box-shadow: none !important;
+}
+.andarma-admin .ad-u-list > header :is(.ad-btn--primary, .crm-btn--primary, .pv-btn-primary):hover:not(:disabled) {
+  background: #0054bb !important; border-color: #0054bb !important;
+}
+/* Sistema de tarjetas KPI: misma dimension y tipografia, independientemente del modulo. */
+.andarma-admin .ad-u-list :is(.crm-stats, .pv-stats, .ad-pay-kpis, .ad-u-stats) {
+  display: grid; gap: 12px; grid-template-columns: repeat(3, minmax(0,1fr));
+  margin-bottom: 0;
+}
+.andarma-admin .ad-u-list .pv-stats { grid-template-columns: repeat(4, minmax(0,1fr)); }
+.andarma-admin .ad-u-list :is(.crm-stat, .pv-stat, .ad-pay-kpi, .ad-dev-stat, .ad-u-stat) {
+  min-width: 0; min-height: 124px; border-radius: 16px !important;
+  border: 1px solid var(--u-line) !important; background: var(--u-panel) !important;
+  box-shadow: var(--u-shadow) !important; padding: 16px 18px !important;
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: center;
+  gap: 7px; text-align: left;
+}
+.andarma-admin .ad-u-list .pv-stat { cursor: pointer; }
+.andarma-admin .ad-u-list .pv-stat.is-selected {
+  border-color: #77b5f5 !important; box-shadow: 0 0 0 2px rgba(0,102,224,.1) !important;
+}
+.andarma-admin .ad-u-list :is(.crm-stat__icon, .pv-stat-icon, .ad-pay-icon, .ad-dev-stat__icon, .ad-u-stat__icon) {
+  display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: 10px; color: var(--u-blue);
+  background: #edf5ff; border: 1px solid #d9e9fc; margin: 0;
+}
+.andarma-admin .ad-u-list :is(.crm-stat, .pv-stat, .ad-pay-kpi, .ad-dev-stat, .ad-u-stat) :is(small, span:not(.pv-stat-icon):not(.crm-stat__icon)) {
+  font-size: 12px; line-height: 1.35;
+}
+.andarma-admin .ad-u-list :is(.crm-stat, .pv-stat, .ad-pay-kpi, .ad-dev-stat, .ad-u-stat) strong {
+  font-family: Manrope, 'DM Sans', sans-serif; font-size: 25px !important;
+  letter-spacing: -.035em; line-height: 1.14; font-weight: 800;
+  color: var(--u-text) !important; overflow-wrap: anywhere;
+}
+/* Prospectos posee icono y valores contenidos en un span; preservar esa estructura. */
+.andarma-admin .ad-u-list .pv-stat { flex-direction: row; align-items: center; }
+.andarma-admin .ad-u-list .pv-stat > span:last-child { display: grid; min-width: 0; gap: 5px; }
+/* Superficies de los listados. No afectar contenido de modales. */
+.andarma-admin .ad-u-list > :is(.crm-card, .pv-panel, .ad-card, section.ad-card) {
+  border-radius: var(--u-radius) !important; border: 1px solid var(--u-line) !important;
+  box-shadow: var(--u-shadow) !important;
+}
+/* Controles de filtros: mismo tamaño y borde en todas las pantallas. */
+.andarma-admin .ad-u-list :is(.crm-search, .pv-search, .ad-dev-search, .ad-maps-v8__search) {
+  border: 1px solid var(--u-line) !important; border-radius: 10px !important;
+  background: #fff !important; min-height: 42px; min-width: 0;
+}
+.andarma-admin .ad-u-list :is(.crm-search input, .pv-search input, .ad-dev-search input, .ad-maps-v8__search input) {
+  min-height: 40px; font-size: 13px; color: var(--u-text);
+}
+.andarma-admin .ad-u-list :is(.pv-toolbar, .ad-dev-filters, .ad-pay-filters, .ad-maps-v8__toolbar) {
+  display: flex; align-items: end; gap: 10px; flex-wrap: wrap;
+}
+.andarma-admin .ad-u-list .pv-toolbar .pv-search { flex: 1 1 280px; }
+.andarma-admin .ad-u-list .ad-dev-filters .ad-dev-search { flex: 1 1 260px; }
+.andarma-admin .ad-u-list :is(.pv-toolbar, .ad-dev-filters, .ad-pay-filters) select {
+  min-height: 42px; border-radius: 10px; border-color: var(--u-line);
+}
+/* Encabezados de tablas, separadores y alturas compactas. */
+.andarma-admin .ad-u-list :is(.ad-table, .crm-table, .pv-table) thead th {
+  background: #f8fbff; border-bottom: 1px solid var(--u-line);
+  color: #657e96; font-size: 10px; font-weight: 800; letter-spacing: .08em;
+  padding: 12px 11px;
+}
+.andarma-admin .ad-u-list :is(.ad-table, .crm-table, .pv-table) tbody td {
+  border-bottom: 1px solid #eaf0f6; padding: 12px 11px;
+  line-height: 1.45; vertical-align: middle;
+}
+.andarma-admin .ad-u-list :is(.ad-table, .crm-table, .pv-table) tbody tr:hover { background: #f8fbff; }
+.andarma-admin .ad-u-list :is(.ad-table, .crm-table, .pv-table) :is(.ad-actions, .crm-actions, .pv-actions) {
+  gap: 6px; flex-wrap: wrap; justify-content: flex-end;
+}
+.andarma-admin .ad-u-list :is(button, input, select, a):focus-visible {
+  outline: 3px solid rgba(0,102,224,.32); outline-offset: 2px;
+}
+.andarma-admin .ad-u-list :is(button, input, select):disabled { cursor: not-allowed; }
+/* Consulta rapida: armonizar superficies sin modificar disposicion de resultados. */
+.andarma-admin .ad-u-list.ad-lookup > :is(.ad-lookup__searchbox, .ad-lookup__layout .ad-card) {
+  border: 1px solid var(--u-line); border-radius: var(--u-radius); box-shadow: var(--u-shadow);
+}
+.andarma-admin .ad-u-list.ad-lookup .ad-lookup__search :is(input,button) { min-height: 42px; }
+/* Propiedades y mapas: tarjetas KPI nuevas, sin consultas adicionales. */
+.andarma-admin .ad-u-list .ad-u-stat__label { color: var(--u-muted); font-size: 12px; }
+@media (max-width: 1080px) {
+  .andarma-admin .ad-u-list .pv-stats { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 760px) {
+  .andarma-admin .ad-u-list :is(.crm-stats, .pv-stats, .ad-pay-kpis, .ad-u-stats) {
+    grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px;
+  }
+  .andarma-admin .ad-u-list :is(.crm-stat, .pv-stat, .ad-pay-kpi, .ad-dev-stat, .ad-u-stat) {
+    min-height: 106px; padding: 12px !important;
+  }
+  .andarma-admin .ad-u-list :is(.crm-stat, .pv-stat, .ad-pay-kpi, .ad-dev-stat, .ad-u-stat) strong {
+    font-size: 22px !important;
+  }
+  .andarma-admin .ad-u-list :is(.pv-toolbar, .ad-dev-filters, .ad-pay-filters, .ad-maps-v8__toolbar) {
+    align-items: stretch;
+  }
+  .andarma-admin .ad-u-list :is(.crm-search, .pv-search, .ad-dev-search, .ad-maps-v8__search) {
+    width: 100%; flex: 1 1 100%;
+  }
+  /* La presentacion de tarjetas moviles existente mantiene prioridad estructural. */
+  .andarma-admin .ad-u-list :is(.ad-inventory-responsive,.ad-clients-responsive,.ad-prospects-responsive) thead th {
+    background: none;
+  }
+}
+@media (max-width: 440px) {
+  .andarma-admin .ad-u-list :is(.crm-stats, .pv-stats, .ad-pay-kpis, .ad-u-stats) {
+    grid-template-columns: 1fr;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .andarma-admin .ad-u-list :is(button, a) { transition: none !important; }
+}

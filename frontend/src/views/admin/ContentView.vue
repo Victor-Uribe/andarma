@@ -1,7 +1,7 @@
 <script setup>
 import {ref,computed,onMounted,watch} from 'vue'
 import {api,put} from '../../services/api'
-import {Save,RefreshCw,Search,FilePenLine,CheckCircle2,AlertCircle,ArrowUpRight} from 'lucide-vue-next'
+import {Save,RefreshCw,Search,FilePenLine,CheckCircle2,AlertCircle,ArrowUpRight} from '../../components/admin/AndarmaFaIcons.js'
 const values=ref({}),original=ref({}),error=ref(''),success=ref(''),loading=ref(false),saving=ref(false),query=ref(''),active=ref('all')
 const sectionNames={'inicio':'Inicio','nosotros':'Acerca de ANDARMA','opciones':'Viviendas y terrenos','por-que-andarma':'Por qué ANDARMA','como-comprar':'Cómo comprar','testimonios':'Testimonios','contacto':'Contacto'}
 const sections=computed(()=>[...new Set(Object.keys(values.value).map(k=>k.split('.')[0]))])

@@ -3,7 +3,7 @@ import {computed,ref,watch,onMounted,onBeforeUnmount,nextTick} from 'vue'
 import {useRoute,useRouter} from 'vue-router'
 import {api} from '../../services/api'
 import {can} from '../../utils/andarmaPermissions'
-import {Search,RefreshCw,UserRound,MapPin,WalletCards,AlertCircle,ArrowRight,Phone,CalendarDays,CheckCircle2} from 'lucide-vue-next'
+import {Search,RefreshCw,UserRound,MapPin,WalletCards,AlertCircle,ArrowRight,Phone,CalendarDays,CheckCircle2} from '../../components/admin/AndarmaFaIcons.js'
 
 // ANDARMA_FASE5_CONSULTA
 const router=useRouter(),route=useRoute()
@@ -78,7 +78,7 @@ onBeforeUnmount(()=>{clearTimeout(timer);sequence++;detailSequence++})
 if(q.value.trim().length>=2)search()
 </script>
 <template>
-<section class="ad-lookup">
+<section class="ad-lookup ad-u-list">
   <header class="ad-lookup__heading"><div><span class="admin-kicker">GESTIÓN INMOBILIARIA / CONSULTA</span><h1>Consulta rápida<span class="heading-dot">.</span></h1><p>Encuentra un comprador, teléfono, desarrollo, manzana o terreno desde un solo lugar.</p></div></header>
   <div class="ad-card ad-lookup__searchbox">
     <label class="ad-label" for="ad-lookup-query">Buscar en ANDARMA</label>

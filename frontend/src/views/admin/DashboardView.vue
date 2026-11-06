@@ -1,12 +1,13 @@
 <script setup>
-import {ref,computed,onMounted} from 'vue'
+import {ref,computed,onMounted,watch} from 'vue'
 import {api} from '../../services/api'
-import {Eye,MousePointerClick,Users,CalendarDays,House,MessageSquareQuote,CheckCircle2,Building2,RefreshCw,ArrowUpRight,Plus,Wallet,Clock3,ChartNoAxesColumn,AlertCircle,UserRoundPlus,Image} from 'lucide-vue-next'
+import AnalyticsCharts from '../../components/admin/AnalyticsCharts.vue'
+import {Eye,MousePointerClick,Users,CalendarDays,House,MessageSquareQuote,CheckCircle2,Building2,RefreshCw,ArrowUpRight,Plus,Wallet,Clock3,ChartNoAxesColumn,AlertCircle,UserRoundPlus,Image} from '../../components/admin/AndarmaFaIcons.js'
 const data=ref({}), analytics=ref(null),loading=ref(false),error=ref('')
 const cards=computed(()=>[
  {label:'Vistas de la página',value:analytics.value?.page_views,icon:Eye,note:'Visitas registradas',to:null},
  {label:'Clics en WhatsApp',value:analytics.value?.whatsapp_clicks,icon:MousePointerClick,note:'Interacciones comerciales',to:null},
- {label:'Usuarios',value:data.value.users,icon:Users,note:'Cuentas del sistema',to:'/admin/usuarios'},
+ {label:'Usuarios',value:data.value.users,icon:Users,note:'Cuentas habilitadas',to:'/admin/usuarios'},
  {label:'Prospectos',value:data.value.leads,icon:UserRoundPlus,note:'Contactos recibidos',to:'/admin/prospectos'},
  {label:'Propiedades activas',value:data.value.available_lots,icon:House,note:'Lotes disponibles',to:'/admin/propiedades'},
  {label:'Propiedades vendidas',value:data.value.sold_lots,icon:CheckCircle2,note:'Lotes vendidos',to:'/admin/propiedades'},
@@ -14,10 +15,12 @@ const cards=computed(()=>[
  {label:'Desarrollos',value:data.value.developments,icon:Building2,note:'Proyectos inmobiliarios',to:'/admin/desarrollos'}
 ])
 const shortcuts=[{title:'Nueva propiedad',desc:'Consultar y registrar lotes',to:'/admin/propiedades',icon:Plus},{title:'Nuevo prospecto',desc:'Capturar un contacto',to:'/admin/prospectos',icon:UserRoundPlus},{title:'Actualizar banners',desc:'Editar la portada',to:'/admin/banners',icon:Image},{title:'Ver cobranza',desc:'Movimientos y periodos',to:'/admin/pagos',icon:Wallet}]
+const analyticsPeriod=ref('7d')
 const totalViews7d=computed(()=>Array.isArray(analytics.value?.daily_views)?analytics.value.daily_views.reduce((acc,row)=>acc+Number(row?.views||0),0):0)
 // ANDARMA_FASE6_UI_UX
-async function load(){loading.value=true;error.value='';try{const [d,l,a]=await Promise.allSettled([api('/admin/dashboard'),api('/admin/lots'),api('/admin/analytics?period=7d')]);if(d.status==='fulfilled')data.value=d.value.data||{};else error.value=d.reason.message;if(l.status==='fulfilled'){const rows=l.value.data||[];data.value={...data.value,sold_lots:rows.filter(x=>x.status==='sold').length}}analytics.value=a.status==='fulfilled'?a.value.data||a.value:null}catch(e){error.value=e.message}finally{loading.value=false}}
+async function load(){loading.value=true;error.value='';try{const [d,l,a]=await Promise.allSettled([api('/admin/dashboard'),api('/admin/lots'),api('/admin/analytics?period='+analyticsPeriod.value)]);if(d.status==='fulfilled')data.value=d.value.data||{};else error.value=d.reason.message;if(l.status==='fulfilled'){const rows=l.value.data||[];data.value={...data.value,sold_lots:rows.filter(x=>x.status==='sold').length}}analytics.value=a.status==='fulfilled'?a.value.data||a.value:null}catch(e){error.value=e.message}finally{loading.value=false}}
 onMounted(load)
+watch(analyticsPeriod,load)
 const number=v=>v===null||v===undefined?'—':Number(v).toLocaleString('es-MX')
 </script>
 <template>
@@ -25,7 +28,7 @@ const number=v=>v===null||v===undefined?'—':Number(v).toLocaleString('es-MX')
 <section class="v28-heading"><div><span class="admin-kicker">CENTRO DE CONTROL</span><h1>Bienvenido a ANDARMA</h1><p>Actividad de tu inmobiliaria, inventario y accesos frecuentes.</p></div><button class="admin-outline" :disabled="loading" @click="load"><RefreshCw :size="16"/> Actualizar</button></section>
 <div v-if="error" class="admin-alert error"><AlertCircle :size="18"/> {{error}}</div>
 <section class="v28-metrics"><component :is="c.to?'RouterLink':'div'" v-for="c in cards" :key="c.label" :to="c.to||undefined" class="v28-metric"><div class="v28-metric-top"><span class="v28-metric-icon"><component :is="c.icon" :size="19"/></span><ArrowUpRight v-if="c.to" :size="16"/></div><div class="v28-number">{{loading?'…':number(c.value)}}</div><strong>{{c.label}}</strong><small>{{c.note}}</small></component></section>
-<div class="v28-dual"><section class="v28-panel"><div class="v28-panel-head"><div><h2><ChartNoAxesColumn :size="19"/> Visitas de los últimos días</h2><p>Seguimiento de tráfico de la página pública</p></div><span class="v28-tag">Últimos 7 días</span></div><div v-if="Array.isArray(analytics?.daily_views)&&analytics.daily_views.length" class="v28-bars"><div v-for="(d,i) in analytics.daily_views" :key="i" class="v28-bar"><span :style="{height:Math.max(5,Math.round(Number(d.views||0)/Math.max(1,...analytics.daily_views.map(x=>Number(x.views||0)))*135))+'px'}"></span><small>{{d.day||d.date}}</small></div></div><div v-else class="v28-empty-chart"><div class="v28-empty-chart__metric"><small>Vistas (si hay datos)</small><strong>{{ Array.isArray(analytics?.daily_views) && analytics.daily_views.length ? number(totalViews7d) : String.fromCharCode(8212) }}</strong><span>Últimos 7 días</span></div><ChartNoAxesColumn :size="35"/><strong>Analítica pendiente de conexión</strong><p>La API actual no registra vistas ni clics de WhatsApp. Estos indicadores se mostrarán cuando Laravel proporcione estadísticas verificables.</p></div></section>
+<div class="v28-dual"><section class="v28-panel"><div class="v28-panel-head"><div><h2><ChartNoAxesColumn :size="19"/> Visitas de los últimos días</h2><p>Seguimiento de tráfico de la página pública</p></div><select v-model="analyticsPeriod" class="ad-analytics-period" aria-label="Periodo de analítica"><option value="7d">Últimos 7 días</option><option value="30d">Últimos 30 días</option></select></div><AnalyticsCharts v-if="analytics" :analytics="analytics"/><div v-else class="v28-empty-chart"><ChartNoAxesColumn :size="35"/><strong>Estadísticas no disponibles</strong><p>Verifica el endpoint de analítica.</p></div></section>
 <section class="v28-panel"><div class="v28-panel-head"><div><h2><Clock3 :size="19"/> Accesos rápidos</h2><p>Las acciones habituales del administrador</p></div></div><div class="v28-shortcuts"><RouterLink v-for="item in shortcuts" :key="item.to" :to="item.to"><span class="v28-shortcut-icon"><component :is="item.icon" :size="18"/></span><span><strong>{{item.title}}</strong><small>{{item.desc}}</small></span><ArrowUpRight :size="16"/></RouterLink></div></section></div>
 <section class="v28-panel v28-overview"><div class="v28-panel-head"><div><h2><CalendarDays :size="19"/> Resumen operativo</h2><p>Información disponible en ANDARMA</p></div></div><div class="v28-operations"><RouterLink to="/admin/propiedades"><House :size="22"/><span>Inventario</span><b>{{number(data.lots)}}</b><small>Propiedades y lotes</small></RouterLink><RouterLink to="/admin/banners"><Image :size="22"/><span>Banners</span><b>{{number(data.banners)}}</b><small>Elementos de portada</small></RouterLink><RouterLink to="/admin/testimonios"><MessageSquareQuote :size="22"/><span>Opiniones</span><b>{{number(data.testimonials)}}</b><small>Testimonios</small></RouterLink></div></section>
 </div>
@@ -92,6 +95,10 @@ const number=v=>v===null||v===undefined?'—':Number(v).toLocaleString('es-MX')
   .ad-dashboard-v4{min-height:0}
 }
 
+
+/* ANDARMA_FASE5B_HIGHCHARTS_USUARIOS_20261105 */
+.ad-analytics-period{min-height:36px;border:1px solid #DCE7F3;border-radius:10px;background:#fff;padding:7px 12px;color:#35516C;font-size:12px;font-weight:700;cursor:pointer;max-width:100%}
+.ad-analytics-period:focus-visible{outline:2px solid #0066E0;outline-offset:2px}
 </style>
 
 

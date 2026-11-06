@@ -1,0 +1,64 @@
+/* ANDARMA_FASE1B_CONTROLES_20261105
+ * Reglas incrementales. Solo administrador; no altera API, flujos ni sitio publico.
+ * No reemplaza los ajustes particulares de mapas, CRM, cobranza ni modales.
+ */
+.andarma-admin {
+  --ad-ui-focus: rgba(0,102,224,.32);
+  --ad-ui-control-border: #D5E2EF;
+  --ad-ui-field-hover: #BCD3EB;
+  --ad-ui-placeholder: #71859A;
+  --ad-ui-row-hover: #F7FAFF;
+  --ad-ui-muted: #627B93;
+}
+
+/* Controles generales: bordes y foco entendibles, sin imponer alturas. */
+.andarma-admin :is(.ad-input,.ad-select,.ad-textarea):not(:disabled):hover:not(:focus) {
+  border-color: var(--ad-ui-field-hover);
+}
+.andarma-admin :is(.ad-input,.ad-select,.ad-textarea)::placeholder {
+  color: var(--ad-ui-placeholder);
+  opacity: 1;
+}
+.andarma-admin :is(.ad-input,.ad-select,.ad-textarea):focus-visible {
+  border-color: var(--ad-primary, #0066E0);
+  box-shadow: 0 0 0 3px rgba(0,102,224,.15);
+}
+
+/* Facilitar el reconocimiento del teclado en botones y enlaces administrados. */
+.andarma-admin :is(.ad-btn,.ad-icon-btn,.admin-outline,.admin-primary):focus-visible {
+  outline: 3px solid var(--ad-ui-focus);
+  outline-offset: 2px;
+}
+.andarma-admin :is(.ad-btn,.ad-icon-btn):disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+/* Tablas: encabezado consistente y textos largos sin desbordar la pagina. */
+.andarma-admin .ad-table-wrap { max-width: 100%; scrollbar-width: thin; scrollbar-color: #B8CBE0 transparent; }
+.andarma-admin .ad-table :is(th,td) { vertical-align: middle; }
+.andarma-admin .ad-table tbody tr:hover { background: var(--ad-ui-row-hover); }
+.andarma-admin .ad-table td { overflow-wrap: break-word; }
+.andarma-admin .ad-table :is(th,td) > :is(.ad-actions,.ad-badge) { max-width: 100%; }
+
+/* Superficies base: no sobrescribir fondos, colores o paddings de componentes especializados. */
+.andarma-admin :is(.ad-card,.pv-panel,.crm-card,.v28-panel) { min-width: 0; }
+.andarma-admin :is(.ad-card,.pv-panel,.crm-card,.v28-panel) :is(h2,h3) {
+  overflow-wrap: break-word;
+}
+
+/* Estados visibles: especialmente relevantes en pantallas con fondo claro. */
+.andarma-admin :is(.ad-btn,.ad-icon-btn,.admin-outline):not(:disabled):active {
+  transform: translateY(1px);
+}
+
+/* Preferencias de accesibilidad: sin efectos de movimiento forzados. */
+@media (prefers-reduced-motion: reduce) {
+  .andarma-admin :is(.ad-btn,.ad-icon-btn,.admin-outline) { transition: none !important; transform: none !important; }
+}
+
+@media (max-width: 640px) {
+  .andarma-admin .ad-table-wrap { -webkit-overflow-scrolling: touch; }
+  .andarma-admin :is(.ad-input,.ad-select,.ad-textarea) { max-width: 100%; }
+  .andarma-admin :is(.ad-card,.pv-panel,.crm-card,.v28-panel) { min-width: 0; }
+}

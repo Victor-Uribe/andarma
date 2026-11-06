@@ -1,0 +1,186 @@
+/* ANDARMA_PUBLIC_INTERIORS_V1 - namespace adp- to avoid affecting home/admin */
+.adp-page{--adp-blue:#0066e0;--adp-deep:#003a8c;--adp-ink:#0b284b;--adp-muted:#657a91;min-height:100vh;display:flex;flex-direction:column;background:#f8fbff;color:var(--adp-ink);font-family:'DM Sans',Arial,sans-serif}
+.adp-page *{box-sizing:border-box}.adp-page a{text-decoration:none}.adp-page a:focus-visible,.adp-page button:focus-visible{outline:3px solid #81c5ff;outline-offset:4px}
+.adp-navbar{position:relative;z-index:50;background:#fff;border-bottom:1px solid #e2eaf2}.adp-navbar__inner{max-width:1440px;margin:auto;min-height:88px;padding:10px clamp(20px,4vw,70px);display:flex;align-items:center;justify-content:space-between;gap:25px}.adp-brand{display:flex;align-items:center;gap:10px;color:var(--adp-ink);min-width:0}.adp-brand img{width:49px;height:49px;object-fit:contain}.adp-brand strong{display:block;font-size:22px;letter-spacing:.12em;font-weight:800;line-height:1}.adp-brand small{display:block;font-size:9px;letter-spacing:.25em;margin-top:7px;color:#477196;font-weight:700}.adp-nav{display:flex;align-items:center;gap:28px}.adp-nav a{color:#47647f;font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:700}.adp-nav a.router-link-exact-active,.adp-nav a:hover{color:#0066e0}.adp-contact,.adp-button{display:inline-flex;align-items:center;justify-content:center;gap:20px;min-height:48px;padding:14px 20px;background:#0066e0;border:1px solid #0066e0;color:white;font-size:13px;font-weight:750;transition:transform .25s,background .25s}.adp-contact:hover,.adp-button:hover{background:#003a8c;transform:translateY(-2px)}.adp-mobile-toggle{display:none;border:1px solid #d6e3f1;background:white;color:#003a8c;padding:11px}.adp-mobile-nav{display:flex;flex-direction:column;gap:12px;padding:16px 22px 22px;border-top:1px solid #e2eaf2;background:white}.adp-mobile-nav a{padding:10px;color:#173b60;font-weight:700}.adp-main{flex:1}.adp-kicker{display:block;font-size:11px;font-weight:800;letter-spacing:.17em;color:#0066e0;text-transform:uppercase}.adp-hero{position:relative;min-height:440px;display:flex;align-items:center;background:linear-gradient(110deg,rgba(1,17,41,.96),rgba(4,45,94,.78)),linear-gradient(135deg,#061c39,#003a8c);color:white;overflow:hidden}.adp-hero__inner,.adp-detail-hero__inner{position:relative;z-index:1;width:100%;max-width:1440px;margin:auto;padding:82px clamp(22px,5vw,82px)}.adp-hero .adp-kicker,.adp-detail-hero .adp-kicker{color:#91caff}.adp-hero h1,.adp-detail-hero h1{font-family:'Manrope',sans-serif;font-weight:800;font-size:clamp(43px,5.7vw,82px);line-height:1.04;letter-spacing:-.055em;max-width:860px;margin:16px 0 23px}.adp-hero h1 em,.adp-section h2 em{font-style:normal;color:#58b0ff}.adp-hero p{color:#d5e7fc;font-size:clamp(15px,1.45vw,19px);line-height:1.75;max-width:640px}.adp-hero__scroll{display:inline-flex;align-items:center;gap:16px;margin-top:30px;color:white;font-size:12px;font-weight:750;text-transform:uppercase;letter-spacing:.08em}.adp-hero__line{position:absolute;right:14%;top:0;bottom:0;width:1px;background:#fff2}.adp-section{width:min(100%,1440px);margin:0 auto;padding:clamp(60px,7vw,104px) clamp(22px,5vw,82px)}.adp-section__heading{display:flex;align-items:end;justify-content:space-between;gap:30px;margin-bottom:38px}.adp-section__heading h2,.adp-detail__intro h2{font-family:'Manrope',sans-serif;font-size:clamp(31px,3.5vw,53px);line-height:1.14;letter-spacing:-.052em;margin:13px 0 0}.adp-section__heading p{color:#657a91;max-width:340px;line-height:1.7;font-size:14px}.adp-devgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px}.adp-devcard{background:white;min-width:0;border:1px solid #e1eaf3;box-shadow:0 20px 45px rgba(10,47,84,.055);overflow:hidden}.adp-devcard__image{display:block;height:clamp(240px,26vw,390px);position:relative;overflow:hidden;background:linear-gradient(135deg,#c6deed,#48779d);color:white}.adp-devcard__image img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.2,.7,.2,1)}.adp-devcard:hover .adp-devcard__image img{transform:scale(1.045)}.adp-devcard__placeholder{height:100%;display:grid;place-items:center;color:#fff9;font-size:56px}.adp-devcard__number{position:absolute;left:24px;top:24px;font-size:11px;letter-spacing:.15em;font-weight:800;color:white;text-shadow:0 2px 9px #0008}.adp-devcard__body{padding:26px 28px 30px}.adp-devcard__body h3{font-family:'Manrope',sans-serif;color:#143454;font-size:clamp(24px,2.1vw,32px);line-height:1.2;letter-spacing:-.04em;margin:13px 0 12px}.adp-devcard__body p{min-height:50px;color:#64788e;font-size:14px;line-height:1.7;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}.adp-textlink{display:inline-flex;align-items:center;gap:14px;color:#0066e0;font-size:13px;letter-spacing:.03em;font-weight:800;margin-top:17px}.adp-textlink:hover{color:#003a8c}.adp-outro{background:#082a52;color:white;display:flex;align-items:center;justify-content:space-between;gap:30px;padding:clamp(50px,6vw,84px) max(24px,calc((100vw - 1240px)/2))}.adp-outro h2{font-size:clamp(25px,2.8vw,39px);max-width:680px;font-family:'Manrope',sans-serif;line-height:1.25;letter-spacing:-.035em}.adp-outro .adp-kicker{color:#9bc9fb}.adp-footer{background:#05192e;color:#c5d7ec;padding:32px clamp(22px,5vw,82px);display:flex;align-items:center;justify-content:space-between;gap:22px;flex-wrap:wrap}.adp-footer>div{display:flex;flex-direction:column;gap:6px}.adp-footer strong{color:white;letter-spacing:.13em}.adp-footer span,.adp-footer small{font-size:12px}.adp-footer a{color:white;font-size:12px}.adp-message{padding:35px;border:1px solid #d6e4f1;background:white;color:#506780;font-size:14px}.adp-message a,.adp-message button{color:#0066e0;border:0;background:none;font-weight:800}.adp-detail-hero{min-height:430px;display:flex;align-items:end;position:relative;background-image:linear-gradient(90deg,#051a33f0 0%,#082749bd 70%),var(--adp-photo,linear-gradient(135deg,#082849,#114d8b));background-position:center;background-size:cover;color:white}.adp-detail-hero h1{margin-bottom:14px}.adp-detail-hero p{color:#d0e4f9}.adp-back{display:inline-flex;align-items:center;gap:12px;color:#d0e4f9;font-size:12px;letter-spacing:.05em;margin-bottom:34px}.adp-detail__intro{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}.adp-detail__intro>p{font-size:16px;color:#64788e;line-height:1.9}.adp-detail__lots{padding-top:35px}.adp-lotgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:19px}.adp-lotcard{padding:25px;border:1px solid #dbe8f4;background:white;display:flex;flex-direction:column;gap:15px}.adp-lotcard__number{font-family:'Manrope',sans-serif;font-size:20px;font-weight:800}.adp-lotcard__status{display:inline-flex;align-self:start;border:1px solid #bcebd7;background:#e9f9f0;color:#16825a;padding:6px 10px;border-radius:30px;font-size:11px;font-weight:800}.adp-lotcard>div{display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap}.adp-lotcard>div span{font-size:13px;color:#677e94}.adp-lotcard>div strong{color:#18446b;font-size:18px}.adp-lotcard .adp-textlink{margin-top:auto}.adp-footer a:hover{color:#77b8ff}@media(max-width:950px){.adp-nav,.adp-contact{display:none}.adp-mobile-toggle{display:block}.adp-section__heading{align-items:start;flex-direction:column}.adp-detail__intro{grid-template-columns:1fr}.adp-lotgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:620px){.adp-navbar__inner{min-height:70px}.adp-brand strong{font-size:19px}.adp-brand small{font-size:8px}.adp-devgrid,.adp-lotgrid{grid-template-columns:1fr}.adp-hero,.adp-detail-hero{min-height:380px}.adp-hero__inner,.adp-detail-hero__inner{padding:60px 22px}.adp-devcard__image{height:260px}.adp-section{padding:58px 20px}.adp-outro{flex-direction:column;align-items:start;padding:52px 22px}.adp-section__heading{margin-bottom:27px}}@media(prefers-reduced-motion:reduce){.adp-page *{scroll-behavior:auto!important;transition:none!important}}
+
+/* ANDARMA_PUBLIC_MAP_ONLY: fase previa al plano interactivo */
+.adp-map-notice{display:flex;align-items:center;gap:22px;padding:30px;border:1px solid #d8e6f3;background:linear-gradient(110deg,#eff7ff,#fff);border-radius:6px}
+.adp-map-notice__icon{flex:0 0 68px;width:68px;height:68px;display:grid;place-items:center;border-radius:12px;background:#dceeff;color:#0066e0;font-size:29px}
+.adp-map-notice>div:nth-child(2){flex:1;min-width:0}
+.adp-map-notice strong{font:800 19px/1.25 'Manrope',sans-serif;color:#123859}
+.adp-map-notice p{font-size:14px;line-height:1.7;color:#64788e;max-width:650px;margin:8px 0 0}
+.adp-map-notice .adp-button{flex-shrink:0}
+@media(max-width:760px){.adp-map-notice{flex-direction:column;align-items:flex-start;padding:23px}.adp-map-notice .adp-button{width:100%;justify-content:center}}
+
+/* ANDARMA_PUBLIC_NAV_UNIFICADA_FASE1C */
+/* Menú interior coherente con el hero y barra pública de inicio */
+.adp-page .adp-navbar{
+ position:fixed;inset:0 0 auto;z-index:1000;
+ background:transparent;border-bottom:1px solid rgba(255,255,255,.20);
+ transition:background .32s ease,box-shadow .32s ease,border-color .32s ease;
+}
+.adp-page .adp-navbar__inner{max-width:1600px;min-height:100px;padding:0 clamp(24px,5vw,86px);gap:24px}
+.adp-page .adp-brand{color:white;gap:12px}
+.adp-page .adp-brand__symbol{position:relative;flex:none;width:52px;height:52px;display:block}
+.adp-page .adp-brand__symbol img{
+ position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
+ background:none!important;border:0!important;box-shadow:none!important;
+ transition:opacity .25s ease;
+}
+.adp-page .adp-brand__white{opacity:1}
+.adp-page .adp-brand__blue{opacity:0}
+.adp-page .adp-brand strong{font-family:Manrope,sans-serif;font-size:25px;letter-spacing:.12em;font-weight:800}
+.adp-page .adp-brand small{color:#c4dafa;font-size:8px;letter-spacing:.34em;margin-top:8px}
+.adp-page .adp-nav{gap:clamp(14px,2.2vw,35px)}
+.adp-page .adp-nav a{
+ color:rgba(255,255,255,.83);font-size:11px;letter-spacing:.16em;
+ text-transform:uppercase;font-weight:750;transition:color .2s ease;
+}
+.adp-page .adp-nav a:hover,.adp-page .adp-nav a[aria-current="page"]{color:#fff}
+.adp-page .adp-nav a[aria-current="page"]{text-decoration:underline;text-decoration-color:#6cc2ff;text-underline-offset:9px}
+.adp-page .adp-contact{
+ min-height:51px;padding:0 19px;gap:14px;background:rgba(5,20,44,.23);
+ border:1px solid rgba(255,255,255,.5);border-radius:0;color:white;
+ font-size:11px;letter-spacing:.12em;font-weight:800;text-transform:uppercase;
+ box-shadow:none;
+}
+.adp-page .adp-contact:hover{background:#0066e0;border-color:#0066e0}
+.adp-page .adp-mobile-toggle{
+ width:46px;height:46px;display:none;place-items:center;background:#061b3599;
+ border:1px solid #ffffff77;color:white;cursor:pointer;
+}
+.adp-page .adp-navbar--scrolled,.adp-page .adp-navbar--open{
+ background:rgba(255,255,255,.98);border-color:#dce7f4;box-shadow:0 12px 35px rgba(5,29,64,.09);
+ backdrop-filter:blur(12px);
+}
+.adp-page .adp-navbar--scrolled .adp-brand,.adp-page .adp-navbar--open .adp-brand{color:#073165}
+.adp-page .adp-navbar--scrolled .adp-brand small,.adp-page .adp-navbar--open .adp-brand small{color:#577899}
+.adp-page .adp-navbar--scrolled .adp-brand__white,.adp-page .adp-navbar--open .adp-brand__white{opacity:0}
+.adp-page .adp-navbar--scrolled .adp-brand__blue,.adp-page .adp-navbar--open .adp-brand__blue{opacity:1}
+.adp-page .adp-navbar--scrolled .adp-nav a,.adp-page .adp-navbar--open .adp-nav a{color:#45627e}
+.adp-page .adp-navbar--scrolled .adp-nav a:hover,.adp-page .adp-navbar--open .adp-nav a:hover,
+.adp-page .adp-navbar--scrolled .adp-nav a[aria-current="page"]{color:#0066e0}
+.adp-page .adp-navbar--scrolled .adp-contact,.adp-page .adp-navbar--open .adp-contact{background:#0066e0;border-color:#0066e0;color:white}
+.adp-page .adp-navbar--scrolled .adp-mobile-toggle,.adp-page .adp-navbar--open .adp-mobile-toggle{color:#003a8c;background:#fff;border-color:#d6e3f1}
+.adp-page .adp-mobile-nav{display:none}
+.adp-page .adp-mobile-nav.is-open{
+ display:flex;position:absolute;top:100%;left:0;right:0;z-index:5;
+ flex-direction:column;gap:2px;padding:18px clamp(24px,5vw,86px) 24px;
+ background:white;border-top:1px solid #e5edf5;box-shadow:0 20px 40px #051d3c20;
+}
+.adp-page .adp-mobile-nav a{font-size:12px;letter-spacing:.1em;text-transform:uppercase;padding:13px;color:#153c65}
+.adp-page .adp-mobile-nav a:hover,.adp-page .adp-mobile-nav a.router-link-exact-active{color:#0066e0}
+.adp-page .adp-main .adp-hero{min-height:530px;padding-top:100px}
+.adp-page .adp-main .adp-detail-hero{min-height:510px;padding-top:100px}
+@media(max-width:1000px){
+ .adp-page .adp-nav,.adp-page .adp-contact{display:none}
+ .adp-page .adp-mobile-toggle{display:grid}
+ .adp-page .adp-navbar__inner{min-height:82px;padding:0 clamp(20px,4vw,38px)}
+ .adp-page .adp-main .adp-hero,.adp-page .adp-main .adp-detail-hero{padding-top:82px}
+}
+@media(max-width:600px){
+ .adp-page .adp-navbar__inner{min-height:76px}
+ .adp-page .adp-brand__symbol{width:46px;height:46px}
+ .adp-page .adp-brand strong{font-size:19px}
+ .adp-page .adp-brand small{font-size:7px;letter-spacing:.22em}
+ .adp-page .adp-main .adp-hero,.adp-page .adp-main .adp-detail-hero{padding-top:76px}
+}
+@media(prefers-reduced-motion:reduce){
+ .adp-page .adp-navbar,.adp-page .adp-brand__symbol img{transition:none!important}
+}
+
+/* ANDARMA_PUBLIC_DESARROLLOS_PREMIUM_F1D: aislamiento por .adp-catalog--premium */
+.adp-catalog--premium{background:#fff}
+.adp-catalog--premium .adp-hero--premium{min-height:clamp(680px,93svh,940px);isolation:isolate;overflow:hidden;background:#071b35;align-items:center;}
+.adp-catalog--premium .adp-hero__photo,.adp-catalog--premium .adp-hero__shade,.adp-catalog--premium .adp-hero__grid{position:absolute;inset:0;pointer-events:none;}
+.adp-catalog--premium .adp-hero__photo{z-index:-3;overflow:hidden}
+.adp-catalog--premium .adp-hero__photo img{width:100%;height:100%;object-fit:cover;object-position:center 53%;animation:adpHeroZoom 1.6s cubic-bezier(.2,.75,.1,1) both}
+.adp-catalog--premium .adp-hero__shade{z-index:-2;background:linear-gradient(90deg,rgba(1,15,34,.94) 0%,rgba(2,23,46,.82) 32%,rgba(3,27,50,.46) 68%,rgba(2,16,36,.2) 100%),linear-gradient(0deg,rgba(2,15,34,.8),transparent 28%),linear-gradient(180deg,rgba(2,15,34,.35),transparent 28%)}
+.adp-catalog--premium .adp-hero__grid{z-index:-1;opacity:.11;background-image:linear-gradient(to right,#fff5 1px,transparent 1px);background-size:calc(100% / 6) 100%}
+.adp-catalog--premium .adp-hero__inner{max-width:1600px;padding:clamp(165px,21vh,250px) clamp(24px,5vw,86px) 155px}
+.adp-catalog--premium .adp-hero__chapter{display:flex;align-items:center;gap:15px;color:#c7e2ff;font-size:11px;letter-spacing:.25em;font-weight:800;text-transform:uppercase;animation:adpSlideUp .8s .1s both}
+.adp-catalog--premium .adp-hero__chapter-rule{width:46px;height:2px;background:#0891ff}
+.adp-catalog--premium .adp-hero__chapter>span:not(.adp-hero__chapter-rule){color:#68b5ff}
+.adp-catalog--premium .adp-hero h1{font-family:Manrope,sans-serif;font-size:clamp(53px,6.5vw,106px);line-height:1.015;letter-spacing:-.072em;max-width:1200px;margin:31px 0 29px;text-wrap:balance;animation:adpSlideUp .9s .18s both}
+.adp-catalog--premium .adp-hero h1 em{font-style:normal;color:#67b9ff}
+.adp-catalog--premium .adp-hero p{max-width:575px;font-size:clamp(15px,1.2vw,18px);line-height:1.82;color:#e0eaf7;margin:0;padding-left:21px;border-left:2px solid #0891ff;animation:adpSlideUp .9s .28s both}
+.adp-catalog--premium .adp-hero__action{display:inline-flex;align-items:center;justify-content:space-between;gap:42px;min-height:60px;margin-top:37px;padding:0 23px 0 27px;background:#0066e0;color:white;text-transform:uppercase;font-size:11px;font-weight:800;letter-spacing:.15em;transition:background .25s,transform .25s;animation:adpSlideUp .9s .35s both}
+.adp-catalog--premium .adp-hero__action:hover{background:#0891ff;transform:translateY(-3px)}
+.adp-catalog--premium .adp-hero__bottom{position:absolute;inset:auto 0 0;min-height:88px;border-top:1px solid #ffffff45;padding:0 clamp(24px,5vw,86px);display:flex;justify-content:space-between;align-items:center;gap:20px;color:#d9e9ff;font-size:10px;font-weight:750;letter-spacing:.18em}
+.adp-catalog--premium .adp-hero__bottom i{margin-left:12px}
+.adp-catalog--premium .adp-values{background:#f2f7fc;border-bottom:1px solid #dce7f3}
+.adp-catalog--premium .adp-values__inner{max-width:1440px;margin:auto;padding:25px clamp(24px,5vw,82px);display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+.adp-catalog--premium .adp-values__item{display:flex;align-items:center;justify-content:center;gap:17px;min-height:53px;border-right:1px solid #d4e2f1;color:#183b60;font-weight:750;font-size:13px;letter-spacing:.025em}
+.adp-catalog--premium .adp-values__item:last-child{border-right:0}
+.adp-catalog--premium .adp-values__item i{font-size:22px;color:#0066e0}
+.adp-catalog--premium .adp-projects{max-width:1600px;padding-top:clamp(86px,9vw,138px);padding-bottom:clamp(90px,9vw,140px)}
+.adp-catalog--premium .adp-projects__heading{margin-bottom:clamp(36px,5vw,66px);align-items:end}
+.adp-catalog--premium .adp-projects__heading h2{font-size:clamp(42px,4.6vw,70px);line-height:1.065;letter-spacing:-.058em;margin:20px 0 0;color:#092c57}
+.adp-catalog--premium .adp-projects__heading h2 em{font-style:normal;color:#0066e0}
+.adp-catalog--premium .adp-projects__heading>p{font-size:16px;line-height:1.85;max-width:370px;color:#62758b}
+.adp-catalog--premium .adp-kicker__line{display:inline-block;width:25px;height:2px;background:#0066e0;vertical-align:middle;margin-right:9px}
+.adp-catalog--premium .adp-devgrid--premium{grid-template-columns:repeat(2,minmax(0,1fr));gap:30px}
+.adp-catalog--premium .adp-devcard--premium{background:#fff;border:1px solid #e4ebf4;box-shadow:0 18px 45px rgba(8,37,75,.06);transition:box-shadow .4s ease,transform .4s ease;overflow:hidden}
+.adp-catalog--premium .adp-devcard--premium:hover{box-shadow:0 28px 65px rgba(8,37,75,.14);transform:translateY(-5px)}
+.adp-catalog--premium .adp-devcard--premium .adp-devcard__image{height:clamp(280px,28vw,430px);overflow:hidden;background:#0b355a}
+.adp-catalog--premium .adp-devcard--premium .adp-devcard__image::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#03192d70,transparent 42%,#03192d33);pointer-events:none}
+.adp-catalog--premium .adp-devcard--premium .adp-devcard__image img{transition:transform .85s cubic-bezier(.2,.7,.2,1)}
+.adp-catalog--premium .adp-devcard--premium:hover .adp-devcard__image img{transform:scale(1.065)}
+.adp-catalog--premium .adp-devcard__number{z-index:2;top:26px;left:29px;display:flex;align-items:baseline;gap:9px;font-family:Manrope,sans-serif;font-size:24px;letter-spacing:-.02em;font-weight:800}
+.adp-catalog--premium .adp-devcard__number span{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:.2em}
+.adp-catalog--premium .adp-devcard__image-action{position:absolute;right:29px;bottom:27px;z-index:2;width:52px;height:52px;border:1px solid #ffffffa3;display:grid;place-items:center;color:white;font-size:18px;transition:background .25s,transform .25s}
+.adp-catalog--premium .adp-devcard--premium:hover .adp-devcard__image-action{background:#0066e0;border-color:#0066e0;transform:translate(2px,-2px)}
+.adp-catalog--premium .adp-devcard--premium .adp-devcard__body{padding:34px clamp(26px,3vw,48px) 39px}
+.adp-catalog--premium .adp-devcard__eyebrow{display:flex;align-items:center;gap:10px;color:#0066e0;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.adp-catalog--premium .adp-devcard__body h3{color:#0a2d56;font-size:clamp(28px,3vw,43px);letter-spacing:-.06em;margin:17px 0 12px}
+.adp-catalog--premium .adp-devcard__body>p{margin:0;color:#62758b;line-height:1.8;font-size:15px;min-height:0;-webkit-line-clamp:3}
+.adp-catalog--premium .adp-devcard__link{display:flex;justify-content:space-between;align-items:center;gap:15px;border-top:1px solid #e5edf6;margin-top:27px;padding-top:22px;color:#0066e0;font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:800;transition:color .25s}
+.adp-catalog--premium .adp-devcard__link:hover{color:#003a8c}
+.adp-catalog--premium .adp-devcard__link i{font-size:17px;transition:transform .25s}
+.adp-catalog--premium .adp-devcard__link:hover i{transform:translateX(5px)}
+.adp-catalog--premium .adp-devcard--featured{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);min-height:520px}
+.adp-catalog--premium .adp-devcard--featured .adp-devcard__image{height:100%;min-height:520px}
+.adp-catalog--premium .adp-devcard--featured .adp-devcard__body{display:flex;flex-direction:column;justify-content:center;padding:clamp(40px,5.5vw,92px)}
+.adp-catalog--premium .adp-devcard--featured .adp-devcard__body h3{font-size:clamp(39px,4.4vw,68px)}
+.adp-catalog--premium .adp-devcard--featured .adp-devcard__link{margin-top:40px}
+.adp-catalog--premium .adp-projects__foot{display:flex;justify-content:space-between;gap:15px;border-top:1px solid #dce8f4;margin-top:36px;padding-top:18px;color:#617b97;font-size:10px;letter-spacing:.17em;font-weight:800}
+.adp-catalog--premium .adp-projects__message{border-left:3px solid #0066e0;padding:38px}
+.adp-catalog--premium .adp-outro--premium{position:relative;overflow:hidden;background:linear-gradient(115deg,#061c38,#063871);padding:0}
+.adp-catalog--premium .adp-outro--premium::before{content:'';position:absolute;inset:0;pointer-events:none;opacity:.08;background-image:linear-gradient(90deg,#fff 1px,transparent 1px);background-size:20% 100%}
+.adp-catalog--premium .adp-outro__inner{position:relative;z-index:1;width:100%;max-width:1600px;margin:auto;padding:clamp(75px,8vw,115px) clamp(24px,5vw,86px);display:flex;align-items:center;justify-content:space-between;gap:45px}
+.adp-catalog--premium .adp-outro--premium h2{font-family:Manrope,sans-serif;font-size:clamp(36px,4.3vw,63px);line-height:1.13;letter-spacing:-.055em;margin:17px 0 20px;max-width:850px}
+.adp-catalog--premium .adp-outro--premium h2 em{font-style:normal;color:#66b9ff}
+.adp-catalog--premium .adp-outro--premium p{font-size:15px;color:#d6e7f9}
+.adp-catalog--premium .adp-outro--premium .adp-button{min-height:61px;padding:0 25px;white-space:nowrap;font-size:12px;text-transform:uppercase;letter-spacing:.09em}
+@keyframes adpHeroZoom{from{transform:scale(1.07);opacity:.65}to{transform:scale(1);opacity:1}}
+@keyframes adpSlideUp{from{transform:translateY(25px);opacity:0}to{transform:translateY(0);opacity:1}}
+@media(max-width:980px){
+ .adp-catalog--premium .adp-devcard--featured{grid-template-columns:1fr;min-height:0}
+ .adp-catalog--premium .adp-devcard--featured .adp-devcard__image{height:400px;min-height:0}
+ .adp-catalog--premium .adp-devcard--featured .adp-devcard__body{padding:35px}
+ .adp-catalog--premium .adp-outro__inner{align-items:flex-start;flex-direction:column}
+}
+@media(max-width:700px){
+ .adp-catalog--premium .adp-hero--premium{min-height:740px;min-height:92svh}
+ .adp-catalog--premium .adp-hero__inner{padding:155px 23px 140px}
+ .adp-catalog--premium .adp-hero h1{font-size:clamp(43px,10vw,68px);letter-spacing:-.065em}
+ .adp-catalog--premium .adp-hero__bottom{min-height:67px;padding:0 23px;font-size:9px}
+ .adp-catalog--premium .adp-hero__bottom span:last-child{display:none}
+ .adp-catalog--premium .adp-values__inner{grid-template-columns:1fr;padding:18px 23px}
+ .adp-catalog--premium .adp-values__item{justify-content:flex-start;min-height:54px;border-right:0;border-bottom:1px solid #d4e2f1}
+ .adp-catalog--premium .adp-values__item:last-child{border-bottom:0}
+ .adp-catalog--premium .adp-projects{padding:76px 22px 90px}
+ .adp-catalog--premium .adp-projects__heading h2{font-size:clamp(36px,9vw,53px)}
+ .adp-catalog--premium .adp-devgrid--premium{grid-template-columns:1fr;gap:23px}
+ .adp-catalog--premium .adp-devcard--featured{grid-column:auto}
+ .adp-catalog--premium .adp-devcard--featured .adp-devcard__image,.adp-catalog--premium .adp-devcard--premium .adp-devcard__image{height:295px;min-height:0}
+ .adp-catalog--premium .adp-devcard--premium .adp-devcard__body{padding:28px 24px 31px}
+ .adp-catalog--premium .adp-devcard--featured .adp-devcard__body h3{font-size:35px}
+ .adp-catalog--premium .adp-projects__foot{font-size:9px}
+ .adp-catalog--premium .adp-outro__inner{padding:76px 24px}
+ .adp-catalog--premium .adp-outro--premium .adp-button{width:100%;justify-content:space-between}
+}
+@media(prefers-reduced-motion:reduce){
+ .adp-catalog--premium .adp-hero__photo img,.adp-catalog--premium .adp-hero__chapter,.adp-catalog--premium .adp-hero h1,.adp-catalog--premium .adp-hero p,.adp-catalog--premium .adp-hero__action{animation:none!important}
+ .adp-catalog--premium *{transition:none!important}
+}

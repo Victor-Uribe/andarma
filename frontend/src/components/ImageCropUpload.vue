@@ -1,7 +1,7 @@
 <script setup>
 import {ref,computed,onUnmounted} from 'vue'
 import {post} from '../services/api'
-import {UploadCloud,ZoomIn,ZoomOut,Check,X,Image as ImageIcon} from 'lucide-vue-next'
+import {UploadCloud,ZoomIn,ZoomOut,Check,X,Image as ImageIcon} from './admin/AndarmaFaIcons.js'
 const props=defineProps({modelValue:{type:String,default:''},ratio:{type:Number,default:16/9},label:{type:String,default:'Imagen'},maxKb:{type:Number,default:450}})
 const emit=defineEmits(['update:modelValue'])
 const input=ref(null),canvas=ref(null),open=ref(false),busy=ref(false),error=ref(''),zoom=ref(1),image=ref(null),offsetX=ref(0),offsetY=ref(0)

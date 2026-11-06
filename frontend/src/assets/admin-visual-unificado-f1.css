@@ -1,0 +1,65 @@
+/* ANDARMA_FASE1_VISUAL_20261105
+ * Capa transversal, conservadora y exclusivamente administrativa.
+ * NO sustituye los estilos existentes ni altera la web pública.
+ * Antes de eliminar CSS histórico validar cada pantalla visualmente.
+ */
+.andarma-admin {
+  --ad-f1-brand: #0066E0;
+  --ad-f1-brand-hover: #0054BB;
+  --ad-f1-ink: #17324E;
+  --ad-f1-muted: #627B93;
+  --ad-f1-border: #DDE7F1;
+  --ad-f1-focus: rgba(0, 102, 224, .36);
+  --ad-f1-radius-sm: 10px;
+  --ad-f1-radius-card: 16px;
+  --ad-f1-shadow: 0 4px 20px rgba(12, 41, 79, .055);
+}
+
+/* Legibilidad de formularios: no modificar tamaños fijados por componentes particulares. */
+.andarma-admin :is(input, select, textarea, button) {
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
+.andarma-admin :is(input, select, textarea) {
+  max-width: 100%;
+  min-width: 0;
+}
+.andarma-admin :is(input, select, textarea)::placeholder {
+  color: #71859A;
+  opacity: 1;
+}
+
+/* Foco visible mediante teclado. No se aplica a enlaces de iconos ocultos. */
+.andarma-admin :is(a, button, input, select, textarea, [role='button'], [tabindex='0']):focus-visible {
+  outline: 3px solid var(--ad-f1-focus);
+  outline-offset: 2px;
+}
+
+/* El estado disabled se debe comunicar también visualmente. */
+.andarma-admin :is(button, input, select, textarea):disabled {
+  cursor: not-allowed;
+}
+
+/* Evitar que textos largos rompan tarjetas y encabezados. */
+.andarma-admin :is(.ad-card, .crm-card, .v28-panel, .pv-panel, .ad-modal, .crm-modal, .pv-dialog) {
+  min-width: 0;
+}
+.andarma-admin :is(.ad-card, .crm-card, .v28-panel, .pv-panel, .ad-modal, .crm-modal, .pv-dialog) :is(h1, h2, h3) {
+  overflow-wrap: break-word;
+}
+
+/* Respeto por usuarios que reduzcan animaciones en su sistema. */
+@media (prefers-reduced-motion: reduce) {
+  .andarma-admin :is(button, a, input, select, textarea) {
+    scroll-behavior: auto;
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* En móviles, mantener el área de interacción sin afectar disposición de tablas. */
+@media (max-width: 640px) {
+  .andarma-admin :is(.ad-modal__footer, .crm-modal__footer, .pv-dialog-footer) :is(button, a) {
+    min-height: 42px;
+  }
+}

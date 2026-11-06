@@ -135,8 +135,14 @@ watch(selected,async (value,previous)=>{
 onMounted(async()=>{await loadList();if(route.params.id)await openPlan(route.params.id)})
 </script>
 <template>
-<section class="ad-module ad-maps-v8 space-y-5">
+<section class="ad-module ad-maps-v8 ad-u-list space-y-5">
 <header class="flex flex-wrap items-start justify-between gap-3"><div><span class="ad-kicker">INVENTARIO / PLANOS INTERACTIVOS</span><h1 class="ad-heading">{{plan ? plan.title : 'Mapas'}}</h1><p class="ad-muted">{{plan ? plan.development_name+' · '+mappedCount+' polígonos vinculados':'Los desarrollos pueden tener cero, uno o varios planos; el inventario funciona de manera independiente.'}}</p></div><div class="flex flex-wrap gap-2"><button class="ad-btn" @click="router.push('/admin/propiedades')"><i class="fa-solid fa-list"></i> Propiedades</button><button v-if="plan" class="ad-btn" @click="router.push('/admin/mapas')"><i class="fa-solid fa-arrow-left"></i> Volver</button><button v-can="'maps.create'" v-if="can('maps.create')&&!plan" class="ad-btn ad-btn--primary" @click="openCreate"><i class="fa-solid fa-plus"></i> Nuevo mapa</button></div></header>
+<!-- ANDARMA_UI_LISTADOS_UNIFICADOS_V1: indicadores de planos sin API adicional -->
+<div v-if="!plan" class="ad-u-stats" aria-label="Resumen de mapas">
+  <article class="ad-u-stat"><span class="ad-u-stat__icon"><i class="fa-solid fa-map" aria-hidden="true"></i></span><small class="ad-u-stat__label">Mapas registrados</small><strong>{{ plans.length }}</strong></article>
+  <article class="ad-u-stat"><span class="ad-u-stat__icon"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i></span><small class="ad-u-stat__label">Mapas en resultados</small><strong>{{ visiblePlans.length }}</strong></article>
+  <article class="ad-u-stat"><span class="ad-u-stat__icon"><i class="fa-solid fa-draw-polygon" aria-hidden="true"></i></span><small class="ad-u-stat__label">Lotes mapeados</small><strong>{{ plans.reduce((n,p)=>n+Number(p.geometry_count||0),0) }}</strong></article>
+</div>
 <div v-if="!plan" class="ad-card ad-maps-v8__list">
   <div class="ad-maps-v8__list-head">
     <div class="ad-maps-v8__list-heading"><span class="ad-kicker">BIBLIOTECA DE PLANOS</span><h2>Planos registrados</h2><p class="ad-muted">Consulta los planos de tus desarrollos y administra sus lotes mapeados.</p></div>

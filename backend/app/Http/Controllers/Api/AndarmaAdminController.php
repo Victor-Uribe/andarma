@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 class AndarmaAdminController extends Controller {
  private const TABLES=['banners'=>'andarma_banners','developments'=>'andarma_developments','lots'=>'andarma_lots','testimonials'=>'andarma_testimonials','leads'=>'andarma_leads'];
  private function table(string $resource):string{abort_unless(isset(self::TABLES[$resource]),404);return self::TABLES[$resource];}
- public function dashboard(){return response()->json(['data'=>['developments'=>DB::table('andarma_developments')->count(),'lots'=>DB::table('andarma_lots')->count(),'available_lots'=>DB::table('andarma_lots')->where('status','available')->count(),'leads'=>DB::table('andarma_leads')->count(),'banners'=>DB::table('andarma_banners')->count(),'testimonials'=>DB::table('andarma_testimonials')->count()]]);}
+ public function dashboard(){return response()->json(['data'=>['users'=>DB::table('users')->where('is_andarma_admin',1)->where('andarma_enabled',1)->count(),'developments'=>DB::table('andarma_developments')->count(),'lots'=>DB::table('andarma_lots')->count(),'available_lots'=>DB::table('andarma_lots')->where('status','available')->count(),'leads'=>DB::table('andarma_leads')->count(),'banners'=>DB::table('andarma_banners')->count(),'testimonials'=>DB::table('andarma_testimonials')->count()]]);}
  public function index(string $resource){
   $table=$this->table($resource);
   if($resource==='leads'){

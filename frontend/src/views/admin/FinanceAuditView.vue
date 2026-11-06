@@ -3,7 +3,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { api } from '../../services/api'
-import { ArrowLeft, RefreshCw, ShieldCheck, Search, CalendarDays, ChevronLeft, ChevronRight, AlertCircle } from 'lucide-vue-next'
+import { ArrowLeft, RefreshCw, ShieldCheck, Search, CalendarDays, ChevronLeft, ChevronRight, AlertCircle } from '../../components/admin/AndarmaFaIcons.js'
 
 const rows = ref([])
 const loading = ref(false)

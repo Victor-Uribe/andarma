@@ -3,7 +3,7 @@ import {computed,onMounted,ref} from 'vue'
 import {api,post,put,remove} from '../../services/api'
 import {can} from '../../utils/andarmaPermissions'
 import {confirmAction,notifyError,notifySuccess} from '../../utils/adminAlerts'
-import {Plus,Save,Trash2,ShieldCheck,RefreshCw} from 'lucide-vue-next'
+import {Plus,Save,Trash2,ShieldCheck,RefreshCw} from '../../components/admin/AndarmaFaIcons.js'
 const roles=ref([]),modules=ref({}),selected=ref(''),editing=ref(false),name=ref(''),permissions=ref([]),busy=ref(false),error=ref(''),loading=ref(false)
 const actions=[['view','Consultar'],['create','Crear'],['edit','Editar'],['delete','Eliminar']]
 const role=computed(()=>roles.value.find(r=>String(r.id)===String(selected.value)))

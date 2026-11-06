@@ -71,12 +71,21 @@ final class AndarmaAccess
         $first=$parts[0]??'';
         if (in_array($first,['me','logout'],true)) return null;
         if ($first==='dashboard' && $method==='GET') return 'dashboard.view';
+        if ($first==='analytics' && $method==='GET') return 'dashboard.view';
         if ($first==='lookup' && $method==='GET') return 'clients.view';
         if ($first==='site-content') abort(404, 'Editor de contenido web deshabilitado.');
         if ($first==='roles') return 'roles.'.match($method){'GET'=>'view','POST'=>'create','PUT','PATCH'=>'edit','DELETE'=>'delete',default=>abort(405)};
         if ($first==='users') return 'users.'.match($method){'GET'=>'view','POST'=>'create','PUT','PATCH'=>'edit','DELETE'=>'delete',default=>abort(405)};
         if ($first==='settings') return 'settings.'.match($method){'GET'=>'view','PUT','PATCH'=>'edit',default=>abort(405)};
         if ($first==='user-role-options' && $method==='GET') return 'users.view';
+        // ANDARMA_FASE3B_GALERIA_RBAC: usar permisos del módulo Desarrollos; ninguna ruta nueva queda sin clasificar.
+        if ($first==='development-gallery') {
+            return 'developments.'.match($method){
+                'GET'=>'view',
+                'POST','PUT','PATCH','DELETE'=>'edit',
+                default=>abort(405),
+            };
+        }
         if ($first==='media') return 'media.'.match($method){'GET'=>'view','POST'=>'create','DELETE'=>'delete',default=>abort(405)};
         if ($first==='clients') {
             if ($method==='GET') return 'clients.view';

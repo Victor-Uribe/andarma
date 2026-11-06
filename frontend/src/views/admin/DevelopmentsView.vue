@@ -1,4 +1,5 @@
 <script setup>
+import '../../assets/andarma-development-gallery.css'
 import {computed,onMounted,ref,watch} from 'vue'
 import {useRouter} from 'vue-router'
 import Swal from 'sweetalert2'
@@ -11,9 +12,73 @@ const search=ref('')
 const status=ref('')
 const loading=ref(false)
 const saving=ref(false)
+const developmentTab=ref('info') // ANDARMA_FASE3C_TABS
 const modal=ref(false)
 const editing=ref(null)
 const form=ref(blank())
+// ANDARMA_FASE3A_GALERIA_HERO: galería del slider del desarrollo
+// ANDARMA_FASE3B_GALERIA_CROP: misma herramienta de recorte que la fotografía principal.
+// ANDARMA_FASE3D_GALERIA_UNIFICADA: editor único y portada en el primer elemento.
+const gallery=ref([]),galleryBusy=ref(false),galleryCropKey=ref(0)
+const galleryEditorOpen=ref(false),galleryEditingId=ref(null)
+async function loadGallery(id){
+  gallery.value=[]
+  if(!id)return
+  try{const r=await api('/admin/development-gallery/'+id);gallery.value=r.data||[]}
+  catch(e){error(e)}
+}
+function startGalleryPhoto(item=null){
+  if(!editing.value||galleryBusy.value)return
+  galleryEditingId.value=item?.id??null
+  galleryEditorOpen.value=true
+  galleryCropKey.value++
+}
+function closeGalleryEditor(){
+  if(galleryBusy.value)return
+  galleryEditorOpen.value=false
+  galleryEditingId.value=null
+  galleryCropKey.value++
+}
+async function uploadGallery(file){
+  if(!editing.value||!file||galleryBusy.value)return
+  galleryBusy.value=true
+  try{
+    if(file.type!=='image/webp'||file.size>450*1024)throw new Error('El recorte debe ser WebP de máximo 450 KB.')
+    const fd=new FormData();fd.append('photo',file,file.name)
+    const path='/admin/development-gallery/'+editing.value.id+(galleryEditingId.value?'/'+galleryEditingId.value+'/replace':'')
+    await post(path,fd)
+    await loadGallery(editing.value.id)
+    galleryEditorOpen.value=false
+    galleryEditingId.value=null
+    galleryCropKey.value++
+    toast('Fotografía guardada correctamente')
+  }catch(e){error(e)}finally{galleryBusy.value=false}
+}
+async function setGalleryPrimary(item){
+  if(!editing.value||galleryBusy.value)return
+  galleryBusy.value=true
+  try{
+    const r=await post('/admin/development-gallery/'+editing.value.id+'/'+item.id+'/primary',{})
+    gallery.value=r.data||[]
+    toast('Fotografía principal actualizada')
+  }catch(e){error(e)}finally{galleryBusy.value=false}
+}
+
+async function deleteGallery(item){
+  const result=await Swal.fire({...swalTheme,icon:'warning',title:'Eliminar fotografía',text:'Se quitará esta foto del slider público.',showCancelButton:true,confirmButtonText:'Eliminar',cancelButtonText:'Cancelar'})
+  if(!result.isConfirmed)return
+  galleryBusy.value=true
+  try{await remove('/admin/development-gallery/'+editing.value.id+'/'+item.id);await loadGallery(editing.value.id);toast('Fotografía eliminada')}
+  catch(e){error(e)}finally{galleryBusy.value=false}
+}
+async function moveGallery(i,direction){
+  const next=[...gallery.value],j=i+direction
+  if(j<0||j>=next.length||galleryBusy.value)return
+  ;[next[i],next[j]]=[next[j],next[i]]
+  galleryBusy.value=true
+  try{const r=await post('/admin/development-gallery/'+editing.value.id+'/reorder',{ids:next.map(x=>x.id)});gallery.value=r.data||next}
+  catch(e){await loadGallery(editing.value.id);error(e)}finally{galleryBusy.value=false}
+}
 const newPhoto=ref(null)
 const removePhoto=ref(false)
 const draggingId=ref(null)
@@ -96,12 +161,12 @@ async function load(){
   try{const result=await api('/admin/im/developments/summary');developments.value=result.data||[];orderSnapshot.value=developments.value.map(d=>String(d.id))}
   catch(e){error(e)}finally{loading.value=false}
 }
-function add(){editing.value=null;form.value=blank();newPhoto.value=null;removePhoto.value=false;modal.value=true}
-function edit(row){editing.value=row;form.value={name:row.name||'',description:row.description||'',location:row.location||'',image_url:row.image_url||'',status:row.status||'active'};newPhoto.value=null;removePhoto.value=false;modal.value=true}
+function add(){galleryEditorOpen.value=false;galleryEditingId.value=null;developmentTab.value='info';editing.value=null;form.value=blank();newPhoto.value=null;removePhoto.value=false;gallery.value=[];galleryCropKey.value+=1;modal.value=true}
+function edit(row){galleryEditorOpen.value=false;galleryEditingId.value=null;developmentTab.value='info';editing.value=row;form.value={name:row.name||'',description:row.description||'',location:row.location||'',image_url:row.image_url||'',status:row.status||'active'};newPhoto.value=null;removePhoto.value=false;galleryCropKey.value+=1;modal.value=true;loadGallery(row.id)}
 function close(){if(!saving.value)modal.value=false}
 async function save(){
   if(saving.value)return
-  if(!form.value.name.trim()){error(new Error('Escribe el nombre del desarrollo.'));return}
+  if(!form.value.name.trim()){developmentTab.value='info';error(new Error('Escribe el nombre del desarrollo.'));return}
   saving.value=true
   try{
     const body=new FormData()
@@ -134,7 +199,7 @@ onMounted(load)
 </script>
 
 <template>
-<section class="ad-module ad-dev space-y-5">
+<section class="ad-module ad-dev ad-u-list space-y-5">
   <header class="flex flex-wrap items-start justify-between gap-3">
     <div>
       <span class="ad-kicker">GESTIÓN INMOBILIARIA / DESARROLLOS</span>
@@ -199,8 +264,14 @@ onMounted(load)
     <section class="ad-modal ad-dev37-modal" role="dialog" aria-modal="true" aria-labelledby="ad-dev-modal-title">
       <header class="ad-modal__header"><div><span class="ad-kicker">DESARROLLOS / ADMINISTRACIÓN</span><h2 id="ad-dev-modal-title" class="ad-modal-title">{{editing?'Editar desarrollo':'Nuevo desarrollo'}}</h2><p class="ad-muted">Completa los datos, ajusta la fotografía y guarda. Los terrenos y mapas se administran por separado.</p></div><button type="button" class="ad-icon-btn" aria-label="Cerrar" @click="close"><i class="fa-solid fa-xmark"></i></button></header>
       <form class="flex flex-col min-h-0" @submit.prevent="save">
-        <div class="ad-modal__body space-y-5">
-          <div>
+        <div class="ad-modal__body ad-dev3c-body">
+          <!-- ANDARMA_FASE3C_TABS: los paneles permanecen montados para conservar recortes y datos pendientes -->
+          <div class="ad-dev3c-tabs" role="tablist" aria-label="Secciones del desarrollo">
+            <button id="ad-dev3c-tab-info" type="button" role="tab" class="ad-dev3c-tab" :class="{ 'is-active': developmentTab === 'info' }" :aria-selected="developmentTab === 'info'" aria-controls="ad-dev3c-panel-info" @click="developmentTab = 'info'"><i class="fa-regular fa-rectangle-list" aria-hidden="true"></i> Información</button>
+            <button id="ad-dev3c-tab-media" type="button" role="tab" class="ad-dev3c-tab" :class="{ 'is-active': developmentTab === 'media' }" :aria-selected="developmentTab === 'media'" aria-controls="ad-dev3c-panel-media" @click="developmentTab = 'media'"><i class="fa-regular fa-images" aria-hidden="true"></i> Multimedia</button>
+          </div>
+          <div id="ad-dev3c-panel-info" v-show="developmentTab === 'info'" role="tabpanel" aria-labelledby="ad-dev3c-tab-info" class="ad-dev3c-panel space-y-5">
+<div>
             <div class="ad-dev37-section"><span class="number">01</span><strong>Información del desarrollo</strong></div>
             <div class="ad-dev37-formgrid">
               <label class="ad-label">Nombre del desarrollo *<input v-model.trim="form.name" class="ad-input" required minlength="2" maxlength="255" placeholder="Ej. Prados del Rosario" /></label>
@@ -208,18 +279,56 @@ onMounted(load)
               <label class="ad-label full">Descripción<textarea v-model.trim="form.description" class="ad-textarea" rows="3" maxlength="10000" placeholder="Describe las características principales del proyecto"></textarea></label>
             </div>
           </div>
-          <div>
-            <div class="ad-dev37-section"><span class="number">02</span><strong>Fotografía comercial</strong></div>
-            <p class="ad-dev37-photo-note">Fotografía opcional, independiente de los planos técnicos. Selecciona la imagen, recórtala a 16:9 y revisa la vista previa antes de guardar.</p>
-            <DevelopmentImageCrop :key="editing?.id||'new'" :current-url="form.image_url" @change="photoChosen" @remove="photoRemoved" />
-            <p class="ad-dev37-hint"><i class="fa-solid fa-shield-halved"></i> La fotografía se sube solamente cuando guardas el desarrollo. Formato WebP optimizado, máximo 450 KB.</p>
-          </div>
-          <div>
-            <div class="ad-dev37-section"><span class="number">03</span><strong>Estado y publicación</strong></div>
+<div>
+            <div class="ad-dev37-section"><span class="number">04</span><strong>Estado y publicación</strong></div>
             <div class="ad-dev37-formgrid">
               <label class="ad-label">Estado<select v-model="form.status" class="ad-select"><option value="active">Activo</option><option value="upcoming">Próximamente</option><option value="inactive">Inactivo</option></select><span class="ad-dev37-hint">Solo los desarrollos activos se publican en el sitio público.</span></label>
               <div class="ad-dev37-advanced" role="note"><strong><i class="fa-solid fa-link" aria-hidden="true"></i> Dirección web automática</strong><p class="ad-dev37-hint">El sistema genera la dirección del desarrollo a partir de su nombre. No necesitas configurarla.</p></div>
             </div>
+          </div>
+          </div>
+          <div id="ad-dev3c-panel-media" v-show="developmentTab === 'media'" role="tabpanel" aria-labelledby="ad-dev3c-tab-media" class="ad-dev3c-panel space-y-5">
+
+<div class="ad3a-admin-gallery ad3d-gallery">
+            <!-- ANDARMA_FASE3D_GALERIA_UNIFICADA: un único lugar para subir y administrar imágenes -->
+            <div class="ad3d-gallery__heading">
+              <div><span class="ad-kicker">DESARROLLO / MULTIMEDIA</span><h3>Galería de fotografías</h3><p>Organiza las imágenes del proyecto y elige cuál será la portada.</p></div>
+              <span v-if="editing" class="ad3d-gallery__count">{{gallery.length}} {{gallery.length===1?'fotografía':'fotografías'}}</span>
+            </div>
+            <template v-if="editing">
+              <div class="ad3d-gallery__toolbar">
+                <button type="button" class="ad-btn ad-btn--primary" :disabled="galleryBusy||saving" @click="startGalleryPhoto()"><i class="fa-solid fa-plus" aria-hidden="true"></i> Agregar fotografía</button>
+                <span>Recorte profesional 16:9 · WebP optimizado</span>
+              </div>
+              <section v-if="galleryEditorOpen" class="ad3d-gallery__editor" aria-label="Editor de fotografía">
+                <div class="ad3d-gallery__editor-head"><strong>{{galleryEditingId?'Reemplazar fotografía':'Agregar fotografía'}}</strong><button type="button" class="ad-icon-btn" aria-label="Cerrar editor" :disabled="galleryBusy" @click="closeGalleryEditor"><i class="fa-solid fa-xmark"></i></button></div>
+                <p>Selecciona una fotografía, ajusta el encuadre y confirma el recorte.</p>
+                <DevelopmentImageCrop :key="'galeria-unica-'+editing.id+'-'+galleryCropKey" :current-url="''" @change="uploadGallery" />
+              </section>
+              <p v-if="galleryBusy" class="ad3d-gallery__loading" role="status"><i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Actualizando galería…</p>
+              <div v-if="gallery.length" class="ad3d-gallery__grid" aria-label="Fotografías del desarrollo">
+                <article v-for="(item,i) in gallery" :key="item.id" class="ad3d-gallery__card" :class="{'is-primary':i===0}">
+                  <div class="ad3d-gallery__preview">
+                    <img :src="item.url" :alt="'Fotografía '+(i+1)+' de '+form.name" loading="lazy" />
+                    <span v-if="i===0" class="ad3d-gallery__primary-badge"><i class="fa-solid fa-star" aria-hidden="true"></i> Principal</span>
+                    <span v-else class="ad3d-gallery__index">{{String(i+1).padStart(2,'0')}}</span>
+                  </div>
+                  <div class="ad3d-gallery__card-body">
+                    <button v-if="i!==0" class="ad3d-gallery__set-primary" type="button" :disabled="galleryBusy" @click="setGalleryPrimary(item)"><i class="fa-regular fa-star" aria-hidden="true"></i> Usar como principal</button>
+                    <span v-else class="ad3d-gallery__current-primary">Portada del desarrollo y primera imagen del hero</span>
+                    <div class="ad3d-gallery__actions">
+                      <button type="button" :disabled="galleryBusy" @click="startGalleryPhoto(item)" title="Reemplazar y recortar"><i class="fa-solid fa-crop-simple" aria-hidden="true"></i><span>Reemplazar</span></button>
+                      <button type="button" :disabled="galleryBusy||i===0" :aria-label="'Mover imagen '+(i+1)+' a la izquierda'" @click="moveGallery(i,-1)"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></button>
+                      <button type="button" :disabled="galleryBusy||i===gallery.length-1" :aria-label="'Mover imagen '+(i+1)+' a la derecha'" @click="moveGallery(i,1)"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+                      <button type="button" class="ad3d-gallery__delete" :disabled="galleryBusy" :aria-label="'Eliminar imagen '+(i+1)" title="Eliminar fotografía" @click="deleteGallery(item)"><i class="fa-solid fa-trash" aria-hidden="true"></i></button>
+                    </div>
+                  </div>
+                </article>
+              </div>
+              <div v-else class="ad3d-gallery__empty"><i class="fa-regular fa-images" aria-hidden="true"></i><strong>Tu desarrollo aún no tiene fotografías</strong><span>Agrega una imagen y automáticamente será la portada principal.</span></div>
+            </template>
+            <div v-else class="ad3d-gallery__empty"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span>Primero crea el desarrollo. Después podrás cargar y organizar su galería.</span></div>
+          </div>
           </div>
         </div>
         <footer class="ad-modal__footer"><button type="button" class="ad-btn" @click="close">Cancelar</button><button type="submit" class="ad-btn ad-btn--primary" :disabled="saving"><i class="fa-solid fa-floppy-disk"></i> {{saving?'Guardando...':editing?'Guardar cambios':'Crear desarrollo'}}</button></footer>
@@ -228,3 +337,16 @@ onMounted(load)
   </div>
 </section>
 </template>
+
+<style scoped>
+/* ANDARMA_FASE3C_TABS · Controles compactos sin alterar el recortador ni la galería */
+.ad-dev3c-body{padding-top:14px}
+.ad-dev3c-tabs{display:flex;align-items:center;gap:6px;padding:5px;background:#f2f6fc;border:1px solid #e0e9f5;border-radius:13px;margin-bottom:18px}
+.ad-dev3c-tab{appearance:none;border:0;border-radius:9px;background:transparent;color:#526984;display:flex;align-items:center;justify-content:center;gap:9px;padding:11px 16px;flex:1;font:inherit;font-weight:700;font-size:13px;cursor:pointer;transition:background .2s,color .2s,box-shadow .2s}
+.ad-dev3c-tab:hover{color:#0066e0;background:#e7f0fc}
+.ad-dev3c-tab.is-active{background:#fff;color:#0066e0;box-shadow:0 2px 10px rgba(19,57,103,.10)}
+.ad-dev3c-tab:focus-visible{outline:2px solid #0891ff;outline-offset:2px}
+.ad-dev3c-panel{min-width:0}
+@media(max-width:560px){.ad-dev3c-tab{padding:11px 9px;font-size:12px}.ad-dev3c-tabs{margin-bottom:12px}}
+@media(prefers-reduced-motion:reduce){.ad-dev3c-tab{transition:none}}
+</style>

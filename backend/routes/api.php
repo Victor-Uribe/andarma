@@ -14,12 +14,19 @@ Route::prefix('public')->group(function(){
     Route::get('/lots',[Admin::class,'publicLots']);
     Route::get('/testimonials',[Admin::class,'publicTestimonials']);
     Route::post('/leads',[Admin::class,'publicLead'])->middleware('throttle:5,1');
+    // ANDARMA_ANALYTICS_F1_20261105
+    Route::post('/analytics/{event}',[\App\Http\Controllers\Api\AndarmaAnalyticsController::class,'record'])->where('event','visit|whatsapp')->middleware('throttle:30,1');
 });
+
+// ANDARMA_PUBLIC_MAP_FASE2: consulta pública segura de planos y polígonos.
+Route::get('/public/maps', [\App\Http\Controllers\Api\AndarmaPublicMapsController::class, 'index']);
+Route::get('/public/maps/{id}', [\App\Http\Controllers\Api\AndarmaPublicMapsController::class, 'show'])->whereNumber('id');
 
 Route::post('/admin/login',[Auth::class,'login'])->middleware('throttle:20,1');
 Route::prefix('admin')->middleware(['auth:sanctum',EnsureAndarmaAdmin::class])->group(function(){
     Route::get('/lookup', [\App\Http\Controllers\Api\AndarmaLookupController::class, 'index']);
     Route::get('/me',[Auth::class,'me']);Route::post('/logout',[Auth::class,'logout']);Route::get('/dashboard',[Admin::class,'dashboard']);
+    Route::get('/analytics',[\App\Http\Controllers\Api\AndarmaAnalyticsController::class,'index']);
     // ANDARMA_RBAC_V48
     Route::get('/roles',[\App\Http\Controllers\Api\AndarmaRbacController::class,'roles']);
     Route::post('/roles',[\App\Http\Controllers\Api\AndarmaRbacController::class,'storeRole']);
@@ -61,3 +68,16 @@ require __DIR__.'/andarma_maps_v35.php';
 
 // ANDARMA V38 — pagos, rutas protegidas
 require __DIR__.'/andarma_finance_v38.php';
+
+// ANDARMA_FASE3A_GALERIA_HERO - Galería pública de desarrollos activos.
+\Illuminate\Support\Facades\Route::get('/public/development-gallery', [\App\Http\Controllers\Api\AndarmaDevelopmentGalleryController::class, 'publicIndex']);
+// Gestión protegida: se verifica además developments.edit en cada escritura.
+\Illuminate\Support\Facades\Route::prefix('admin')->middleware(['auth:sanctum', \App\Http\Middleware\EnsureAndarmaAdmin::class])->group(function(){
+    \Illuminate\Support\Facades\Route::get('/development-gallery/{id}', [\App\Http\Controllers\Api\AndarmaDevelopmentGalleryController::class, 'index'])->whereNumber('id');
+    \Illuminate\Support\Facades\Route::post('/development-gallery/{id}', [\App\Http\Controllers\Api\AndarmaDevelopmentGalleryController::class, 'store'])->whereNumber('id');
+    // ANDARMA_FASE3D_GALERIA_UNIFICADA: portada y reemplazo usando developments.edit.
+    \Illuminate\Support\Facades\Route::post('/development-gallery/{id}/{photoId}/primary', [\App\Http\Controllers\Api\AndarmaDevelopmentGalleryController::class, 'primary'])->whereNumber('id')->whereNumber('photoId');
+    \Illuminate\Support\Facades\Route::post('/development-gallery/{id}/{photoId}/replace', [\App\Http\Controllers\Api\AndarmaDevelopmentGalleryController::class, 'replace'])->whereNumber('id')->whereNumber('photoId');
+    \Illuminate\Support\Facades\Route::post('/development-gallery/{id}/reorder', [\App\Http\Controllers\Api\AndarmaDevelopmentGalleryController::class, 'reorder'])->whereNumber('id');
+    \Illuminate\Support\Facades\Route::delete('/development-gallery/{id}/{photoId}', [\App\Http\Controllers\Api\AndarmaDevelopmentGalleryController::class, 'destroy'])->whereNumber('id')->whereNumber('photoId');
+});

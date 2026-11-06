@@ -4,7 +4,7 @@ import {api,post,put,remove} from '../../services/api'
 import {confirmAction} from '../../utils/adminAlerts'
 import {definitions} from '../../config/resources'
 import ImageCropUpload from '../../components/ImageCropUpload.vue'
-import {Plus,Search,Pencil,Trash2,X,Save,RefreshCw,ChevronLeft,ChevronRight,Database,AlertCircle,CheckCircle2,SlidersHorizontal,ExternalLink} from 'lucide-vue-next'
+import {Plus,Search,Pencil,Trash2,X,Save,RefreshCw,ChevronLeft,ChevronRight,Database,AlertCircle,CheckCircle2,SlidersHorizontal,ExternalLink} from '../../components/admin/AndarmaFaIcons.js'
 const props=defineProps({resource:{type:String,required:true}})
 const config=computed(()=>definitions[props.resource])
 const rows=ref([]),loading=ref(false),saving=ref(false),error=ref(''),success=ref(''),search=ref(''),editing=ref(null),form=ref({}),showModal=ref(false),pendingDelete=ref(null),page=ref(1),size=10,modalError=ref(''),statusFilter=ref(''),developments=ref([])

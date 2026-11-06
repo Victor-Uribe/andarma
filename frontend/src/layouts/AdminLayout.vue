@@ -1,11 +1,12 @@
 <script setup>
+import '../assets/andarma-brand-admin.css'
 import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { api, post, setToken } from '../services/api'
 import {access,can,setAccess,clearAccess} from '../utils/andarmaPermissions'
 import '../assets/admin-consulta-fase5.css'
 // ANDARMA_FASE5_CONSULTA
-import { LayoutDashboard, PanelsTopLeft, Image as ImageIcon, MapPinned, Grid2X2, MessageSquareQuote, UsersRound, Images, WalletCards, Settings2, LogOut, Menu, X, ExternalLink, ChevronRight, ShieldCheck, Search, PanelLeftClose, UserCircle2 } from 'lucide-vue-next'
+import { LayoutDashboard, PanelsTopLeft, Image as ImageIcon, MapPinned, Grid2X2, MessageSquareQuote, UsersRound, Images, WalletCards, Settings2, LogOut, Menu, X, ExternalLink, ChevronRight, ShieldCheck, Search, PanelLeftClose, UserCircle2 } from '../components/admin/AndarmaFaIcons.js'
 // ANDARMA_V36_NAV
 const sections=[
  {label:'Inicio',items:[{label:'Dashboard',permission:'dashboard.view',url:'/admin/dashboard',icon:'fa-solid fa-gauge-high'}]},
@@ -55,7 +56,7 @@ async function logout(){if(loggingOut.value)return;loggingOut.value=true;try{awa
 <template>
 <div class="admin-shell admin-v26 andarma-admin">
   <aside :class="['admin-sidebar',{'is-open':open}]" aria-label="Menú administrativo">
-    <div class="admin-brand"><div class="admin-brand-mark">A<span class="brand-dot"></span></div><div class="admin-brand-text"><strong>ANDARMA</strong><small>GESTIÓN INMOBILIARIA</small></div><button class="admin-mobile-close" aria-label="Cerrar menú" @click="open=false"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button></div>
+    <div class="admin-brand"><div class="admin-brand-mark andarma-real-logo"><img src="/andarma-logo-blanco.png" alt="" width="38" height="38" /></div><div class="admin-brand-text"><strong>ANDARMA</strong><small>GESTIÓN INMOBILIARIA</small></div><button class="admin-mobile-close" aria-label="Cerrar menú" @click="open=false"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button></div>
     <div class="admin-nav-scroll"><div v-for="section in visibleSections" :key="section.label" class="admin-nav-section"><div class="admin-nav-label">{{section.label}}</div><nav class="admin-navigation"><RouterLink v-for="item in section.items" :key="item.url" :to="item.url"><i :class="item.icon" aria-hidden="true" style="font-size:16px;width:18px;text-align:center"></i><span>{{item.label}}</span><ChevronRight class="nav-arrow" :size="15"/></RouterLink></nav></div></div>
     <div class="admin-side-bottom"><a href="/" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> Abrir sitio público</a><button :disabled="loggingOut" @click="logout"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i> Cerrar sesión</button></div>
   </aside>

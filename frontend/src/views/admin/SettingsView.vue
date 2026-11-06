@@ -3,7 +3,7 @@ import {computed,onMounted,ref} from 'vue'
 import {api,put} from '../../services/api'
 import {can} from '../../utils/andarmaPermissions'
 import {notifyError,notifySuccess} from '../../utils/adminAlerts'
-import {Save,RefreshCw,MapPin,Phone,Share2,Clock3,Info,ExternalLink,MessageCircle,Mail} from 'lucide-vue-next'
+import {Save,RefreshCw,MapPin,Phone,Share2,Clock3,Info,ExternalLink,MessageCircle,Mail} from '../../components/admin/AndarmaFaIcons.js'
 const tabs=[{id:'contact',label:'Contacto',icon:Phone},{id:'address',label:'Dirección y mapa',icon:MapPin},{id:'social',label:'Redes sociales',icon:Share2}]
 const active=ref('contact'),loading=ref(false),saving=ref(false),error=ref('')
 const blank=()=>({business_name:'ANDARMA',phone:'',whatsapp:'',email:'',address:'',neighborhood:'',city:'',state:'',postal_code:'',maps_url:'',facebook_url:'',instagram_url:'',tiktok_url:'',youtube_url:'',website_url:'',hours:'',whatsapp_message:'Hola, me gustaría recibir información sobre sus desarrollos.'})

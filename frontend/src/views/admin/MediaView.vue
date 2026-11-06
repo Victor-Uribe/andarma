@@ -1,7 +1,7 @@
 <script setup>
 import {ref,onMounted,computed} from 'vue'
 import {api} from '../../services/api'
-import {Image as ImageIcon,Search,ShieldCheck} from 'lucide-vue-next'
+import {Image as ImageIcon,Search,ShieldCheck} from '../../components/admin/AndarmaFaIcons.js'
 const items=ref([]),error=ref(''),query=ref(''),loading=ref(true)
 const filtered=computed(()=>items.value.filter(x=>(x.original_name||'').toLowerCase().includes(query.value.toLowerCase())))
 onMounted(async()=>{try{items.value=(await api('/admin/media')).data||[]}catch(e){error.value=e.message}finally{loading.value=false}})

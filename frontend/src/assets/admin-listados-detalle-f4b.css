@@ -1,0 +1,231 @@
+/* ANDARMA_FASE4B_LISTADOS_DETALLE_20261105 */
+
+/* KPI / indicadores */
+.andarma-payments .ad-pay-kpis,
+.crm-page .crm-stats,
+.prospects-v29 .pv-stats,
+.ad-module.ad-dev > .grid.grid-cols-1,
+.ad-module.ad-maps-v8 > .grid.grid-cols-1,
+.andarma-admin .ad-uix-kpis{
+  display:grid;
+  gap:16px;
+  margin-bottom:6px;
+}
+.andarma-payments .ad-pay-kpis,
+.crm-page .crm-stats,
+.ad-module.ad-dev > .grid.grid-cols-1,
+.ad-module.ad-maps-v8 > .grid.grid-cols-1,
+.andarma-admin .ad-uix-kpis{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+}
+.prospects-v29 .pv-stats{grid-template-columns:repeat(4,minmax(0,1fr))}
+
+.andarma-payments .ad-pay-kpi,
+.crm-page .crm-stat,
+.prospects-v29 .pv-stat,
+.ad-dev .ad-dev-stat,
+.ad-maps-v8 .ad-uix-stat,
+.andarma-admin .ad-uix-kpi,
+.ad-module.ad-dev > .grid.grid-cols-1 > .ad-card,
+.ad-module.ad-maps-v8 > .grid.grid-cols-1 > .ad-card{
+  min-height:126px;
+  padding:18px 18px 16px;
+  border:1px solid #d8e5f0;
+  border-radius:22px;
+  background:linear-gradient(180deg,#ffffff 0%,#fbfdff 100%);
+  box-shadow:0 12px 26px rgba(17,45,78,.05);
+  display:flex;
+  align-items:flex-start;
+  gap:14px;
+}
+
+.andarma-payments .ad-pay-kpi strong,
+.crm-page .crm-stat strong,
+.prospects-v29 .pv-stat strong,
+.ad-dev .ad-dev-stat strong,
+.ad-maps-v8 .ad-uix-stat strong,
+.andarma-admin .ad-uix-kpi strong,
+.ad-module.ad-dev > .grid.grid-cols-1 > .ad-card strong,
+.ad-module.ad-maps-v8 > .grid.grid-cols-1 > .ad-card strong{
+  display:block;
+  margin-top:8px;
+  font-size:40px;
+  line-height:1;
+  letter-spacing:-0.04em;
+  font-weight:800;
+  color:#17324e;
+}
+.andarma-payments .ad-pay-kpi span,
+.crm-page .crm-stat small,
+.prospects-v29 .pv-stat small,
+.ad-dev .ad-dev-stat small,
+.ad-maps-v8 .ad-uix-stat small,
+.andarma-admin .ad-uix-kpi small,
+.ad-module.ad-dev > .grid.grid-cols-1 > .ad-card small,
+.ad-module.ad-maps-v8 > .grid.grid-cols-1 > .ad-card small,
+.ad-module.ad-dev > .grid.grid-cols-1 > .ad-card span,
+.ad-module.ad-maps-v8 > .grid.grid-cols-1 > .ad-card span{
+  display:block;
+  margin:6px 0 0;
+  font-size:14px;
+  line-height:1.4;
+  font-weight:600;
+  color:#587391;
+}
+.andarma-payments .ad-pay-icon,
+.crm-page .crm-stat__icon,
+.prospects-v29 .pv-stat-icon,
+.ad-dev .ad-dev-stat__icon,
+.ad-maps-v8 .ad-uix-stat__icon,
+.andarma-admin .ad-uix-kpi__icon,
+.ad-module.ad-dev > .grid.grid-cols-1 > .ad-card .ad-dev-stat__icon{
+  width:44px;
+  height:44px;
+  border-radius:14px;
+  display:grid;
+  place-items:center;
+  flex:none;
+  border:1px solid #cfe0f1;
+  background:#eef6ff;
+  color:#0a67de;
+}
+.prospects-v29 .pv-stat,
+.prospects-v29 .pv-stat *{cursor:default}
+.prospects-v29 .pv-stat{pointer-events:none}
+.prospects-v29 .pv-stat.is-selected{
+  border-color:#d8e5f0;
+  box-shadow:0 12px 26px rgba(17,45,78,.05);
+}
+
+/* Cabeceras y paneles */
+.andarma-payments .ad-card.space-y-4,
+.crm-page .crm-card,
+.prospects-v29 .pv-panel,
+.ad-dev > .ad-card.space-y-4,
+.ad-maps-v8 .ad-maps-v8__list,
+.andarma-admin .ad-uix-panel{
+  border-radius:24px;
+  border:1px solid #d7e4ef;
+  box-shadow:0 16px 36px rgba(17,45,78,.04);
+}
+
+/* Filtros compartidos */
+.andarma-payments .ad-pay-filters,
+.crm-page .crm-toolbar,
+.prospects-v29 .pv-toolbar,
+.ad-dev .ad-dev-filters,
+.ad-maps-v8 .ad-maps-v8__toolbar,
+.andarma-admin .ad-uix-toolbar{
+  gap:14px;
+  align-items:end;
+}
+.andarma-payments .ad-pay-filters{
+  display:grid;
+  grid-template-columns:auto minmax(320px,1.55fr) minmax(170px,.6fr);
+}
+.crm-page .crm-toolbar{
+  display:grid;
+  grid-template-columns:minmax(320px,1.45fr) auto;
+}
+.prospects-v29 .pv-toolbar{
+  display:grid;
+  grid-template-columns:minmax(320px,1.45fr) minmax(220px,.7fr) auto;
+}
+.ad-dev .ad-dev-filters{
+  display:grid;
+  grid-template-columns:minmax(320px,1.3fr) minmax(220px,.8fr);
+}
+.ad-maps-v8 .ad-maps-v8__toolbar{
+  display:grid;
+  grid-template-columns:minmax(340px,1.15fr) minmax(260px,1fr);
+}
+.andarma-payments .ad-pay-filters > *,
+.crm-page .crm-toolbar > *,
+.prospects-v29 .pv-toolbar > *,
+.ad-dev .ad-dev-filters > *,
+.ad-maps-v8 .ad-maps-v8__toolbar > *{min-width:0}
+
+.andarma-payments .ad-pay-filters input,
+.andarma-payments .ad-pay-filters select,
+.crm-page .crm-search input,
+.prospects-v29 .pv-toolbar input,
+.prospects-v29 .pv-toolbar select,
+.ad-dev .ad-dev-search input,
+.ad-dev .ad-dev-filters select,
+.ad-maps-v8 .ad-maps-v8__search input,
+.andarma-admin .ad-uix-toolbar input,
+.andarma-admin .ad-uix-toolbar select{
+  min-height:48px;
+  border-radius:16px;
+}
+.andarma-payments .ad-pay-segments,
+.andarma-payments .ad-pay-segments button{
+  min-height:48px;
+  border-radius:16px;
+}
+.crm-page .crm-search,
+.prospects-v29 .pv-search,
+.ad-dev .ad-dev-search,
+.ad-maps-v8 .ad-maps-v8__search{
+  width:100%;
+}
+.ad-dev > .ad-card.space-y-4 > .flex.flex-wrap.justify-between.items-center.gap-3,
+.crm-page .crm-card__head,
+.prospects-v29 .pv-panel-title,
+.andarma-payments .ad-card.space-y-4 > .flex.flex-wrap.justify-between.items-start.gap-3{
+  gap:16px;
+}
+
+/* Botones y acciones */
+.andarma-payments .ad-pay-heading .ad-btn,
+.crm-page .crm-page__header .crm-btn,
+.prospects-v29 .pv-page-header .pv-btn,
+.ad-dev .ad-actions .ad-btn,
+.ad-maps-v8 header .ad-btn,
+.andarma-admin .ad-uix-actions .ad-btn{
+  min-height:46px;
+  border-radius:14px;
+  font-weight:700;
+}
+.andarma-payments .ad-pay-table .ad-btn,
+.crm-page .crm-actions .crm-btn,
+.prospects-v29 .pv-table .pv-btn,
+.ad-dev .ad-dev-table .ad-btn,
+.ad-maps-v8 .ad-maps-v8__actions .ad-btn,
+.andarma-admin .ad-uix-table-actions .ad-btn{
+  min-height:40px;
+  border-radius:13px;
+  font-weight:700;
+}
+
+/* Contadores / badges */
+.prospects-v29 .pv-counter,
+.ad-maps-v8 .ad-badge,
+.andarma-payments .ad-badge,
+.crm-page .crm-pill,
+.ad-dev .ad-badge{
+  border-radius:999px;
+  min-height:34px;
+  padding:8px 12px;
+  font-weight:700;
+}
+
+/* Responsive */
+@media (max-width: 1180px){
+  .prospects-v29 .pv-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .andarma-payments .ad-pay-filters,
+  .prospects-v29 .pv-toolbar,
+  .ad-dev .ad-dev-filters,
+  .ad-maps-v8 .ad-maps-v8__toolbar{grid-template-columns:1fr}
+}
+@media (max-width: 920px){
+  .andarma-payments .ad-pay-kpis,
+  .crm-page .crm-stats,
+  .ad-module.ad-dev > .grid.grid-cols-1,
+  .ad-module.ad-maps-v8 > .grid.grid-cols-1,
+  .andarma-admin .ad-uix-kpis{grid-template-columns:1fr}
+  .crm-page .crm-toolbar{grid-template-columns:1fr}
+}
+@media (max-width: 720px){
+  .prospects-v29 .pv-stats{grid-template-columns:1fr}
+}

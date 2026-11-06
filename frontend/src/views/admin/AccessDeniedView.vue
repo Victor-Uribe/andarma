@@ -1,5 +1,5 @@
 <script setup>
-import {ShieldAlert, ArrowLeft} from 'lucide-vue-next'
+import {ShieldAlert, ArrowLeft} from '../../components/admin/AndarmaFaIcons.js'
 </script>
 <template>
   <section class="ad-access-denied" role="status">

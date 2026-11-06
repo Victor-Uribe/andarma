@@ -3,6 +3,10 @@ import { getToken,api,setToken } from '../services/api'
 import {setAccess,clearAccess,can} from '../utils/andarmaPermissions'
 const routes=[
  {path:'/',name:'home',component:()=>import('../views/HomeView.vue')},
+ {path:'/desarrollos',component:()=>import('../layouts/PublicLayout.vue'),children:[
+   {path:'',name:'public-developments',component:()=>import('../views/public/DevelopmentsPublicView.vue')},
+   {path:':slug',name:'public-development-detail',component:()=>import('../views/public/DevelopmentPublicDetailView.vue')}
+ ]},
  {path:'/admin/login',name:'login',component:()=>import('../views/admin/LoginView.vue'),meta:{guest:true}},
  {path:'/admin',component:()=>import('../layouts/AdminLayout.vue'),meta:{requiresAuth:true},children:[
    {path:'',redirect:'/admin/dashboard'},

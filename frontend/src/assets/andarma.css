@@ -1121,3 +1121,210 @@ body{overflow-x:clip}
  #contacto .contact-feature__title{font-size:clamp(32px,9vw,37px)}
  #contacto .contact-feature__shell{padding-inline:20px}
 }
+
+/* ANDARMA_FASE7B_WHATSAPP_FLOTANTE · ajuste final de iconografía pública */
+/* Los i de Font Awesome no heredan dimensiones de las antiguas reglas para SVG. */
+#nosotros .why-benefits .why-benefit > i.fa-solid,
+.why-andarma .why-benefits .why-benefit > i.fa-solid {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:56px;
+  height:56px;
+  font-size:33px;
+  line-height:1;
+  color:#fff;
+  flex:0 0 56px;
+}
+#como-comprar .purchase-track .purchase-icon > i.fa-solid {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:40px;
+  height:40px;
+  font-size:29px;
+  line-height:1;
+  color:inherit;
+}
+.contact-feature__cta > i.fa-brands.fa-whatsapp {
+  font-size:25px;
+  line-height:1;
+  flex-shrink:0;
+}
+/* CTA flotante: sitio público exclusivamente, no administrador. */
+.andarma-wa-floating {
+  position:fixed;
+  right:max(22px,env(safe-area-inset-right));
+  bottom:max(24px,env(safe-area-inset-bottom));
+  z-index:850;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  min-width:58px;
+  min-height:58px;
+  padding:12px 18px;
+  border:1px solid rgba(255,255,255,.38);
+  border-radius:100px;
+  background:#168d53;
+  color:#fff;
+  text-decoration:none;
+  box-shadow:0 12px 30px rgba(0,75,45,.27);
+  font:700 13px/1.2 'DM Sans',system-ui,sans-serif;
+  transition:background .2s ease,transform .2s ease,box-shadow .2s ease;
+}
+.andarma-wa-floating i {font-size:29px;line-height:1}
+.andarma-wa-floating:hover {
+  color:#fff;
+  background:#107847;
+  transform:translateY(-3px);
+  box-shadow:0 16px 34px rgba(0,75,45,.33);
+}
+.andarma-wa-floating:focus-visible {outline:3px solid #77ceff;outline-offset:4px}
+@media(max-width:650px){
+  #nosotros .why-benefits .why-benefit > i.fa-solid,
+  .why-andarma .why-benefits .why-benefit > i.fa-solid {
+    width:45px;height:45px;font-size:29px;flex-basis:45px;
+  }
+  #como-comprar .purchase-track .purchase-icon > i.fa-solid {
+    width:34px;height:34px;font-size:25px;
+  }
+  .andarma-wa-floating {
+    right:max(16px,env(safe-area-inset-right));
+    bottom:max(18px,env(safe-area-inset-bottom));
+    width:58px;height:58px;min-width:58px;padding:0;
+  }
+  .andarma-wa-floating span {display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .andarma-wa-floating {transition:none}
+}
+
+
+/* ANDARMA_FASE7C_VOLVER_ARRIBA_LOGO */
+/* El emblema original mantiene contraste aun sobre fotografías del hero. */
+.topbar .brand-symbol {
+  display:grid;
+  place-items:center;
+  flex:none;
+  overflow:hidden;
+  width:58px;
+  height:58px;
+  padding:7px;
+  background:rgba(3,32,72,.92);
+  border:1px solid rgba(198,225,255,.65);
+  border-radius:14px;
+  box-shadow:0 8px 24px rgba(0,15,43,.28),inset 0 1px 0 rgba(255,255,255,.09);
+}
+.topbar .brand-symbol img {
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  filter:drop-shadow(0 2px 3px rgba(0,0,0,.3));
+}
+.topbar .brand {gap:13px;min-width:0}
+.topbar .brand-word {text-shadow:0 2px 10px rgba(0,14,40,.6)}
+.topbar .brand-caption {text-shadow:0 2px 7px rgba(0,14,40,.6)}
+
+/* Dos accesos rápidos alineados, sin reubicar el botón WhatsApp existente. */
+.andarma-backtop-floating {
+  position:fixed;
+  right:max(22px,env(safe-area-inset-right));
+  bottom:calc(max(24px,env(safe-area-inset-bottom)) + 76px);
+  z-index:851;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:58px;
+  height:58px;
+  border-radius:50%;
+  border:1px solid #c5dff7;
+  background:rgba(255,255,255,.98);
+  color:#0066e0;
+  box-shadow:0 12px 28px rgba(5,42,84,.18);
+  text-decoration:none;
+  transition:transform .2s ease, background .2s ease, box-shadow .2s ease;
+}
+.andarma-backtop-floating i {font-size:21px;line-height:1}
+.andarma-backtop-floating:hover {
+  background:#e8f3ff;
+  color:#004caa;
+  transform:translateY(-3px);
+  box-shadow:0 16px 30px rgba(5,42,84,.22);
+}
+.andarma-backtop-floating:focus-visible {outline:3px solid #89c9ff;outline-offset:4px}
+@media(max-width:650px){
+  .topbar .brand-symbol {width:49px;height:49px;padding:6px;border-radius:11px}
+  .andarma-backtop-floating {
+    right:max(16px,env(safe-area-inset-right));
+    bottom:calc(max(18px,env(safe-area-inset-bottom)) + 72px);
+    width:54px;height:54px;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .andarma-backtop-floating {transition:none}
+}
+
+/* ANDARMA_FASE7D_LOGO_BACKTOP: símbolo legible sobre hero y navegación clara */
+.topbar .brand-symbol {
+  display:grid;place-items:center;overflow:hidden;
+  width:58px;height:58px;flex:0 0 58px;padding:6px;
+  background:#eef6ff;border:1px solid #cfdfed;border-radius:14px;
+  box-shadow:0 6px 20px rgba(4,28,64,.16);
+}
+.topbar .brand-symbol img {width:100%;height:100%;object-fit:contain;filter:none}
+.topbar .brand-word,.topbar .brand-caption {text-shadow:none}
+@media(max-width:650px){.topbar .brand-symbol{width:49px;height:49px;flex-basis:49px;padding:5px}}
+a.andarma-backtop-floating {
+  opacity:0;visibility:hidden;pointer-events:none;
+  transform:translateY(16px) scale(.94);
+  transition:opacity .33s ease,transform .33s cubic-bezier(.22,1,.36,1),visibility .33s;
+}
+a.andarma-backtop-floating.is-visible {
+  opacity:1;visibility:visible;pointer-events:auto;
+  transform:translateY(0) scale(1);
+}
+a.andarma-backtop-floating.is-visible:hover {transform:translateY(-3px) scale(1)}
+@media(prefers-reduced-motion:reduce){a.andarma-backtop-floating{transition:none!important;transform:none!important}}
+
+/* ANDARMA_LOGO_BLANCO_SELECTIVO_V1 */
+/* Navbar: blanco en hero (fondo oscuro), azul al entrar al modo claro. */
+.topbar .brand-symbol {position:relative;isolation:isolate;background:transparent!important;border-color:rgba(255,255,255,.36)!important;box-shadow:none!important;overflow:hidden}
+.topbar .brand-symbol img.andarma-brand-blue,
+.topbar .brand-symbol img.andarma-brand-white {width:100%!important;height:100%!important;object-fit:contain!important;position:absolute;inset:0;padding:5px;transition:opacity .3s ease;filter:none!important}
+.topbar .brand-symbol img.andarma-brand-white {opacity:1;visibility:visible}
+.topbar .brand-symbol img.andarma-brand-blue {opacity:0;visibility:hidden}
+.topbar.is-scrolled .brand-symbol {background:#f3f8ff!important;border-color:#d5e5f5!important;box-shadow:0 4px 12px rgba(10,43,82,.09)!important}
+.topbar.is-scrolled .brand-symbol img.andarma-brand-white {opacity:0;visibility:hidden}
+.topbar.is-scrolled .brand-symbol img.andarma-brand-blue {opacity:1;visibility:visible}
+@media(prefers-reduced-motion:reduce){.topbar .brand-symbol img.andarma-brand-white,.topbar .brand-symbol img.andarma-brand-blue{transition:none!important}}
+
+
+/* ANDARMA_FASE7E_LOGO_BLANCO_LIMPIO */
+/* Navbar sobre hero: el monograma blanco flota sin placa ni marco. */
+.topbar:not(.is-scrolled) .brand-symbol {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+}
+.topbar:not(.is-scrolled) .brand-symbol img.andarma-brand-white {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100%;
+  max-height: 100%;
+  padding: 0 !important;
+  object-fit: contain !important;
+  object-position: center;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+/* Mantener la variante azul del navbar claro como estaba. */
+

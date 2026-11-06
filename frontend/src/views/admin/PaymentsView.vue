@@ -236,7 +236,7 @@ onMounted(async()=>{
 </script>
 
 <template>
-<section class="andarma-payments space-y-5">
+<section class="andarma-payments ad-u-list space-y-5">
   <header class="ad-pay-heading flex flex-wrap justify-between items-end gap-4">
     <div>
       <span class="ad-pay-kicker">GESTIÓN INMOBILIARIA / COBRANZA</span>

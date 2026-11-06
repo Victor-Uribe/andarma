@@ -7,7 +7,7 @@ import {
   Users,UserRoundPlus,Search,RefreshCw,Phone,Mail,House,Wallet,
   Eye,Pencil,Trash2,X,ChevronLeft,ChevronRight,ArrowUpRight,
   BadgeCheck,BriefcaseBusiness,FileText,Link2
-} from 'lucide-vue-next'
+} from '../../components/admin/AndarmaFaIcons.js'
 
 const route=useRoute()
 const router=useRouter()
@@ -251,15 +251,15 @@ watch(()=>route.query.client,async id=>{
 </script>
 
 <template>
-  <section class="crm-page">
+  <section class="crm-page ad-u-list">
     <header class="crm-page__header">
       <div>
         <span class="crm-kicker">CRM / CLIENTES</span>
         <h1>Clientes</h1>
-        <p>Administra expedientes, relación con propiedades y seguimiento comercial con una misma línea gráfica premium.</p>
+        <p>Consulta compradores, sus propiedades y pagos desde un solo lugar.</p>
       </div>
       <div class="crm-header__actions">
-        <button class="crm-btn crm-btn--ghost" @click="load"><RefreshCw :size="16"/> Actualizar</button>
+        <button class="crm-btn crm-btn--ghost" :disabled="loading" @click="load"><RefreshCw :size="16"/> {{ loading ? 'Actualizando…' : 'Actualizar' }}</button>
         <button v-can="'clients.create'" class="crm-btn crm-btn--soft" @click="openCreate"><UserRoundPlus :size="16"/> Nuevo cliente</button>
       </div>
     </header>
@@ -287,12 +287,12 @@ watch(()=>route.query.client,async id=>{
         <div>
           <span class="crm-eyebrow">Listado principal</span>
           <h2>Directorio de clientes</h2>
-          <p>Busca por comprador o terreno. Abre el expediente para consultar propiedades y pagos.</p>
+          <p>Busca por nombre, contacto o terreno y abre el expediente para revisar su información.</p>
         </div>
         <div class="crm-toolbar">
           <label class="crm-search">
             <Search :size="16"/>
-            <input v-model="q" type="search" placeholder="Nombre, teléfono, desarrollo, manzana o lote" />
+            <input v-model="q" type="search" aria-label="Buscar clientes por nombre, teléfono o terreno" autocomplete="off" placeholder="Nombre, teléfono, desarrollo, manzana o lote" />
           </label>
         </div>
       </div>
@@ -332,18 +332,21 @@ watch(()=>route.query.client,async id=>{
                   {{ client.status==='active' ? 'Activo' : 'Inactivo' }}
                 </span>
               </td>
-              <td data-ad-label="Propiedades"><span class="crm-pill">{{ client.properties_count || 0 }}</span></td>
-              <td data-ad-label="Pagos"><span class="crm-pill">{{ client.payments_count || 0 }}</span></td>
+              <td data-ad-label="Propiedades"><span class="crm-pill" :aria-label="`${Number(client.properties_count||0)} propiedades vinculadas`">{{ Number(client.properties_count||0) }} <span class="crm-f3a-count-word">{{ Number(client.properties_count||0)===1 ? 'propiedad' : 'propiedades' }}</span></span></td>
+              <td data-ad-label="Pagos"><span class="crm-pill" :aria-label="`${Number(client.payments_count||0)} pagos registrados`">{{ Number(client.payments_count||0) }} <span class="crm-f3a-count-word">{{ Number(client.payments_count||0)===1 ? 'pago' : 'pagos' }}</span></span></td>
               <td data-ad-label="Acciones">
                 <div class="crm-actions">
-                  <button class="crm-btn crm-btn--table" @click="openDetail(client.id)"><Eye :size="14"/> Ver</button>
+                  <button class="crm-btn crm-btn--table crm-f3a-view" :aria-label="`Ver expediente de ${client.name}`" @click="openDetail(client.id)"><Eye :size="14"/> Ver expediente</button>
                   <button v-can="'clients.edit'" class="crm-btn crm-btn--table" @click="openEdit(client)"><Pencil :size="14"/> Editar</button>
                   <button v-can="'clients.delete'" class="crm-btn crm-btn--table" :disabled="!canDelete(client)" :title="canDelete(client) ? 'Eliminar cliente' : 'No disponible: tiene propiedad o pagos'" @click="deleteClient(client)"><Trash2 :size="14"/> Eliminar</button>
                 </div>
               </td>
             </tr>
-            <tr v-if="!loading && !rows.length">
-              <td colspan="6" class="crm-empty">No se encontraron clientes. Puedes crear uno nuevo o convertir un prospecto existente.</td>
+            <tr v-if="loading && !rows.length">
+              <td colspan="6" class="crm-empty" role="status">Consultando clientes…</td>
+            </tr>
+            <tr v-else-if="!rows.length">
+              <td colspan="6" class="crm-empty">{{ q.trim() ? 'No hay clientes que coincidan con la búsqueda. Prueba con otro nombre, teléfono o terreno.' : 'Todavía no hay clientes registrados. Puedes crear uno o convertir un prospecto.' }}</td>
             </tr>
           </tbody>
         </table>
@@ -352,19 +355,19 @@ watch(()=>route.query.client,async id=>{
       <div class="crm-pagination">
         <small>Página {{ page }} de {{ lastPage }} · {{ total }} registros</small>
         <div>
-          <button class="crm-iconbtn" :disabled="page <= 1" @click="page--; load()"><ChevronLeft :size="16"/></button>
-          <button class="crm-iconbtn" :disabled="page >= lastPage" @click="page++; load()"><ChevronRight :size="16"/></button>
+          <button class="crm-iconbtn" aria-label="Página anterior de clientes" :disabled="page <= 1 || loading" @click="page--; load()"><ChevronLeft :size="16"/></button>
+          <button class="crm-iconbtn" aria-label="Página siguiente de clientes" :disabled="page >= lastPage || loading" @click="page++; load()"><ChevronRight :size="16"/></button>
         </div>
       </div>
     </section>
 
     <div v-if="showForm" class="crm-modalbackdrop" @click.self="showForm=false">
-      <div class="crm-modal crm-modal--wide" role="dialog" aria-modal="true" aria-labelledby="crm-form-title">
+      <div class="crm-modal crm-modal--wide crm-f3c-form" role="dialog" aria-modal="true" aria-labelledby="crm-form-title">
         <header class="crm-modal__header">
           <div>
             <span class="crm-kicker">GESTIÓN DE CLIENTES</span>
             <h2 id="crm-form-title">{{ editing ? 'Editar cliente' : 'Nuevo cliente' }}</h2>
-            <p>Usa el mismo patrón visual del sistema: modal centrado, campos claros y flujo simple para convertir prospectos a clientes.</p>
+            <p>Completa los datos principales. Puedes registrar al cliente manualmente o convertir un prospecto.</p>
           </div>
           <button class="crm-close" @click="showForm=false" aria-label="Cerrar"><X :size="18"/></button>
         </header>
@@ -375,7 +378,7 @@ watch(()=>route.query.client,async id=>{
               <span class="crm-step">01</span>
               <div>
                 <h3>Origen del registro</h3>
-                <p>Puedes capturar un cliente manualmente o convertir un prospecto existente sin complicaciones.</p>
+                <p>Selecciona cómo se incorporará este cliente al directorio.</p>
               </div>
             </div>
             <div v-if="!editing" class="crm-segmented">
@@ -408,25 +411,25 @@ watch(()=>route.query.client,async id=>{
               <span class="crm-step">02</span>
               <div>
                 <h3>Datos del cliente</h3>
-                <p>Solo se pide lo necesario para crear el expediente y después continuar con propiedades y pagos.</p>
+                <p>Los campos marcados con * son obligatorios.</p>
               </div>
             </div>
             <div class="crm-formgrid">
               <label>
                 Nombre completo *
-                <input v-model.trim="form.name" maxlength="255" placeholder="Nombre y apellidos" :readonly="!editing && formMode==='convert'" />
+                <input v-model.trim="form.name" autocomplete="name" maxlength="255" placeholder="Nombre y apellidos" :readonly="!editing && formMode==='convert'" />
               </label>
               <label>
                 Teléfono / WhatsApp *
-                <input v-model.trim="form.phone" maxlength="50" placeholder="5512345678" :readonly="!editing && formMode==='convert'" />
+                <input v-model.trim="form.phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="50" placeholder="5512345678" :readonly="!editing && formMode==='convert'" />
               </label>
               <label>
                 Correo electrónico
-                <input v-model.trim="form.email" type="email" maxlength="255" placeholder="cliente@correo.com" :readonly="!editing && formMode==='convert'" />
+                <input v-model.trim="form.email" type="email" autocomplete="email" maxlength="255" placeholder="cliente@correo.com" :readonly="!editing && formMode==='convert'" />
               </label>
               <label>
                 Teléfono alterno
-                <input v-model.trim="form.alternate_phone" maxlength="50" placeholder="Opcional" />
+                <input v-model.trim="form.alternate_phone" type="tel" inputmode="tel" autocomplete="off" maxlength="50" placeholder="Opcional" />
               </label>
               <label v-if="editing || formMode==='manual'">
                 Estado del expediente
@@ -437,7 +440,7 @@ watch(()=>route.query.client,async id=>{
               </label>
               <label class="is-full">
                 Notas internas
-                <textarea v-model.trim="form.notes" rows="4" maxlength="5000" placeholder="Observaciones comerciales, seguimiento o acuerdos"></textarea>
+                <textarea v-model.trim="form.notes" rows="3" maxlength="5000" placeholder="Observaciones comerciales, seguimiento o acuerdos"></textarea>
               </label>
             </div>
           </section>
@@ -458,7 +461,7 @@ watch(()=>route.query.client,async id=>{
           <div>
             <span class="crm-kicker">EXPEDIENTE DEL CLIENTE</span>
             <h2 id="crm-detail-title">{{ detail?.data?.name || 'Cliente' }}</h2>
-            <p>Consulta datos, propiedades vinculadas y pagos desde un mismo modal consistente con el resto del administrador.</p>
+            <p>Datos de contacto, terrenos asignados e historial de pagos en un solo lugar.</p>
           </div>
           <div class="crm-header__actions">
             <button v-can="'clients.edit'" v-if="detail?.data" class="crm-btn crm-btn--ghost" @click="openEdit(detail.data)"><Pencil :size="14"/> Editar</button>
@@ -474,25 +477,25 @@ watch(()=>route.query.client,async id=>{
               <div>
                 <h3>{{ detail.data.name }}</h3>
                 <div class="crm-detailhero__meta">
-                  <a :href="'https://wa.me/'+wa(detail.data.phone)" target="_blank" rel="noopener noreferrer"><Phone :size="14"/> {{ safe(detail.data.phone) }}</a>
+                  <a v-if="detail.data.phone" :href="'https://wa.me/'+wa(detail.data.phone)" target="_blank" rel="noopener noreferrer" :aria-label="'Contactar por WhatsApp al cliente '+detail.data.name"><Phone :size="14"/> {{ detail.data.phone }}</a><span v-else class="crm-f3b-muted"><Phone :size="14"/> Sin teléfono</span>
                   <span><Mail :size="14"/> {{ safe(detail.data.email,'Sin correo registrado') }}</span>
                   <span><BadgeCheck :size="14"/> {{ detail.data.status==='active' ? 'Cliente activo' : 'Cliente inactivo' }}</span>
                 </div>
               </div>
             </div>
-            <div class="crm-detailhero__stats">
-              <div><small>Propiedades</small><strong>{{ propertiesCount }}</strong></div>
-              <div><small>Pagos</small><strong>{{ paymentsCount }}</strong></div>
+            <div class="crm-detailhero__stats" aria-label="Resumen del expediente">
+              <div><small>Terrenos asignados</small><strong>{{ propertiesCount }}</strong></div>
+              <div><small>Pagos registrados</small><strong>{{ paymentsCount }}</strong></div>
               <div><small>Total pagado</small><strong>{{ money(detail.paid_total) }}</strong></div>
             </div>
           </div>
 
-          <div class="crm-detailgrid">
+          <div class="crm-detailgrid crm-f3b-detailgrid">
             <section class="crm-card crm-card--inner">
               <div class="crm-card__head crm-card__head--compact">
                 <div>
                   <span class="crm-eyebrow">Información general</span>
-                  <h2>Datos del expediente</h2>
+                  <h2>Datos de contacto</h2>
                 </div>
               </div>
               <div class="crm-infogrid">
@@ -511,10 +514,10 @@ watch(()=>route.query.client,async id=>{
               <div class="crm-card__head crm-card__head--compact">
                 <div>
                   <span class="crm-eyebrow">Relación comercial</span>
-                  <h2>Propiedades vinculadas</h2>
+                  <h2>Terrenos del cliente</h2>
                 </div>
               </div>
-              <div v-if="detail.properties?.length" class="crm-linkedlist">
+              <div v-if="detail.properties?.length" class="crm-linkedlist crm-f3b-linkedlist">
                 <article v-for="lot in detail.properties" :key="lot.id" class="crm-linkeditem">
                   <div>
                     <strong>{{ lot.development_name }} · {{ lot.block ? "Manzana "+lot.block+" · " : "" }}Lote {{ lot.code }}</strong>
@@ -556,18 +559,18 @@ watch(()=>route.query.client,async id=>{
             <div class="crm-card__head crm-card__head--compact">
               <div>
                 <span class="crm-eyebrow">Historial financiero</span>
-                <h2>Pagos relacionados</h2>
+                <h2>Historial de pagos</h2>
                 <p>Consulta aquí el historial y abre el estado de cuenta de cualquier terreno para conocer saldo, mensualidades y vencimientos.</p>
               </div>
               <strong class="crm-totalpill">{{ money(detail.paid_total) }}</strong>
             </div>
             <div v-if="detail.payments?.length" class="crm-tablewrap">
-              <table class="crm-table">
+              <table class="crm-table crm-f3b-pay-table">
                 <thead>
                   <tr>
                     <th>Fecha</th>
                     <th>Tipo</th>
-                    <th>Importe</th>
+                    <th class="crm-f3b-amount">Importe</th>
                     <th>Estado</th>
                   </tr>
                 </thead>
@@ -575,7 +578,7 @@ watch(()=>route.query.client,async id=>{
                   <tr v-for="payment in detail.payments" :key="payment.id">
                     <td>{{ payment.paid_at || 'Sin fecha' }}</td>
                     <td>{{ payment.payment_type || 'Pago' }}</td>
-                    <td>{{ money(payment.amount) }}</td>
+                    <td class="crm-f3b-amount">{{ money(payment.amount) }}</td>
                     <td><span class="crm-badge" :class="payment.status==='applied' ? 'is-success' : 'is-muted'">{{ payment.status || 'Pendiente' }}</span></td>
                   </tr>
                 </tbody>
@@ -694,6 +697,70 @@ watch(()=>route.query.client,async id=>{
 .crm-totalpill{background:#eff8ff;color:#0b6da8;border:1px solid #d7e8fb}
 @media (max-width:1100px){.crm-detailgrid{grid-template-columns:1fr}.crm-detailhero{flex-direction:column;align-items:flex-start}.crm-detailhero__stats{min-width:0;width:100%}}
 @media (max-width:860px){.crm-page__header,.crm-card__head,.crm-pagination,.crm-modal__header{flex-direction:column;align-items:flex-start}.crm-stats{grid-template-columns:1fr}.crm-search{min-width:0;width:100%}.crm-formgrid,.crm-previewcard,.crm-infogrid,.crm-assignbox{grid-template-columns:1fr}.crm-modal,.crm-modal--wide,.crm-modal--xl{width:100%;max-height:96vh}.crm-modalbackdrop{padding:10px}.crm-modal__header,.crm-modal__body,.crm-modal__footer{padding-left:18px;padding-right:18px}.crm-header__actions,.crm-actions,.crm-detailhero__meta{flex-wrap:wrap}.crm-detailhero__stats{grid-template-columns:1fr}.crm-table{min-width:740px}}
+
+/* ANDARMA_FASE3A_DIRECTORIO_20261105: mejora de lectura del directorio, sin alterar otros módulos */
+.andarma-admin .crm-page .crm-f3a-count-word {font-size:11px;font-weight:600;letter-spacing:0}
+.andarma-admin .crm-page .crm-f3a-view {font-weight:750!important}
+.andarma-admin .crm-page .crm-table td {vertical-align:middle}
+.andarma-admin .crm-page .crm-contact a:focus-visible,
+.andarma-admin .crm-page .crm-f3a-view:focus-visible {outline:3px solid rgba(0,102,224,.35);outline-offset:2px}
+@media(max-width:767px) {
+  .andarma-admin .crm-page .crm-f3a-count-word {font-size:12px}
+  .andarma-admin .crm-page .crm-f3a-view {white-space:normal!important;text-align:center}
+}
+
+/* ANDARMA_FASE3B_EXPEDIENTE_20261105 · Solo expediente del cliente */
+.crm-modal--xl .crm-detailhero__main {min-width:0}
+.crm-modal--xl .crm-detailhero__main > div:last-child {min-width:0}
+.crm-modal--xl .crm-detailhero__main h3 {overflow-wrap:anywhere}
+.crm-modal--xl .crm-detailhero__meta {flex-wrap:wrap;min-width:0;row-gap:7px}
+.crm-modal--xl .crm-detailhero__meta :is(a,span) {max-width:100%;overflow-wrap:anywhere}
+.crm-modal--xl .crm-f3b-muted {color:var(--ad-muted,#72879c)}
+.crm-modal--xl .crm-detailhero__stats > div {min-width:0}
+.crm-modal--xl .crm-detailhero__stats small {line-height:1.4}
+.crm-modal--xl .crm-detailhero__stats strong {overflow-wrap:anywhere}
+.crm-modal--xl .crm-f3b-detailgrid {min-width:0}
+.crm-modal--xl .crm-f3b-detailgrid > * {min-width:0}
+.crm-modal--xl .crm-infogrid > div {min-width:0}
+.crm-modal--xl .crm-infogrid strong {overflow-wrap:anywhere}
+.crm-modal--xl .crm-f3b-linkedlist .crm-linkeditem > div:first-child {min-width:0;flex:1 1 220px}
+.crm-modal--xl .crm-f3b-linkedlist .crm-linkeditem strong {display:block;overflow-wrap:anywhere;line-height:1.4}
+.crm-modal--xl .crm-f3b-linkedlist .crm-linkeditem__actions {flex-wrap:wrap}
+.crm-modal--xl .crm-f3b-pay-table .crm-f3b-amount {text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.crm-modal--xl .crm-f3b-pay-table td {vertical-align:middle}
+.crm-modal--xl .crm-assignbox :is(input,select,button):focus-visible,
+.crm-modal--xl .crm-f3b-linkedlist button:focus-visible {outline:3px solid rgba(0,102,224,.3);outline-offset:2px}
+@media (max-width:690px) {
+  .crm-modal--xl .crm-detailhero__meta {align-items:flex-start}
+  .crm-modal--xl .crm-f3b-linkedlist .crm-linkeditem__actions {justify-content:flex-start}
+  .crm-modal--xl .crm-f3b-pay-table {min-width:420px}
+}
+
+
+/* ANDARMA_FASE3C_FORM_CLIENTES_20261105 — solo formulario de alta/edición */
+.crm-f3c-form .crm-modal__header > div { min-width: 0; }
+.crm-f3c-form .crm-modal__header h2 { overflow-wrap: anywhere; }
+.crm-f3c-form .crm-panelsoft { gap: 14px; padding: 17px 19px; border-radius: 16px; }
+.crm-f3c-form .crm-sectionhead { gap: 12px; align-items: flex-start; }
+.crm-f3c-form .crm-sectionhead > div { min-width: 0; }
+.crm-f3c-form .crm-sectionhead h3 { font-size: 16px; line-height: 1.3; }
+.crm-f3c-form .crm-sectionhead p { font-size: 12px; line-height: 1.5; }
+.crm-f3c-form .crm-formgrid { gap: 13px 15px; }
+.crm-f3c-form .crm-formgrid label { min-width: 0; }
+.crm-f3c-form .crm-formgrid :is(input, select, textarea) { min-width: 0; box-sizing: border-box; }
+.crm-f3c-form .crm-formgrid :is(input, select, textarea):focus-visible,
+.crm-f3c-form .crm-segmented button:focus-visible,
+.crm-f3c-form .crm-modal__footer button:focus-visible { outline: 3px solid rgba(0,102,224,.32); outline-offset: 2px; }
+.crm-f3c-form .crm-segmented button { min-height: 42px; }
+.crm-f3c-form .crm-formgrid :is(input, select, textarea)[readonly] { background: #f5f8fc; color: #47617b; }
+.crm-f3c-form .crm-modal__footer { flex-wrap: wrap; gap: 10px; }
+.crm-f3c-form .crm-modal__footer button { min-height: 44px; }
+@media (max-width: 680px) {
+  .crm-f3c-form .crm-panelsoft { padding: 14px; }
+  .crm-f3c-form .crm-formgrid, .crm-f3c-form .crm-previewcard { grid-template-columns: minmax(0,1fr); }
+  .crm-f3c-form .crm-modal__footer > button { flex: 1 1 145px; }
+  .crm-f3c-form .crm-segmented button { flex: 1 1 160px; }
+}
 </style>
 
 <style>

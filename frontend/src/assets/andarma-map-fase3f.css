@@ -1,0 +1,79 @@
+/* ANDARMA · Fase 3F · Mapa comercial · Solo estilo visual
+   Importante: NO se altera el tamano interno del lienzo, SVG ni sus coordenadas.
+   Los estados y datos los sigue proporcionando el sistema existente. */
+.andarma-map-3f {
+  --andarma-ink: #0b2b53;
+  --andarma-blue: #0066e0;
+  --andarma-line: #dae6f3;
+  color: var(--andarma-ink);
+  isolation: isolate;
+}
+.andarma-map-3f :is(h2, h3) {
+  color: #0b2b53;
+  letter-spacing: -0.032em;
+  text-wrap: balance;
+}
+.andarma-map-3f :is(p, small) { line-height: 1.55; }
+.andarma-map-3f :is(input[type="search"], input[placeholder*="terreno" i], input[placeholder*="manzana" i]) {
+  min-height: 44px;
+  background: #fff;
+  border: 1px solid #ccdbef;
+  border-radius: 10px;
+  color: #0b2b53;
+  box-shadow: 0 3px 12px rgba(11, 29, 52, .035);
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.andarma-map-3f :is(input[type="search"], input[placeholder*="terreno" i], input[placeholder*="manzana" i]):focus-visible {
+  outline: 2px solid rgba(0,102,224,.28);
+  outline-offset: 2px;
+  border-color: #0066e0;
+}
+/* Marco externo: solo acabado, sin tocar las capas de lotes ni eventos del mapa. */
+.andarma-map-3f :is([class*="map-card"], [class*="mapCard"], [class*="plan-card"], [class*="planCard"], [class*="map-shell"], [class*="mapShell"]) {
+  border-radius: 14px;
+  border-color: var(--andarma-line);
+  box-shadow: 0 12px 36px rgba(7, 29, 59, .085);
+}
+/* Panel de información y filtros */
+.andarma-map-3f :is(aside, [class*="sidebar"], [class*="Sidebar"], [class*="info-panel"], [class*="infoPanel"]) {
+  border-radius: 14px;
+  border-color: var(--andarma-line);
+  box-shadow: 0 10px 28px rgba(7, 29, 59, .055);
+}
+.andarma-map-3f :is(button, a):focus-visible {
+  outline: 3px solid rgba(0,102,224,.38);
+  outline-offset: 3px;
+}
+.andarma-map-3f button { touch-action: manipulation; }
+.andarma-map-3f :is(a, button)[class*="whatsapp" i],
+.andarma-map-3f :is(a, button)[class*="contact" i] {
+  min-height: 42px;
+  border-radius: 9px;
+  font-weight: 650;
+}
+@media (max-width: 767px) {
+  .andarma-map-3f :is(input[type="search"], input[placeholder*="terreno" i], input[placeholder*="manzana" i]) {
+    font-size: 16px;
+  }
+  .andarma-map-3f :is(aside, [class*="sidebar"], [class*="Sidebar"], [class*="info-panel"], [class*="infoPanel"]) {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .andarma-map-3f * { scroll-behavior: auto !important; }
+}
+
+/* ANDARMA_F3F_SCROLL_GUARD: solo la página de desarrollos. */
+body.ad-developments-scroll .adp-map-page {
+  height: auto !important;
+  max-height: none !important;
+  min-height: 100vh;
+  overflow: visible !important;
+}
+body.ad-developments-scroll #app {
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+/* Los controles y el movimiento interno del visor mantienen sus propios estilos. */

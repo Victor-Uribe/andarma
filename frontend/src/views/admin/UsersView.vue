@@ -4,7 +4,7 @@ import {computed,onMounted,ref} from 'vue'
 import {api,post,put,remove} from '../../services/api'
 import {can} from '../../utils/andarmaPermissions'
 import {confirmAction,notifyError,notifySuccess} from '../../utils/adminAlerts'
-import {Plus,RefreshCw,Pencil,UserX,Save,X,Eye,EyeOff,ShieldCheck,LockKeyhole,UserRound,Mail,KeyRound,Search,Info} from 'lucide-vue-next'
+import {Plus,RefreshCw,Pencil,UserX,Save,X,Eye,EyeOff,ShieldCheck,LockKeyhole,UserRound,Mail,KeyRound,Search,Info} from '../../components/admin/AndarmaFaIcons.js'
 
 const users=ref([]),roles=ref([]),error=ref(''),modalError=ref(''),loading=ref(false),modal=ref(false),busy=ref(false),editId=ref(null)
 const search=ref(''),statusFilter=ref('all'),showPassword=ref(false),confirmPassword=ref(''),showConfirm=ref(false)
