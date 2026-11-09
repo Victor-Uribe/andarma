@@ -71,6 +71,31 @@ function enhanceShared() {
     observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('ad-shared-revealed');observer.unobserve(e.target)}}),{threshold:.13})
     stages.forEach(el=>{el.classList.add('ad-shared-ready');observer.observe(el)})
   }
+  // ANDARMA_FASE3U_HERO_CONTACTO: activar el reveal ya existente en andarma.css.
+  // En Home se activa desde su propio script; en /desarrollos faltaba la señal.
+  const contact = document.querySelector('#contacto.contact-feature')
+  if (contact) {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (!reduced && 'IntersectionObserver' in window) {
+      const alreadyMotion = document.documentElement.classList.contains('ad-contact-motion')
+      document.documentElement.classList.add('ad-contact-motion')
+      contact.classList.remove('ad-contact-visible')
+      const contactObserver = new IntersectionObserver(entries => {
+        if (entries.some(entry => entry.isIntersecting)) {
+          contact.classList.add('ad-contact-visible')
+          contactObserver.disconnect()
+        }
+      }, { threshold: .12 })
+      contactObserver.observe(contact)
+      cleanup.push(() => {
+        contactObserver.disconnect()
+        contact.classList.remove('ad-contact-visible')
+        if (!alreadyMotion) document.documentElement.classList.remove('ad-contact-motion')
+      })
+    } else {
+      contact.classList.add('ad-contact-visible')
+    }
+  }
   const year=document.getElementById('adFooterYear');if(year) year.textContent=String(new Date().getFullYear())
 }
 onMounted(async()=>{await nextTick();await hydrateShared();await nextTick();enhanceShared()})

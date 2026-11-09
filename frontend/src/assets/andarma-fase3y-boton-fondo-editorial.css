@@ -1,0 +1,107 @@
+/* ANDARMA_FASE3Y_BOTON_FONDO
+   Placa editorial y CTA visible. Mantiene nombres, descripciones e imagenes de API.
+   No modifica el carrusel, filtros, mapa ni animacion de contacto. */
+.adp-map-page .ad3v-hero {
+  min-height: clamp(650px, 94svh, 1000px);
+}
+.adp-map-page .ad3v-hero__shade {
+  background:
+    linear-gradient(90deg,rgba(3,18,39,.52),rgba(3,18,39,.30) 48%,rgba(3,18,39,.52)),
+    linear-gradient(0deg,rgba(3,15,33,.76),transparent 33%,rgba(3,15,33,.12));
+}
+.adp-map-page .ad3v-hero__shell {
+  min-height: inherit;
+  padding-top: clamp(105px, 13vh, 160px);
+  padding-bottom: clamp(20px, 3.5vh, 44px);
+}
+/* La caja no tapa la fotografia: blur moderado y contorno editorial. */
+.adp-map-page .ad3v-hero__headline {
+  box-sizing: border-box;
+  position: relative;
+  isolation: isolate;
+  width: min(100%, 1050px);
+  max-width: 1050px;
+  padding: clamp(28px, 4.5vw, 66px) clamp(22px, 5vw, 70px);
+  /* border: 1px solid rgba(215,233,255,.22); */
+  border-radius: 7px;
+  /* background: linear-gradient(115deg,rgba(7,27,51,.67),rgba(7,27,51,.45) 55%,rgba(7,27,51,.35)); */
+  background: linear-gradient(90deg, rgba(0, 15, 37, .32), rgba(0, 15, 37, .1) 60%, transparent);
+  backdrop-filter: blur(2px);
+  box-shadow: 0 24px 80px rgba(0,12,30,.22);
+  -webkit-backdrop-filter: blur(9px);
+  /* backdrop-filter: blur(9px); */
+  gap: 0;
+}
+
+
+
+.adp-map-page .ad3v-hero__eyebrow {
+  margin: 0 0 clamp(16px,2.6vh,26px);
+  padding: 7px 15px;
+  border: 1px solid rgba(218,235,255,.46);
+  background: rgba(0,29,67,.42);
+  font-size: 10px;
+}
+.adp-map-page .ad3v-hero__title {
+  max-width: 900px;
+  margin: 0;
+  font-size: clamp(46px, 6.5vw, 104px);
+  line-height: 1.02;
+  letter-spacing: -.072em;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+.adp-map-page .ad3x-hero__description {
+  max-width: 630px;
+  margin-top: clamp(15px,2.4vh,25px);
+  color: #e6f1ff;
+  font-size: clamp(14px,1.1vw,18px);
+  line-height: 1.58;
+  -webkit-line-clamp: 3;
+}
+/* Prioridad al CTA: contraste, aire y foco accesible. */
+.adp-map-page .ad3x-hero__cta {
+  position: relative;
+  z-index: 3;
+  flex: 0 0 auto;
+  display: inline-flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  align-items: center;
+  justify-content: center;
+  gap: 26px;
+  margin: clamp(18px,3vh,30px) auto 0;
+  min-height: 58px;
+  min-width: 224px;
+  padding: 0 24px;
+  color: #fff;
+  background: #0066E0;
+  border: 1px solid #4ab5ff;
+  border-radius: 4px;
+  box-shadow: 0 12px 32px rgba(0,25,65,.38);
+  text-transform: uppercase;
+  text-decoration: none;
+  font: 800 12px/1.3 'DM Sans',sans-serif;
+  letter-spacing: .08em;
+}
+.adp-map-page .ad3x-hero__cta:hover {background:#0891FF;transform:translateY(-2px)}
+.adp-map-page .ad3x-hero__cta:focus-visible {outline:3px solid #fff;outline-offset:4px}
+.adp-map-page .ad3v-hero__bottom {padding-top:14px}
+@media(max-width:700px) {
+  .adp-map-page .ad3v-hero{min-height:650px;min-height:94svh}
+  .adp-map-page .ad3v-hero__shell{padding:105px 16px 22px}
+  .adp-map-page .ad3v-hero__headline{width:100%;padding:26px 19px 30px;border-radius:5px}
+  .adp-map-page .ad3v-hero__title{font-size:clamp(37px,10.4vw,64px);line-height:1.05}
+  .adp-map-page .ad3x-hero__description{font-size:14px;-webkit-line-clamp:3}
+  .adp-map-page .ad3x-hero__cta{min-width:0;max-width:100%;min-height:52px;padding:0 21px;margin-top:21px}
+}
+@media(max-height:680px) and (min-width:701px) {
+  .adp-map-page .ad3v-hero__shell{padding-top:85px;padding-bottom:15px}
+  .adp-map-page .ad3v-hero__headline{padding-top:22px;padding-bottom:25px}
+  .adp-map-page .ad3v-hero__title{font-size:clamp(43px,5vw,77px)}
+}
+@media(prefers-reduced-motion:reduce) {
+  .adp-map-page .ad3x-hero__cta{transition:none!important}
+}
+
+

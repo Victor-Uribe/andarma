@@ -1,0 +1,210 @@
+/* ANDARMA_FASE3V_HERO_HOME: mismo reparto visual que el hero Home,
+   titulo dominante a la izquierda y mensaje/CTA en placa inferior derecha. */
+.adp-map-page .ad3v-hero{
+  position:relative;isolation:isolate;min-height:clamp(690px,100svh,1040px);
+  display:block;overflow:hidden;background:#081d35;color:#fff;
+}
+.adp-map-page .ad3v-hero__slides{position:absolute;inset:0;z-index:-1;overflow:hidden}
+.adp-map-page .ad3v-hero__slides .ad3a-hero__photo{
+  background-position:50% 48%;background-size:cover;
+}
+.adp-map-page .ad3v-hero__shade{
+  background:linear-gradient(90deg,rgba(3,19,41,.68) 0%,rgba(3,22,45,.42) 49%,rgba(3,20,43,.27) 100%),
+  linear-gradient(0deg,rgba(2,13,29,.86) 0%,rgba(5,25,49,.14) 46%,rgba(4,23,45,.24) 100%);
+}
+.adp-map-page .ad3v-hero__grid{position:absolute;inset:0;pointer-events:none;opacity:.12;
+  background-image:linear-gradient(to right,rgba(255,255,255,.22) 1px,transparent 1px);
+  background-size:calc(100% / 6) 100%;mask-image:linear-gradient(90deg,black,transparent 94%);
+}
+.adp-map-page .ad3v-hero__shell{
+  position:relative;display:flex;flex-direction:column;justify-content:space-between;
+  width:100%;max-width:1640px;margin:0 auto;min-height:inherit;
+  padding:clamp(130px,16vh,210px) clamp(24px,5.4vw,90px) clamp(45px,6.8vh,85px);
+}
+.adp-map-page .ad3v-hero__headline{max-width:min(1060px,84%);animation:ad3vReveal .95s cubic-bezier(.22,1,.36,1) both}
+.adp-map-page .ad3v-hero__eyebrow{
+  display:inline-block;padding:11px 15px;border:1px solid rgba(188,222,250,.55);
+  background:rgba(3,26,52,.62);color:#f2f8ff;backdrop-filter:blur(6px);
+  text-transform:uppercase;letter-spacing:.23em;font:800 10px/1.5 'DM Sans',sans-serif;
+  max-width:100%;overflow-wrap:anywhere;
+}
+.adp-map-page .ad3v-hero__title{
+  display:block;max-width:1020px;color:#fff;margin:clamp(22px,3.5vw,49px) 0 0;
+  font:800 clamp(68px,10vw,162px)/.94 'Manrope','DM Sans',sans-serif;
+  letter-spacing:-.085em;text-shadow:0 8px 35px rgba(1,12,28,.20);
+  overflow-wrap:break-word;text-wrap:balance;
+}
+.adp-map-page .ad3v-hero__bottom{display:flex;align-items:flex-end;justify-content:space-between;gap:36px;width:100%;margin-top:58px}
+.adp-map-page .ad3v-hero__signature{color:#d6e6f7;font:800 10px/1.8 'DM Sans',sans-serif;letter-spacing:.2em;text-transform:uppercase;padding-bottom:18px}
+.adp-map-page .ad3v-hero__signature span{color:#4dbfff;padding:0 9px}
+.adp-map-page .ad3v-hero__controls{display:flex;align-items:center;flex-wrap:wrap;gap:12px;min-width:0;padding-bottom:14px}
+.adp-map-page .ad3v-hero__count{font:800 23px/1 'Manrope',sans-serif;color:white}
+.adp-map-page .ad3v-hero__count small{font:700 11px 'DM Sans',sans-serif;color:#b4cbe0}
+.adp-map-page .ad3v-hero__controls .ad3a-hero__progress{width:110px;margin:0 6px}
+.adp-map-page .ad3v-hero__controls button{display:grid;place-items:center;width:39px;height:39px;border:1px solid rgba(255,255,255,.44);background:rgba(5,27,55,.38);color:white;cursor:pointer}
+.adp-map-page .ad3v-hero__controls button:hover{background:#0066e0}
+.adp-map-page .ad3v-hero__feature{
+  display:flex;align-items:stretch;justify-content:space-between;gap:24px;
+  width:clamp(350px,34vw,565px);min-height:158px;padding:23px 24px 23px 29px;
+  border-left:2px solid #2aaafa;border-radius:0;
+  background:linear-gradient(105deg,rgba(3,26,52,.9),rgba(7,32,59,.74));
+  backdrop-filter:blur(12px);box-shadow:0 20px 52px rgba(0,15,34,.18);
+  animation:ad3vReveal 1s .18s cubic-bezier(.22,1,.36,1) both;
+}
+.adp-map-page .ad3v-hero__feature-text{
+  align-self:center;min-width:0;max-width:330px;margin:0;color:white;
+  font:650 clamp(14px,1.1vw,17px)/1.65 'DM Sans',sans-serif;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+}
+.adp-map-page .ad3v-hero__feature-cta{
+  display:flex;flex:0 0 110px;flex-direction:column;align-items:center;justify-content:center;gap:13px;
+  width:110px;height:110px;align-self:center;border-radius:50%;border:1px solid rgba(255,255,255,.8);
+  background:#103e78;color:#fff;text-decoration:none;text-align:center;
+  transition:transform .35s cubic-bezier(.22,1,.36,1),background .3s;
+}
+.adp-map-page .ad3v-hero__feature-cta:hover{transform:scale(1.05);background:#0066e0}
+.adp-map-page .ad3v-hero__feature-cta span{font:800 10px/1.5 'DM Sans',sans-serif;letter-spacing:.04em}
+.adp-map-page .ad3v-hero__feature-cta i{font-size:18px}
+.adp-map-page .ad3v-hero a:focus-visible,.adp-map-page .ad3v-hero button:focus-visible{outline:3px solid #75d1ff;outline-offset:4px}
+@keyframes ad3vReveal{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:950px){
+  .adp-map-page .ad3v-hero__headline{max-width:100%}
+  .adp-map-page .ad3v-hero__title{font-size:clamp(65px,10vw,110px)}
+  .adp-map-page .ad3v-hero__feature{width:min(100%,500px)}
+}
+@media(max-width:700px){
+  .adp-map-page .ad3v-hero{min-height:690px;min-height:100svh}
+  .adp-map-page .ad3v-hero__shell{padding:clamp(112px,15vh,155px) 22px 28px}
+  .adp-map-page .ad3v-hero__title{font-size:clamp(52px,12vw,81px);letter-spacing:-.075em}
+  .adp-map-page .ad3v-hero__eyebrow{font-size:9px;letter-spacing:.14em}
+  .adp-map-page .ad3v-hero__bottom{flex-direction:column-reverse;align-items:stretch;gap:18px;margin-top:48px}
+  .adp-map-page .ad3v-hero__feature{width:100%;min-height:134px;padding:17px 17px 17px 20px;gap:16px}
+  .adp-map-page .ad3v-hero__feature-text{font-size:13px;-webkit-line-clamp:3}
+  .adp-map-page .ad3v-hero__feature-cta{width:84px;height:84px;flex-basis:84px;gap:7px}
+  .adp-map-page .ad3v-hero__feature-cta span{font-size:8px}
+  .adp-map-page .ad3v-hero__controls{padding:0;gap:9px}
+  .adp-map-page .ad3v-hero__controls .ad3a-hero__progress{width:65px}
+}
+@media(prefers-reduced-motion:reduce){
+  .adp-map-page .ad3v-hero__headline,.adp-map-page .ad3v-hero__feature{animation:none!important}
+  .adp-map-page .ad3v-hero__feature-cta{transition:none!important}
+}
+
+
+/* ANDARMA_FASE3W_ALINEACION_HERO_HOME
+   El Home original usa un bloque de 780px a la IZQUIERDA, con el texto
+   alineado a la izquierda, verticalmente centrado y una placa inferior.
+   Se conserva la galeria dinamica y el panel inferior de la fase 3V. */
+.adp-map-page .ad3v-hero {
+  min-height: 740px;
+  min-height: 100svh;
+}
+.adp-map-page .ad3v-hero__shell {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1600px;
+  margin-inline: auto;
+  min-height: 740px;
+  min-height: 100svh;
+  padding: clamp(105px, 12vh, 160px) clamp(24px, 5vw, 86px) 24px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  align-items: stretch;
+  justify-content: stretch;
+  gap: 0;
+}
+.adp-map-page .ad3v-hero__headline {
+  box-sizing: border-box;
+  width: min(780px, 100%);
+  max-width: 780px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  justify-self: start;
+  align-self: center;
+  text-align: left !important;
+}
+.adp-map-page .ad3v-hero__eyebrow {
+  align-self: flex-start;
+  max-width: 100%;
+  margin: 0 0 30px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  backdrop-filter: none;
+  color: #bde3ff;
+  font: 800 11px/1.5 'DM Sans', sans-serif;
+  letter-spacing: .27em;
+  text-align: left !important;
+}
+.adp-map-page .ad3v-hero__title {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 780px;
+  padding: 0;
+  margin: 0;
+  color: #fff;
+  font: 800 clamp(57px, 6.8vw, 112px)/.98 'Manrope', sans-serif;
+  letter-spacing: -.078em;
+  text-align: left !important;
+  text-wrap: wrap;
+  overflow-wrap: break-word;
+  word-break: normal;
+  transform: none;
+}
+.adp-map-page .ad3v-hero__bottom {
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: clamp(18px, 4vw, 52px);
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+.adp-map-page .ad3v-hero__feature {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+@media (max-width: 950px) {
+  .adp-map-page .ad3v-hero__headline { width: min(720px, 100%); }
+  .adp-map-page .ad3v-hero__title { font-size: clamp(54px, 8vw, 90px); }
+  .adp-map-page .ad3v-hero__feature { max-width: min(480px, 100%); }
+}
+@media (max-width: 700px) {
+  .adp-map-page .ad3v-hero { min-height: 690px; min-height: 100svh; }
+  .adp-map-page .ad3v-hero__shell {
+    min-height: 690px;
+    min-height: 100svh;
+    padding: clamp(110px, 14vh, 150px) 22px 22px;
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+  .adp-map-page .ad3v-hero__headline { width: 100%; align-self: center; }
+  .adp-map-page .ad3v-hero__eyebrow {
+    font-size: 10px;
+    letter-spacing: .15em;
+    margin-bottom: 19px;
+  }
+  .adp-map-page .ad3v-hero__title {
+    font-size: clamp(43px, 10vw, 65px);
+    line-height: 1.02;
+    letter-spacing: -.065em;
+  }
+  .adp-map-page .ad3v-hero__bottom {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 13px;
+  }
+  .adp-map-page .ad3v-hero__feature { width: 100%; max-width: 100%; margin: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .adp-map-page .ad3v-hero__headline { animation: none !important; }
+}
+

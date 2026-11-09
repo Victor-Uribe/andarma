@@ -180,3 +180,6 @@
 @media(max-width:950px){.adp2e-hero__layout{grid-template-columns:1fr;gap:32px}.adp2e-hero__photo{min-height:290px;aspect-ratio:1.9}.adp-map-page .adp2e-project{grid-template-columns:1fr}}
 @media(max-width:600px){.adp2e-hero__layout{padding:111px 22px 45px}.adp-map-page .adp2e-hero h1{font-size:clamp(38px,10vw,54px)}.adp2e-hero__photo{min-height:210px;aspect-ratio:1.4}.adp2e-hero__foot{padding:15px 22px;font-size:8px}.adp-map-page .adp2e-project{padding:23px 19px;margin-top:50px}.adp2e-project__aside>div{grid-template-columns:24px 27px 1fr;padding:14px 12px;gap:2px 10px}}
 @media(prefers-reduced-motion:reduce){.adp2e-hero__photo img,.adp2e-hero__cta,.adp2e-project__cta{transition:none!important}}
+.adp-map-whatsapp{
+    border-radius:6px;
+}

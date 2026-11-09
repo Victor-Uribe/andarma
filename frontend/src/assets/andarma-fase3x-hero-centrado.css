@@ -1,0 +1,217 @@
+
+/* ANDARMA_FASE3X_HERO_CENTRADO */
+
+.adp-map-page .ad3v-hero {
+  min-height: clamp(650px, 92svh, 1000px);
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  text-align: center;
+}
+
+.adp-map-page .ad3v-hero__shade {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(2,16,37,.57),
+      rgba(2,16,37,.47),
+      rgba(2,16,37,.57)
+    ),
+    linear-gradient(
+      0deg,
+      rgba(2,13,30,.78),
+      transparent 30%,
+      rgba(2,13,30,.13)
+    );
+}
+
+.adp-map-page .ad3v-hero__shell {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1600px;
+  min-height: inherit;
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 0;
+  align-items: stretch;
+  padding:
+    clamp(110px, 14vh, 180px)
+    clamp(22px, 5vw, 86px)
+    clamp(20px, 4vh, 46px);
+}
+
+.adp-map-page .ad3v-hero__headline {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  justify-self: center;
+  align-self: center;
+  width: min(100%, 1060px);
+  max-width: 1060px;
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  text-align: center !important;
+  animation: ad3vReveal .95s cubic-bezier(.22,1,.36,1) both;
+}
+
+.adp-map-page .ad3v-hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  width: auto;
+  max-width: 100%;
+  border: 1px solid rgba(226,240,255,.48);
+  border-radius: 2px;
+  background: rgba(3,26,52,.48);
+  color: #eff8ff;
+  padding: 8px 14px;
+  margin: 0 0 clamp(21px,3vh,38px);
+  letter-spacing: .18em;
+  font: 800 11px/1.5 'DM Sans', sans-serif;
+  text-align: center !important;
+  overflow-wrap: anywhere;
+  backdrop-filter: blur(5px);
+}
+
+.adp-map-page .ad3v-hero__title {
+  display: block;
+  width: 100%;
+  max-width: 1040px;
+  margin: 0;
+  padding: 0;
+  color: #fff;
+  font: 800 clamp(58px,7.6vw,126px)/1.025
+    'Manrope','DM Sans',sans-serif;
+  letter-spacing: -.075em;
+  text-align: center !important;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+  word-break: normal;
+  text-shadow: 0 7px 30px rgba(2,12,28,.34);
+}
+
+.adp-map-page .ad3x-hero__description {
+  max-width: 650px;
+  margin: clamp(20px,3vh,34px) auto 0;
+  padding: 0;
+  border: 0;
+  color: #eaf2fc;
+  font: 500 clamp(15px,1.25vw,20px)/1.7
+    'DM Sans',sans-serif;
+  text-align: center;
+  text-wrap: pretty;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  text-shadow: 0 2px 12px rgba(1,15,35,.45);
+}
+
+.adp-map-page .ad3x-hero__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  min-height: 58px;
+  margin: clamp(25px,4vh,42px) auto 0;
+  padding: 0 27px;
+  border: 1px solid rgba(255,255,255,.7);
+  border-radius: 4px;
+  background: #0066E0;
+  color: #fff;
+  font: 800 12px/1.4 'DM Sans',sans-serif;
+  letter-spacing: .08em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: transform .3s,background .3s,box-shadow .3s;
+  box-shadow: 0 12px 30px rgba(0,28,68,.3);
+}
+
+.adp-map-page .ad3x-hero__cta:hover {
+  background: #0891FF;
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px rgba(0,28,68,.35);
+}
+
+.adp-map-page .ad3v-hero__bottom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 0;
+  padding: 10px 0 0;
+  gap: 0;
+}
+
+.adp-map-page .ad3v-hero__controls {
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  gap: 13px;
+}
+
+.adp-map-page .ad3v-hero__signature {
+  padding: 0;
+  text-align: center;
+  opacity: .78;
+}
+
+.adp-map-page .ad3v-hero__feature {
+  display: none !important;
+}
+
+@media (max-width: 700px) {
+  .adp-map-page .ad3v-hero {
+    min-height: 650px;
+    min-height: 92svh;
+  }
+
+  .adp-map-page .ad3v-hero__shell {
+    padding: 112px 22px 28px;
+  }
+
+  .adp-map-page .ad3v-hero__headline {
+    width: 100%;
+  }
+
+  .adp-map-page .ad3v-hero__title {
+    font-size: clamp(42px,11vw,72px);
+    line-height: 1.06;
+    letter-spacing: -.065em;
+  }
+
+  .adp-map-page .ad3v-hero__eyebrow {
+    font-size: 9px;
+    letter-spacing: .12em;
+    margin-bottom: 20px;
+  }
+
+  .adp-map-page .ad3x-hero__description {
+    font-size: 14px;
+    line-height: 1.65;
+    margin-top: 19px;
+    -webkit-line-clamp: 4;
+  }
+
+  .adp-map-page .ad3x-hero__cta {
+    min-height: 53px;
+    margin-top: 26px;
+    padding-inline: 22px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .adp-map-page .ad3v-hero__headline {
+    animation: none !important;
+  }
+
+  .adp-map-page .ad3x-hero__cta {
+    transition: none !important;
+  }
+}

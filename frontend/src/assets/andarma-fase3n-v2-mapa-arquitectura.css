@@ -122,7 +122,6 @@
 .adp-map-page #mapa-de-terrenos .ad3l-center .adp-map-search,
 .adp-map-page #mapa-de-terrenos .ad3l-center .ad3l-filters,
 .adp-map-page #mapa-de-terrenos .ad3l-center .ad3l-filters button,
-.adp-map-page #mapa-de-terrenos .ad3l-sidebar .adp-map-whatsapp {border-radius:0 !important}
 .adp-map-page #mapa-de-terrenos .ad3l-sidebar :is(h3,h3 em,.ad3l-sidebar__intro,.ad3l-sidebar__empty,.ad3l-sidebar__quantity,.ad3l-sidebar__disclaimer) {color:#eef7ff !important}
 .adp-map-page #mapa-de-terrenos .ad3l-sidebar .ad3l-eyebrow {color:#9dd5ff}
 .adp-map-page #mapa-de-terrenos :is(a,button,input):focus-visible {outline:3px solid #89d5ff;outline-offset:3px}
