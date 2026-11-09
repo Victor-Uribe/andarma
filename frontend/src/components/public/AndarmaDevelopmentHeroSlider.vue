@@ -1,6 +1,5 @@
 <script setup>
 import '../../assets/andarma-fase3j-hero-texto.css'
-import '../../assets/andarma-fase3u-hero-contacto.css'
 import '../../assets/andarma-development-gallery.css'
 import { ref, computed, watch, onUnmounted } from 'vue'
 const props = defineProps({development:{type:Object,default:null}})
@@ -36,56 +35,47 @@ onUnmounted(()=>{requestId++;stop()})
 let touchStart=null
 function touchBegin(e){touchStart=e.changedTouches?.[0]?.clientX??null}
 function touchEnd(e){if(touchStart===null)return;const diff=(e.changedTouches?.[0]?.clientX??touchStart)-touchStart;touchStart=null;if(Math.abs(diff)>55)go(index.value+(diff<0?1:-1))}
-import '../../assets/andarma-fase3v-hero-home.css'
-import '../../assets/andarma-fase3x-hero-centrado.css'
-import '../../assets/andarma-fase3y-boton-fondo-editorial.css' // ANDARMA_FASE3Y_BOTON_FONDO
+import '../../assets/andarma-fase4a-v2-hero-editorial.css'
 </script>
 <template>
-  <!-- ANDARMA_FASE3V_HERO_HOME: composicion exacta por zonas del hero editorial -->
-  <section class="ad3a-hero ad3e-hero ad3v-hero" aria-label="Presentacion del desarrollo"
+  <!-- ANDARMA_FASE4A_V2_EDITORIAL: fotografía + título + descripción + CTA -->
+  <section class="ad3a-hero ad4a-hero" aria-label="Presentación del desarrollo"
     @mouseenter="motion=false;stop()" @mouseleave="motion=true;start()"
     @focusin="motion=false;stop()" @focusout="motion=true;start()"
     @touchstart.passive="touchBegin" @touchend.passive="touchEnd">
-    <div class="ad3a-hero__slides ad3v-hero__slides" aria-hidden="true">
+
+    <div class="ad3a-hero__slides ad4a-hero__slides" aria-hidden="true">
       <Transition name="ad3a-photo">
         <div v-if="photos.length" :key="`${development?.id}-${index}`"
-          class="ad3a-hero__photo"
+          class="ad3a-hero__photo ad4a-hero__photo"
           :style="{backgroundImage:`url(${JSON.stringify(photos[index])})`}"></div>
       </Transition>
       <div v-if="!photos.length" class="ad3a-hero__fallback"></div>
-      <div class="ad3a-hero__shade ad3v-hero__shade"></div>
-      <div class="ad3v-hero__grid" aria-hidden="true"></div>
+      <div class="ad4a-hero__shade"></div>
     </div>
 
-    <div class="ad3v-hero__shell">
-      <div class="ad3v-hero__headline" :key="development?.id">
-        <span class="ad3v-hero__eyebrow">{{ development?.location || 'ANDARMA / DESARROLLOS' }}</span>
-        <h1 class="ad3v-hero__title">{{ development?.name || 'Nuestros desarrollos' }}</h1>
-        <!-- ANDARMA_FASE3X_HERO_CENTRADO -->
-        <p class="ad3x-hero__description">{{ development?.description || 'Conoce nuestros desarrollos y explora los terrenos disponibles.' }}</p>
+    <div class="ad4a-hero__layout">
+      <div class="ad4a-hero__content" :key="development?.id">
+        <span class="ad4a-hero__kicker">
+          <span aria-hidden="true"></span>{{ development?.location || 'ANDARMA / DESARROLLOS' }}
+        </span>
+        <h1 class="ad4a-hero__title">{{ development?.name || 'Nuestros desarrollos' }}</h1>
+        <span class="ad4a-hero__rule" aria-hidden="true"></span>
+        <p class="ad4a-hero__description">{{ development?.description || 'Conoce nuestro desarrollo y explora los terrenos disponibles.' }}</p>
         <a class="primary-cta mt-5" href="#mapa-de-terrenos">
-          Explorar terrenos
+          <span>Explorar terrenos</span>
           <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
         </a>
-
       </div>
 
-      <div class="ad3v-hero__bottom">
-        <div class="ad3v-hero__controls" v-if="photos.length > 1" aria-label="Controles de la galeria">
-          <span class="ad3v-hero__count">{{ String(index+1).padStart(2,'0') }} <small>/ {{ String(photos.length).padStart(2,'0') }}</small></span>
+      <div class="ad4a-hero__footer">
+        <span class="ad4a-hero__signature">ANDARMA <i>/</i> ARQUITECTURA PARA VIVIR</span>
+        <div v-if="photos.length>1" class="ad4a-hero__controls" aria-label="Controles de la galería">
+          <span class="ad4a-hero__counter">{{String(index+1).padStart(2,'0')}} <small>/ {{String(photos.length).padStart(2,'0')}}</small></span>
           <div class="ad3a-hero__progress" aria-hidden="true"><span :key="index" :style="{'animationPlayState':paused?'paused':'running'}"></span></div>
-          <button type="button" aria-label="Fotografia anterior" @click="prev"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></button>
-          <button type="button" aria-label="Fotografia siguiente" @click="go(index+1)"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
-          <button type="button" :aria-label="paused?'Reanudar galeria':'Pausar galeria'" @click="togglePause"><i :class="paused?'fa-solid fa-play':'fa-solid fa-pause'" aria-hidden="true"></i></button>
-        </div>
-        <div v-else class="ad3v-hero__signature" aria-hidden="true">ANDARMA <span>/</span> ARQUITECTURA PARA VIVIR</div>
-
-        <div class="ad3v-hero__feature">
-          <p class="ad3v-hero__feature-text">{{ development?.description || 'Conoce los terrenos disponibles en nuestro desarrollo.' }}</p>
-          <a class="ad3v-hero__feature-cta" href="#mapa-de-terrenos" aria-label="Explorar terrenos del desarrollo">
-            <span>EXPLORAR<br>TERRENOS</span>
-            <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
-          </a>
+          <button type="button" aria-label="Fotografía anterior" @click="prev"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></button>
+          <button type="button" aria-label="Fotografía siguiente" @click="go(index+1)"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+          <button type="button" :aria-label="paused?'Reanudar galería':'Pausar galería'" @click="togglePause"><i :class="paused?'fa-solid fa-play':'fa-solid fa-pause'" aria-hidden="true"></i></button>
         </div>
       </div>
     </div>
