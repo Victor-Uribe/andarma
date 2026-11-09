@@ -1,0 +1,87 @@
+/* ANDARMA_FASE3R_MAPA_EDITORIAL: solamente la zona inferior al titulo 3P.
+   El mapa es la imagen hero de este modulo. Sin cortar ni deformar el plano/SVG. */
+/* La cabecera queda intacta; se reduce solo el texto repetido que le sigue. */
+.adp-map-page #mapa-de-terrenos .ad3l-grid {
+  row-gap:clamp(15px,1.8vw,28px) !important;
+}
+.adp-map-page #mapa-de-terrenos .ad3l-story {
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) auto !important;
+  grid-template-rows:auto auto !important;
+  gap:8px clamp(20px,3vw,54px) !important;
+  align-items:center !important;
+  padding:clamp(20px,2.2vw,32px) 0 !important;
+  min-height:0 !important;
+  border-top:1px solid #dce8f4 !important;
+  border-bottom:1px solid #dce8f4 !important;
+  border-left:0 !important;
+  border-right:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  margin:0 !important;
+}
+.adp-map-page #mapa-de-terrenos .ad3l-story::before {display:none !important;content:none !important}
+.adp-map-page #mapa-de-terrenos .ad3l-story>.ad3l-eyebrow {
+  grid-column:1 !important;grid-row:1 !important;
+  margin:0 !important;font-size:10px !important;
+  color:#0066e0 !important;
+}
+.adp-map-page #mapa-de-terrenos .ad3l-story h3 {
+  grid-column:1 !important;grid-row:2 !important;
+  margin:0 !important;max-width:none !important;
+  font:650 clamp(28px,2.75vw,43px)/1.1 Manrope,sans-serif !important;
+  letter-spacing:-.06em !important;color:#082b59 !important;
+}
+/* La descripcion ya esta explicada en el texto editorial de la cabecera. */
+.adp-map-page #mapa-de-terrenos .ad3l-story__intro {display:none !important}
+/* Ubicacion y explicaciones repetidas; el detalle se conserva en el administrador
+   y en la ficha del lote seleccionado. */
+.adp-map-page #mapa-de-terrenos .ad3l-story__feature {display:none !important}
+.adp-map-page #mapa-de-terrenos .ad3l-story__bottom {
+  grid-column:2 !important;grid-row:1 / 3 !important;
+  display:flex !important;flex-direction:column !important;
+  justify-content:center !important;align-items:flex-end !important;
+  gap:14px !important;min-width:0 !important;
+  padding:0 !important;margin:0 !important;
+  border:0 !important;background:transparent !important;
+}
+.adp-map-page #mapa-de-terrenos .ad3l-story__count {
+  font-size:12px !important;color:#147a57 !important;
+}
+.adp-map-page #mapa-de-terrenos .ad3l-story__link {
+  font-size:11px !important;letter-spacing:.09em !important;
+  color:#0066e0 !important;
+}
+/* Plano y ficha: ganan protagonismo al aparecer, nunca se anima el SVG. */
+@media(prefers-reduced-motion:no-preference){
+  @keyframes ad3rReveal {from {opacity:.05;transform:translateY(18px)} to {opacity:1;transform:translateY(0)}}
+  .adp-map-page #mapa-de-terrenos .ad3l-center {
+    animation:ad3rReveal .72s cubic-bezier(.22,.68,.22,1) both;
+  }
+  .adp-map-page #mapa-de-terrenos .ad3l-sidebar {
+    animation:ad3rReveal .72s .12s cubic-bezier(.22,.68,.22,1) both;
+  }
+}
+/* El cuadro azul solo muestra proyecto en estado vacío; la ficha completa
+   se muestra al seleccionar lote. Legibilidad antes que repetir descripciones. */
+.adp-map-page #mapa-de-terrenos .ad3l-sidebar__empty {margin:12px 0 0}
+.adp-map-page #mapa-de-terrenos .ad3l-center {overflow:hidden}
+@media(max-width:860px){
+  .adp-map-page #mapa-de-terrenos .ad3l-story {
+    grid-template-columns:minmax(0,1fr) auto !important;
+  }
+}
+@media(max-width:620px){
+  .adp-map-page #mapa-de-terrenos .ad3l-story {
+    display:grid !important;grid-template-columns:1fr !important;
+    grid-template-rows:auto auto auto !important;gap:10px !important;
+    padding:19px 0 !important;
+  }
+  .adp-map-page #mapa-de-terrenos .ad3l-story>.ad3l-eyebrow {grid-column:1 !important;grid-row:1 !important}
+  .adp-map-page #mapa-de-terrenos .ad3l-story h3 {grid-column:1 !important;grid-row:2 !important}
+  .adp-map-page #mapa-de-terrenos .ad3l-story__bottom {
+    grid-column:1 !important;grid-row:3 !important;align-items:flex-start !important;
+    flex-direction:row !important;flex-wrap:wrap !important;gap:12px 24px !important;
+    justify-content:space-between !important;padding-top:10px !important;
+  }
+}

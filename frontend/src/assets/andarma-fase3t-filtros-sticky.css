@@ -1,0 +1,98 @@
+/* ANDARMA_FASE3T_FILTROS_STICKY
+   Solo barra del visor y ficha del mapa /desarrollos.
+   No se altera la proporcion imagen/SVG ni logica de filtros o seleccion.
+*/
+/* El buscador y los filtros forman una misma barra, no dos pisos. */
+.adp-map-page #mapa-de-terrenos .ad3l-center .ad3l-toolbar{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  column-gap:clamp(12px,1.25vw,20px)!important;
+  row-gap:8px!important;
+  margin:0 0 10px!important;
+  min-width:0!important;
+}
+.adp-map-page #mapa-de-terrenos .ad3l-center .ad3l-toolbar .adp-map-search{
+  flex:1 1 240px!important;
+  width:auto!important;
+  min-width:min(100%,200px)!important;
+  max-width:100%!important;
+  margin:0!important;
+}
+.adp-map-page #mapa-de-terrenos .ad3l-center .ad3l-toolbar .ad3l-filters{
+  display:flex!important;
+  align-items:center!important;
+  flex:0 1 auto!important;
+  min-width:0!important;
+  max-width:100%!important;
+  margin:0!important;
+  padding:3px!important;
+  gap:2px!important;
+  flex-wrap:wrap!important;
+  background:#f7faff!important;
+  border:1px solid #dbe8f7!important;
+  border-radius:0!important;
+}
+.adp-map-page #mapa-de-terrenos .ad3l-center .ad3l-toolbar .ad3l-filters button{
+  min-height:37px!important;
+  padding:6px 8px!important;
+  font-size:clamp(10px,.72vw,12px)!important;
+  white-space:nowrap!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+.adp-map-page #mapa-de-terrenos .ad3l-center .ad3l-toolbar .ad3l-map-label{
+  display:none!important;
+}
+/* La leyenda inferior mantiene unicamente la ayuda accesible: los estados
+   ya estan identificados junto al buscador, sin repetirlos en otro bloque. */
+.adp-map-page #mapa-de-terrenos .ad3l-center .adp-map-legend{
+  display:none!important;
+}
+/* Sticky requiere que ninguno de los contenedores ascendentes recorte
+   el desplazamiento. La ficha queda limitada por la altura de .ad3l-grid. */
+.adp-map-page > #mapa-de-terrenos.adp-map-page__content{
+  overflow:visible!important;
+  overflow-x:clip!important;
+  overflow-y:visible!important;
+}
+.adp-map-page #mapa-de-terrenos .ad3l-map,
+.adp-map-page #mapa-de-terrenos .ad3l-grid{
+  overflow:visible!important;
+}
+.adp-map-page #mapa-de-terrenos .ad3l-grid{
+  align-items:start!important;
+}
+.adp-map-page #mapa-de-terrenos .ad3l-sidebar{
+  position:sticky!important;
+  top:clamp(72px,8vh,110px)!important;
+  align-self:start!important;
+  height:max-content!important;
+  max-height:calc(100vh - clamp(90px,11vh,135px))!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  overscroll-behavior:contain;
+  scrollbar-width:thin;
+  scrollbar-color:#427aa8 transparent;
+  transform:none!important;
+  animation:none!important;
+}
+/* Evita que reglas previas de introduccion animada agreguen transform
+   a un elemento sticky, afectando su posicion en algunos navegadores. */
+@media(max-width:1100px){
+  .adp-map-page #mapa-de-terrenos .ad3l-center .ad3l-toolbar .adp-map-search{flex-basis:180px!important}
+}
+@media(max-width:860px){
+  .adp-map-page #mapa-de-terrenos .ad3l-sidebar{
+    position:static!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+}
+@media(max-width:600px){
+  .adp-map-page #mapa-de-terrenos .ad3l-center .ad3l-toolbar{gap:8px!important}
+  .adp-map-page #mapa-de-terrenos .ad3l-center .ad3l-toolbar .adp-map-search{flex-basis:100%!important}
+  .adp-map-page #mapa-de-terrenos .ad3l-center .ad3l-toolbar .ad3l-filters{width:100%!important;flex:1 1 100%!important}
+  .adp-map-page #mapa-de-terrenos .ad3l-center .ad3l-toolbar .ad3l-filters button{flex:1 1 auto!important;font-size:10px!important}
+}

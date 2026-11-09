@@ -5,6 +5,7 @@ import Swal from 'sweetalert2'
 import {can} from '../../utils/andarmaPermissions'
 import {confirmAction as confirmAdminAction} from '../../utils/adminAlerts'
 import {api,post,put,remove} from '../../services/api'
+import '../../assets/andarma-maps-precio-listado-20261109.css' // ANDARMA_MAPS_PRICE_LIBRARY_20261109
 const route=useRoute(),router=useRouter()
 // ANDARMA_FASE10_PAN_MAPA
 const mapDragging=ref(false)
@@ -41,6 +42,7 @@ function mapPanEnd(event){
 const mapSearch=ref('') // filtro local: no agrega solicitudes al servidor
 const plans=ref([]),developments=ref([]),superadmin=ref(false),plan=ref(null),polygons=ref([]),available=ref([]),loading=ref(false),modal=ref(false),saving=ref(false),imageEl=ref(null),viewport=ref(null)
 const selected=ref(null),drawing=ref(false),draft=ref([]),lotId=ref(''),editGeometryId=ref(null)
+const priceEditing=ref(false),priceDraft=ref(''),priceSaving=ref(false),showMapLibrary=ref(false)
 const selectedDialog=ref(null),selectedCloseButton=ref(null)
 let selectedReturnFocus=null
 // ANDARMA_FASE9_ZOOM_STATE
@@ -111,7 +113,32 @@ function clickImage(e){if(!drawing.value || !superadmin.value || !viewport.value
 async function savePolygon(){if(saving.value)return;if(draft.value.length<3){err(new Error('Marca al menos tres vértices del terreno.'));return}if(!editGeometryId.value&&!lotId.value){err(new Error('Selecciona el terreno que corresponde a este polígono.'));return}saving.value=true;try{if(editGeometryId.value)await put('/admin/im/maps/'+plan.value.id+'/polygons/'+editGeometryId.value,{points:draft.value});else await post('/admin/im/maps/'+plan.value.id+'/polygons',{lot_id:Number(lotId.value),points:draft.value});ok(editGeometryId.value?'Polígono actualizado':'Lote vinculado al mapa');await openPlan(plan.value.id)}catch(e){err(e)}finally{saving.value=false}}
 async function delPolygon(){if(!selected.value)return;if(!await confirmAction('Desvincular polígono','Solo se elimina la ubicación visual; la propiedad, su comprador y pagos se conservan.'))return;try{await remove('/admin/im/maps/'+plan.value.id+'/polygons/'+selected.value.id);ok('Polígono desvinculado');await openPlan(plan.value.id)}catch(e){err(e)}}
 function selectedPolygon(poly){if(drawing.value || Date.now()<mapPanSuppressUntil)return;selectedReturnFocus=typeof document!=='undefined'?document.activeElement:null;selected.value=poly}
-function closeSelected(){selected.value=null}
+function closeSelected(){selected.value=null;priceEditing.value=false}
+function editSelectedPrice(){
+  if(!selected.value || !can('properties.edit'))return
+  priceDraft.value=selected.value.price===null || selected.value.price===undefined?'':String(selected.value.price)
+  priceEditing.value=true
+}
+async function saveSelectedPrice(){
+  if(!selected.value || !can('properties.edit') || priceSaving.value)return
+  const raw=String(priceDraft.value).trim()
+  const amount=raw===''?null:Number(raw)
+  if(amount!==null && (!Number.isFinite(amount)||amount<0||amount>999999999999.99)){
+    err(new Error('Captura un precio válido mayor o igual a cero.'))
+    return
+  }
+  priceSaving.value=true
+  try{
+    const lotId=selected.value.lot_id
+    // Se mantiene el resto de la ficha: compradores, estado y geometría intactos.
+    const result=await put('/admin/im/inventory/'+encodeURIComponent(lotId)+'/map-price',{price:amount})
+    const saved=result.data?.price??null
+    polygons.value=polygons.value.map(poly=>poly.lot_id===lotId?{...poly,price:saved}:poly)
+    selected.value={...selected.value,price:saved}
+    priceEditing.value=false
+    ok('Precio guardado en el inventario')
+  }catch(e){err(e)}finally{priceSaving.value=false}
+}
 function onMapDetailKeydown(event){
   if(event.key==='Escape'){event.preventDefault();closeSelected();return}
   if(event.key!=='Tab'||!selectedDialog.value)return
@@ -152,7 +179,20 @@ onMounted(async()=>{await loadList();if(route.params.id)await openPlan(route.par
     <label class="ad-maps-v8__search"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input v-model="mapSearch" type="search" placeholder="Buscar plano o desarrollo" aria-label="Buscar plano o desarrollo"/></label>
     <span class="ad-maps-v8__helper"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Abre un plano para consultar o editar sus lotes.</span>
   </div><div v-if="!plans.length" class="ad-empty">Todavía no hay mapas registrados. Los terrenos seguirán apareciendo en Propiedades.</div><div v-else-if="!visiblePlans.length" class="ad-empty">No hay planos que coincidan con tu búsqueda.</div><div v-else class="ad-mapcards" :class="{'ad-maps-v8__single':visiblePlans.length===1}"><article v-for="p in visiblePlans" :key="p.id" class="ad-mapcard ad-maps-v8__item"><div class="ad-maps-v8__thumb"><img :src="p.image_url" :alt="p.title" loading="lazy"/></div><div class="ad-maps-v8__item-body"><span class="ad-maps-v8__item-kicker">PLANO DEL DESARROLLO</span><h3 class="font-bold">{{p.title}}</h3><p class="ad-muted">{{p.development_name}}</p><span class="ad-badge">{{p.geometry_count}} lotes mapeados</span><div class="ad-actions ad-maps-v8__actions"><button class="ad-btn ad-btn--primary" @click="router.push('/admin/mapas/'+p.id)"><i class="fa-solid fa-eye"></i> Ver mapa</button><button v-can="'maps.edit'" v-if="superadmin" class="ad-btn" @click="openRename(p)"><i class="fa-solid fa-pen"></i> Renombrar</button><button v-can="'maps.delete'" v-if="can('maps.delete')" class="ad-btn ad-btn--danger" @click="delPlan(p)"><i class="fa-solid fa-trash"></i> Eliminar</button></div></div></article></div></div>
-<template v-else><div class="ad-card ad-maps-v8__map-panel"><div class="flex flex-wrap items-center justify-between gap-3 mb-4 ad-maps-v8__map-head"><div><span class="ad-kicker">ADMINISTRACIÓN DEL PLANO</span><h2 class="font-bold">Plano interactivo</h2><p class="ad-muted">{{superadmin?'Haz clic sobre un polígono para consultarlo o editarlo.':'Selecciona un lote coloreado para ver su información.'}}</p></div><div v-if="superadmin" class="flex flex-wrap gap-2"><button v-can="'maps.edit'" v-if="!drawing" class="ad-btn" @click="openRename(plan)"><i class="fa-solid fa-pen"></i> Renombrar mapa</button><button v-can="'maps.edit'" v-if="!drawing" class="ad-btn ad-btn--primary" @click="begin"><i class="fa-solid fa-draw-polygon"></i> Dibujar lote</button><button v-if="drawing" class="ad-btn" @click="cancelDraw">Cancelar dibujo</button></div></div>
+<template v-else>
+<div class="ad-maps-qfix__library" aria-label="Listado de mapas disponibles">
+  <div class="ad-maps-qfix__bar">
+    <div><h2 class="ad-maps-qfix__title">Planos del desarrollo</h2><p class="ad-maps-qfix__subtitle">{{ plans.length }} {{plans.length===1?'plano registrado':'planos registrados'}} · {{plan.development_name}}</p></div>
+    <button class="ad-btn" type="button" :aria-expanded="showMapLibrary" @click="showMapLibrary=!showMapLibrary"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> {{showMapLibrary?'Ocultar listado':'Ver listado de mapas'}}</button>
+  </div>
+  <div v-if="showMapLibrary" class="ad-maps-qfix__list">
+    <button v-for="p in plans" :key="p.id" type="button" class="ad-maps-qfix__choice" :class="{'is-active':p.id===plan.id}" @click="showMapLibrary=false;router.push('/admin/mapas/'+p.id)">
+      <img :src="p.image_url" :alt="'Miniatura de '+p.title" loading="lazy"/>
+      <span><strong>{{p.title}}</strong><small>{{p.development_name}} · {{p.geometry_count}} lotes mapeados</small></span>
+    </button>
+  </div>
+</div>
+<div class="ad-card ad-maps-v8__map-panel"><div class="flex flex-wrap items-center justify-between gap-3 mb-4 ad-maps-v8__map-head"><div><span class="ad-kicker">ADMINISTRACIÓN DEL PLANO</span><h2 class="font-bold">Plano interactivo</h2><p class="ad-muted">{{superadmin?'Haz clic sobre un polígono para consultarlo o editarlo.':'Selecciona un lote coloreado para ver su información.'}}</p></div><div v-if="superadmin" class="flex flex-wrap gap-2"><button v-can="'maps.edit'" v-if="!drawing" class="ad-btn" @click="openRename(plan)"><i class="fa-solid fa-pen"></i> Renombrar mapa</button><button v-can="'maps.edit'" v-if="!drawing" class="ad-btn ad-btn--primary" @click="begin"><i class="fa-solid fa-draw-polygon"></i> Dibujar lote</button><button v-if="drawing" class="ad-btn" @click="cancelDraw">Cancelar dibujo</button></div></div>
 <div class="ad-maps-v8__map-tip"><i class="fa-solid fa-arrow-pointer" aria-hidden="true"></i><span>Selecciona un lote coloreado para ver sus datos. El dibujo se activa únicamente con «Dibujar lote».</span><span class="ad-maps-v8__mapped">{{mappedCount}} {{mappedCount===1?'lote mapeado':'lotes mapeados'}}</span></div>
 <!-- ANDARMA_FASE9_ZOOM_CONTROLS -->
 <div class="ad-maps-v9-zoom" role="group" aria-label="Controles de zoom del plano">
@@ -186,9 +226,17 @@ onMounted(async()=>{await loadList();if(route.params.id)await openPlan(route.par
       <div class="ad-maplot-v9-body">
         <div class="ad-maplot-v9-metrics">
           <div class="ad-maplot-v9-metric"><small>Superficie</small><strong>{{selected.area_m2 ? Number(selected.area_m2).toLocaleString('es-MX')+' m²' : 'No registrada'}}</strong></div>
-          <div class="ad-maplot-v9-metric"><small>Precio de referencia</small><strong>{{selected.price !== null && selected.price !== undefined ? fmt(selected.price) : 'Por definir'}}</strong></div>
+          <div class="ad-maplot-v9-metric"><small>Precio de referencia</small><strong>{{selected.price !== null && selected.price !== undefined ? fmt(selected.price) : 'Por definir'}}</strong><button v-if="can('properties.edit')" type="button" class="ad-btn" style="margin-top:8px" @click="editSelectedPrice"><i class="fa-solid fa-pen" aria-hidden="true"></i> Editar precio</button></div>
         </div>
 
+        <form v-if="priceEditing && can('properties.edit')" class="ad-maps-qfix__price-editor" @submit.prevent="saveSelectedPrice">
+          <label>Precio del terreno (MXN)
+            <input v-model="priceDraft" inputmode="decimal" type="number" min="0" max="999999999999.99" step="0.01" placeholder="Sin precio publicado" aria-label="Precio del terreno en pesos mexicanos"/>
+          </label>
+          <button type="submit" class="ad-btn ad-btn--primary" :disabled="priceSaving">{{priceSaving?'Guardando…':'Guardar precio'}}</button>
+          <button type="button" class="ad-btn" :disabled="priceSaving" @click="priceEditing=false">Cancelar</button>
+          <p class="ad-maps-qfix__price-help" style="flex-basis:100%">Este cambio actualiza solo el precio de referencia, no el contrato, los pagos ni el financiamiento.</p>
+        </form>
         <div class="ad-maplot-v9-client">
           <span class="ad-maplot-v9-avatar"><i class="fa-solid fa-user" aria-hidden="true"></i></span>
           <div class="ad-maplot-v9-client-copy">

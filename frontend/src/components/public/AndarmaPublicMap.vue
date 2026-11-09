@@ -125,6 +125,9 @@ watch(() => props.development?.id, () => {
 }, {immediate:true})
 
 import '../../assets/andarma-fase3l-mapa-premium.css'
+import '../../assets/andarma-fase3r-mapa-editorial.css' // ANDARMA_FASE3R_MAPA_EDITORIAL
+import '../../assets/andarma-fase3s-proyecto-bajo-mapa.css' // ANDARMA_FASE3S_PROYECTO_HOME
+import '../../assets/andarma-fase3t-filtros-sticky.css' // ANDARMA_FASE3T_FILTROS_STICKY
 </script>
 <template>
   <!-- ANDARMA_FASE3L_MAPA_PREMIUM: nuevo layout comercial, plano autentico -->
@@ -151,28 +154,18 @@ import '../../assets/andarma-fase3l-mapa-premium.css'
         <button v-for="p in plans" :key="p.id" type="button" :class="{'is-current':plan?.id===p.id}" @click="loadPlan(p.id)">{{p.title}}</button>
       </div>
       <div class="ad3l-grid">
-        <div class="ad3l-story">
-          <span class="ad3l-eyebrow">EL PROYECTO / ANDARMA</span>
-          <h3>{{ development.name }}</h3>
-          <p class="ad3l-story__intro">{{ development.description || 'Un lugar para imaginar y construir el futuro que deseas.' }}</p>
-          <div v-if="development.location" class="ad3l-story__feature"><span class="ad3l-story__icon"><i class="fa-solid fa-location-dot" aria-hidden="true"></i></span><div><strong>Ubicación</strong><small>{{ development.location }}</small></div></div>
-          <div class="ad3l-story__feature"><span class="ad3l-story__icon"><i class="fa-solid fa-map" aria-hidden="true"></i></span><div><strong>Plano interactivo</strong><small>Localiza terrenos y consulta sus características.</small></div></div>
-          <div class="ad3l-story__feature"><span class="ad3l-story__icon"><i class="fa-solid fa-house" aria-hidden="true"></i></span><div><strong>Tu próximo patrimonio</strong><small>Recibe asesoría sobre las opciones disponibles.</small></div></div>
-          <div class="ad3l-story__bottom">
-            <span v-if="plan" class="ad3l-story__count"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> {{ availableCount }} {{ availableCount === 1 ? 'terreno disponible' : 'terrenos disponibles' }}</span>
-            <a href="#como-comprar" class="ad3l-story__link">Conoce cómo comprar <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
-          </div>
-        </div>
+        
         <div class="ad3l-center">
           <div class="ad3l-toolbar">
             <label class="adp-map-search"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input v-model="query" placeholder="Buscar lote o manzana" aria-label="Buscar lote o manzana" @keydown.enter.prevent="search" /></label>
             <span class="ad3l-map-label">{{plan?.title || 'Plano del desarrollo'}}</span>
-          </div>
-          <div class="ad3l-filters" aria-label="Filtrar por estado">
+          
+            <div class="ad3l-filters" aria-label="Filtrar por estado">
             <button type="button" :class="{'is-active':statusFilter==='all'}" :aria-pressed="statusFilter==='all'" @click="setStatusFilter('all')">Todos</button>
             <button type="button" :class="{'is-active':statusFilter==='available'}" :aria-pressed="statusFilter==='available'" @click="setStatusFilter('available')"><b class="ad3l-dot is-available"></b> Disponibles</button>
             <button type="button" :class="{'is-active':statusFilter==='reserved'}" :aria-pressed="statusFilter==='reserved'" @click="setStatusFilter('reserved')"><b class="ad3l-dot is-reserved"></b> Apartados</button>
             <button type="button" :class="{'is-active':statusFilter==='sold'}" :aria-pressed="statusFilter==='sold'" @click="setStatusFilter('sold')"><b class="ad3l-dot is-sold"></b> Vendidos</button>
+          </div>
           </div>
           <div v-if="query.trim()" class="adp-map-results" aria-live="polite">
             <span v-if="!queryResults.length">No hay terrenos que coincidan con tu búsqueda.</span>
@@ -229,6 +222,43 @@ import '../../assets/andarma-fase3l-mapa-premium.css'
           </template>
         </aside>
       </div>
+      <!-- ANDARMA_FASE3S_PROYECTO_HOME: proyecto ahora DEBAJO del plano -->
+      <section class="ad3s-project" aria-label="Información del desarrollo">
+        <div class="ad3s-project__media" aria-hidden="true"><img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&amp;fit=crop&amp;w=2200&amp;q=85" alt="" loading="lazy" decoding="async" /></div>
+        <div class="ad3s-project__wash" aria-hidden="true"></div>
+        <div class="ad3s-project__inner">
+          <div class="ad3s-project__top">
+            <div class="ad3s-project__heading">
+              <span class="ad3s-project__eyebrow">EL PROYECTO / ANDARMA</span>
+              <h3>{{ development.name }}</h3>
+            </div>
+            <p class="ad3s-project__intro">{{ development.description || 'Conoce nuestro desarrollo y encuentra el espacio ideal para tu próximo proyecto.' }}</p>
+          </div>
+          <div class="ad3s-project__features" aria-label="Características del desarrollo">
+            <div v-if="development.location" class="ad3s-project__feature">
+              <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+              <strong>Ubicación</strong>
+              <span>{{ development.location }}</span>
+            </div>
+            <div class="ad3s-project__feature">
+              <i class="fa-solid fa-map-location-dot" aria-hidden="true"></i>
+              <strong>Plano interactivo</strong>
+              <span>Explora los terrenos</span>
+            </div>
+            <div class="ad3s-project__feature">
+              <i class="fa-solid fa-house" aria-hidden="true"></i>
+              <strong>Tu próximo patrimonio</strong>
+              <span>Conoce tus opciones</span>
+            </div>
+            <div class="ad3s-project__feature">
+              <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+              <strong>{{ availableCount }} {{ availableCount===1?'terreno disponible':'terrenos disponibles' }}</strong>
+              <span>Disponibilidad publicada</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </template>
   </section>
 </template>

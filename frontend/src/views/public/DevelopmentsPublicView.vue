@@ -60,6 +60,7 @@ async function load(){
 onMounted(load)
 import '../../assets/andarma-fase3n-v2-mapa-arquitectura.css' // ANDARMA_F3N_V2_MAPA_ARQUITECTURA
 import '../../assets/andarma-fase3p-identidad-home.css' // ANDARMA_FASE3P_IDENTIDAD_HOME
+import '../../assets/andarma-fase3q-franja-proyecto-editorial.css' // ANDARMA_FASE3Q_FRANJA_EDITORIAL
 </script>
 <template>
 <!-- ANDARMA_SHARED_PUBLIC_F3F -->

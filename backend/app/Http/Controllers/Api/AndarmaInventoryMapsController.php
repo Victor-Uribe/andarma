@@ -149,6 +149,17 @@ class AndarmaInventoryMapsController extends Controller
         $id=DB::table('andarma_lots')->insertGetId([...$data,'created_at'=>now(),'updated_at'=>now()]);
         return response()->json(['data'=>DB::table('andarma_lots')->find($id)],201);
     }
+    // ANDARMA_MAPS_PRICE_LIBRARY_20261109: solo actualiza el precio de referencia.
+    public function updateMappedLotPrice(Request $r, int $id) {
+        abort_unless(\App\Support\AndarmaAccess::can($r->user(), 'properties.edit'),403,'No tienes permiso para editar precios de terrenos.');
+        $data=$r->validate(['price'=>'nullable|numeric|min:0|max:999999999999.99']);
+        $lot=DB::table('andarma_lots')->where('id',$id)->first();
+        abort_unless($lot,404);
+        abort_unless(DB::table('andarma_lot_geometries')->where('lot_id',$id)->exists(),404,'El terreno no está vinculado a un mapa.');
+        DB::table('andarma_lots')->where('id',$id)->update(['price'=>$data['price'] ?? null,'updated_at'=>now()]);
+        return response()->json(['data'=>['id'=>$id,'price'=>$data['price'] ?? null], 'message'=>'Precio actualizado.']);
+    }
+
     public function updateLot(Request $r,int $id) {
         $lot=DB::table('andarma_lots')->find($id);abort_unless($lot,404);
         $data=$this->validatedLot($r,$id);

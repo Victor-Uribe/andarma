@@ -1,0 +1,18 @@
+/* ANDARMA_MAPS_PRICE_LIBRARY_20261109 */
+.ad-maps-qfix__library{padding:16px 20px;border:1px solid #dce6f2;background:#fff;box-shadow:0 8px 28px rgba(7,35,70,.045)}
+.ad-maps-qfix__bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.ad-maps-qfix__title{font-size:14px;font-weight:800;color:#0b2b53;margin:0}
+.ad-maps-qfix__subtitle{font-size:12px;color:#5b7088;margin:3px 0 0}
+.ad-maps-qfix__list{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:9px;margin-top:14px}
+.ad-maps-qfix__choice{display:flex;align-items:center;gap:12px;min-width:0;width:100%;text-align:left;border:1px solid #d9e5f2;background:#fff;padding:9px;color:#13385c;cursor:pointer;transition:border-color .2s,background .2s}
+.ad-maps-qfix__choice:hover,.ad-maps-qfix__choice:focus-visible{border-color:#0066e0;background:#f1f7ff;outline-offset:2px}
+.ad-maps-qfix__choice.is-active{border-color:#0066e0;background:#eaf4ff}
+.ad-maps-qfix__choice img{width:56px;height:48px;flex:0 0 56px;object-fit:cover;border:1px solid #dbe5f0}
+.ad-maps-qfix__choice span{display:block;min-width:0;overflow-wrap:anywhere}
+.ad-maps-qfix__choice strong{display:block;font-size:12px;font-weight:750}
+.ad-maps-qfix__choice small{display:block;font-size:11px;color:#546d89;margin-top:4px}
+.ad-maps-qfix__price-editor{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;margin-top:10px;padding-top:12px;border-top:1px solid #e1eaf4}
+.ad-maps-qfix__price-editor label{display:grid;gap:5px;color:#0c315e;font-weight:750;font-size:12px;flex:1 1 200px}
+.ad-maps-qfix__price-editor input{min-height:44px;width:100%;background:#fff;color:#092b51;border:1px solid #bacbe0;padding:9px 12px;font-size:15px}
+.ad-maps-qfix__price-help{font-size:11px;color:#607894;margin:8px 0 0}
+@media(max-width:700px){.ad-maps-qfix__library{padding:14px}.ad-maps-qfix__list{grid-template-columns:1fr}}

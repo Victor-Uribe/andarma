@@ -14,6 +14,7 @@ Route::prefix('admin')->middleware(['auth:sanctum',EnsureAndarmaAdmin::class])->
     Route::get('/im/inventory',[IM::class,'inventory']);
     Route::post('/im/inventory',[IM::class,'createLot']);
     Route::put('/im/inventory/{id}',[IM::class,'updateLot'])->whereNumber('id');
+    Route::put('/im/inventory/{id}/map-price',[IM::class,'updateMappedLotPrice'])->whereNumber('id'); // ANDARMA_MAPS_PRICE_LIBRARY_20261109
     Route::delete('/im/inventory/{id}',[IM::class,'deleteLot'])->whereNumber('id');
     Route::get('/im/maps',[IM::class,'plans']);
     Route::post('/im/maps',[IM::class,'createPlan']);
