@@ -40,8 +40,6 @@ import '../../assets/andarma-fase4a-v2-hero-editorial.css'
 <template>
   <!-- ANDARMA_FASE4A_V2_EDITORIAL: fotografía + título + descripción + CTA -->
   <section class="ad3a-hero ad4a-hero" aria-label="Presentación del desarrollo"
-    @mouseenter="motion=false;stop()" @mouseleave="motion=true;start()"
-    @focusin="motion=false;stop()" @focusout="motion=true;start()"
     @touchstart.passive="touchBegin" @touchend.passive="touchEnd">
 
     <div class="ad3a-hero__slides ad4a-hero__slides" aria-hidden="true">
@@ -70,14 +68,17 @@ import '../../assets/andarma-fase4a-v2-hero-editorial.css'
 
       <div class="ad4a-hero__footer">
         <span class="ad4a-hero__signature">ANDARMA <i>/</i> ARQUITECTURA PARA VIVIR</span>
-        <div v-if="photos.length>1" class="ad4a-hero__controls" aria-label="Controles de la galería">
-          <span class="ad4a-hero__counter">{{String(index+1).padStart(2,'0')}} <small>/ {{String(photos.length).padStart(2,'0')}}</small></span>
-          <div class="ad3a-hero__progress" aria-hidden="true"><span :key="index" :style="{'animationPlayState':paused?'paused':'running'}"></span></div>
-          <button type="button" aria-label="Fotografía anterior" @click="prev"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></button>
-          <button type="button" aria-label="Fotografía siguiente" @click="go(index+1)"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
-          <button type="button" :aria-label="paused?'Reanudar galería':'Pausar galería'" @click="togglePause"><i :class="paused?'fa-solid fa-play':'fa-solid fa-pause'" aria-hidden="true"></i></button>
-        </div>
+        
       </div>
     </div>
+    <!-- ANDARMA_INDICADORES_V6: controles fuera del footer, anclados al hero -->
+  <div v-if="photos.length>1" class="ad4a-hero__controls" aria-label="Controles de la galería">
+          <span class="ad4a-hero__rail-label" aria-hidden="true">PROYECTOS / ANDARMA</span>
+          <span class="ad4a-hero__counter">{{String(index+1).padStart(2,'0')}} <small>/ {{String(photos.length).padStart(2,'0')}}</small></span>
+          <div class="ad3a-hero__progress" aria-hidden="true"><span :key="index" :style="{'animationPlayState':paused?'paused':'running'}"></span></div>
+          <button type="button" aria-label="Fotografía anterior" @click="prev"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i></button>
+          <button type="button" aria-label="Fotografía siguiente" @click="go(index+1)"><i class="fa-solid fa-arrow-down" aria-hidden="true"></i></button>
+          <button type="button" :aria-label="paused?'Reanudar galería':'Pausar galería'" @click="togglePause"><i :class="paused?'fa-solid fa-play':'fa-solid fa-pause'" aria-hidden="true"></i></button>
+        </div>
   </section>
 </template>
