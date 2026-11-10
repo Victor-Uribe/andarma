@@ -1429,3 +1429,29 @@ a.andarma-backtop-floating.is-visible:hover {transform:translateY(-3px) scale(1)
 }
 @media(prefers-reduced-motion:reduce){#inicio.ad-showreel .hero-image{animation:none!important}}
 /* ANDARMA_HERO_CONTRASTE_V4_END */
+
+
+/* ANDARMA_AUDITORIA_A11Y_V1_BEGIN */
+/* Ajustes limitados a la portada: foco accesible y objetivos táctiles. */
+#inicio.ad-showreel .ad-showreel__arrows button:focus-visible,
+#inicio.ad-showreel .ad-showreel__pause:focus-visible,
+#inicio.ad-showreel .ad-showreel__scroll:focus-visible {
+  outline: 3px solid #E6F1FF;
+  outline-offset: 4px;
+}
+@media (hover: none) and (pointer: coarse) {
+  #inicio.ad-showreel .ad-showreel__arrows button,
+  #inicio.ad-showreel .ad-showreel__pause {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+@media (max-width: 600px) {
+  #inicio.ad-showreel .hero-slide-label {
+    font-size: 11px !important;
+    letter-spacing: .12em !important;
+  }
+}
+/* ANDARMA_AUDITORIA_A11Y_V1_END */
