@@ -40,10 +40,14 @@ final class AndarmaAccess
         $role=DB::table('andarma_roles')->where('id',$user->andarma_role_id)->first();
         if (!$role) return [];
         if ($role->is_system && $role->slug==='superadmin') return self::validPermissions();
-        return DB::table('andarma_role_permissions')->where('role_id',$role->id)->pluck('permission')->all();
+        return array_values(array_filter(DB::table('andarma_role_permissions')->where('role_id',$role->id)->pluck('permission')->all(),
+            fn($p)=>!str_starts_with($p,'roles.') && !str_starts_with($p,'users.')));
     }
     public static function can(User $user, string $permission): bool
     {
+        // ANDARMA_FASE1_PREPROD_V1: negar permisos administrativos reservados aunque existan en roles antiguos.
+        if ((str_starts_with($permission,'users.') || str_starts_with($permission,'roles.'))
+            && !self::isSuperadmin($user)) return false;
         $assigned=self::permissions($user);
         if (in_array($permission,$assigned,true)) return true;
         // El editor de imágenes necesita subir fotografías sin exigir un permiso técnico adicional.

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 class AndarmaAdminController extends Controller {
- private const TABLES=['banners'=>'andarma_banners','developments'=>'andarma_developments','lots'=>'andarma_lots','testimonials'=>'andarma_testimonials','leads'=>'andarma_leads'];
+ private const TABLES=['banners'=>'andarma_banners','developments'=>'andarma_developments','testimonials'=>'andarma_testimonials','leads'=>'andarma_leads'];
  private function table(string $resource):string{abort_unless(isset(self::TABLES[$resource]),404);return self::TABLES[$resource];}
  public function dashboard(){return response()->json(['data'=>['users'=>DB::table('users')->where('is_andarma_admin',1)->where('andarma_enabled',1)->count(),'developments'=>DB::table('andarma_developments')->count(),'lots'=>DB::table('andarma_lots')->count(),'available_lots'=>DB::table('andarma_lots')->where('status','available')->count(),'leads'=>DB::table('andarma_leads')->count(),'banners'=>DB::table('andarma_banners')->count(),'testimonials'=>DB::table('andarma_testimonials')->count()]]);}
  public function index(string $resource){
@@ -23,7 +23,7 @@ class AndarmaAdminController extends Controller {
  }
  private function validated(Request $request,string $resource,?int $id=null):array{
   return match($resource){
-   'banners'=>$request->validate(['title'=>'required|string|max:255','title_accent'=>'nullable|string|max:255','eyebrow'=>'nullable|string|max:255','overline'=>'nullable|string|max:255','footnote'=>'nullable|string|max:255','tagline'=>'nullable|string|max:255','editorial_label'=>'nullable|string|max:255','side_title'=>'nullable|string|max:255','side_description'=>'nullable|string|max:500','subtitle'=>'nullable|string|max:3000','image_url'=>'nullable|string|max:2048','button_text'=>'nullable|string|max:255','button_url'=>'nullable|string|max:1024','sort_order'=>'nullable|integer|min:0','is_active'=>'boolean']),
+   'banners'=>$request->validate(['title'=>'required|string|max:255','title_accent'=>'nullable|string|max:255','eyebrow'=>'nullable|string|max:255','overline'=>'nullable|string|max:255','footnote'=>'nullable|string|max:255','tagline'=>'nullable|string|max:255','editorial_label'=>'nullable|string|max:255','side_title'=>'nullable|string|max:255','side_description'=>'nullable|string|max:500','subtitle'=>'nullable|string|max:3000','image_url'=>'nullable|string|max:2048','button_text'=>'nullable|string|max:255','button_url'=>['nullable','string','max:1024',function($attribute,$value,$fail){if(!self::safePublicUrl($value))$fail('Solo se permiten enlaces HTTPS, rutas internas o anclas.');}],'sort_order'=>'nullable|integer|min:0','is_active'=>'boolean']),
    'developments'=>$request->validate(['name'=>'required|string|max:255','slug'=>['nullable','string','max:255',Rule::unique('andarma_developments','slug')->ignore($id)],'description'=>'nullable|string|max:10000','location'=>'nullable|string|max:255','image_url'=>'nullable|string|max:2048','status'=>['required',Rule::in(['active','upcoming','inactive'])],'is_featured'=>'boolean']),
    'lots'=>$request->validate(['development_id'=>'required|integer|exists:andarma_developments,id','code'=>['required','string','max:255',Rule::unique('andarma_lots','code')->where('development_id',$request->input('development_id'))->ignore($id)],'area_m2'=>'nullable|numeric|min:0','price'=>'nullable|numeric|min:0','status'=>['required',Rule::in(['available','reserved','sold','inactive'])],'description'=>'nullable|string|max:5000','latitude'=>'nullable|numeric|between:-90,90','longitude'=>'nullable|numeric|between:-180,180']),
    'testimonials'=>$request->validate(['name'=>'required|string|max:255','role'=>'nullable|string|max:255','quote'=>'required|string|max:4000','image_url'=>'nullable|string|max:2048','property_image_url'=>'nullable|string|max:2048','rating'=>'required|integer|between:1,5','sort_order'=>'nullable|integer|min:0','is_active'=>'boolean']),
@@ -31,9 +31,9 @@ class AndarmaAdminController extends Controller {
    default=>abort(404)
   };
  }
- public function store(Request $request,string $resource){$table=$this->table($resource);$data=$this->validated($request,$resource);if($resource==='developments')$data['slug']=$data['slug']?:Str::slug($data['name']).'-'.Str::lower(Str::random(5));$id=DB::table($table)->insertGetId([...$data,'created_at'=>now(),'updated_at'=>now()]);return response()->json(['data'=>DB::table($table)->find($id)],201);}
- public function update(Request $request,string $resource,int $id){$table=$this->table($resource);abort_unless(DB::table($table)->where('id',$id)->exists(),404);if($resource==='leads' && DB::table('andarma_clients')->where('lead_id',$id)->exists())return response()->json(['message'=>'El prospecto ya fue convertido a cliente. Edita su expediente de cliente.'],409);$data=$this->validated($request,$resource,$id);if($resource==='developments')$data['slug']=$data['slug']?:Str::slug($data['name']).'-'.$id;DB::table($table)->where('id',$id)->update([...$data,'updated_at'=>now()]);return response()->json(['data'=>DB::table($table)->find($id)]);}
- public function destroy(string $resource,int $id){
+ public function store(Request $request,string $resource){if(in_array($resource,['lots','developments'],true))abort(410,'Usa los endpoints de inventario y desarrollos.');$table=$this->table($resource);$data=$this->validated($request,$resource);if($resource==='developments')$data['slug']=$data['slug']?:Str::slug($data['name']).'-'.Str::lower(Str::random(5));$id=DB::table($table)->insertGetId([...$data,'created_at'=>now(),'updated_at'=>now()]);return response()->json(['data'=>DB::table($table)->find($id)],201);}
+ public function update(Request $request,string $resource,int $id){if(in_array($resource,['lots','developments'],true))abort(410,'Usa los endpoints de inventario y desarrollos.');$table=$this->table($resource);abort_unless(DB::table($table)->where('id',$id)->exists(),404);if($resource==='leads' && DB::table('andarma_clients')->where('lead_id',$id)->exists())return response()->json(['message'=>'El prospecto ya fue convertido a cliente. Edita su expediente de cliente.'],409);$data=$this->validated($request,$resource,$id);if($resource==='developments')$data['slug']=$data['slug']?:Str::slug($data['name']).'-'.$id;DB::table($table)->where('id',$id)->update([...$data,'updated_at'=>now()]);return response()->json(['data'=>DB::table($table)->find($id)]);}
+ public function destroy(string $resource,int $id){if(in_array($resource,['lots','developments'],true))abort(410,'Usa los endpoints de inventario y desarrollos.');
   $table=$this->table($resource);
   if($resource==='leads' && DB::table('andarma_clients')->where('lead_id',$id)->exists()){
     return response()->json(['message'=>'No se puede eliminar un prospecto convertido a cliente. Conserva su historial.'],409);
@@ -60,17 +60,31 @@ class AndarmaAdminController extends Controller {
   });
  }
 
- public function publicBanners(){return response()->json(['data'=>DB::table('andarma_banners')->where('is_active',1)->orderBy('sort_order')->get()]);}
+ // ANDARMA_FASE1_PREPROD_V1: enlaces externos exclusivamente HTTPS; internos absolutos o anclas.
+ private static function safePublicUrl(?string $value): bool {
+  if ($value===null || $value==='') return true;
+  if (preg_match('/[\x00-\x20\x7F]/', $value) || str_contains($value, '\\')) return false;
+  if (str_starts_with($value, '#')) return strlen($value)>1;
+  if (str_starts_with($value, '/') && !str_starts_with($value, '//')) return true;
+  return filter_var($value, FILTER_VALIDATE_URL)!==false
+    && strtolower((string) parse_url($value, PHP_URL_SCHEME))==='https';
+ }
+ public function publicBanners(){
+  $items=DB::table('andarma_banners')->where('is_active',1)->orderBy('sort_order')->get();
+  foreach($items as $banner) if(!self::safePublicUrl($banner->button_url??null)) $banner->button_url=null;
+  return response()->json(['data'=>$items]);
+ }
  public function publicDevelopments(){return response()->json(['data'=>DB::table('andarma_developments')->where('status','active')->orderBy('sort_order')->orderBy('id')->get()]);}
  public function publicLots(Request $r){
   // ANDARMA_FASE16_PUBLIC_LOTS_ALLOWLIST
   // La API publica solo entrega informacion comercial, nunca comprador, contacto ni campos internos.
   $filters = $r->validate(['development_id' => 'sometimes|integer|min:1']);
-  $query = DB::table('andarma_lots')
-    ->where('status', 'available')
-    ->select('id', 'development_id', 'code', 'block', 'area_m2', 'price', 'status', 'description');
+  $query = DB::table('andarma_lots as l')
+    ->join('andarma_developments as d', 'd.id', '=', 'l.development_id')
+    ->where('l.status', 'available')->where('d.status', 'active')
+    ->select('l.id', 'l.development_id', 'l.code', 'l.block', 'l.area_m2', 'l.price', 'l.status', 'l.description');
   if (isset($filters['development_id'])) {
-    $query->where('development_id', $filters['development_id']);
+    $query->where('l.development_id', $filters['development_id']);
   }
   return response()->json(['data' => $query->get()]);
  }

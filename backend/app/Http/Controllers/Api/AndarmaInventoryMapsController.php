@@ -30,11 +30,15 @@ class AndarmaInventoryMapsController extends Controller
     }
     public function inventory(Request $r) {
         $d=$r->validate(['q'=>'nullable|string|max:120','development_id'=>'nullable|integer','status'=>'nullable|in:available,reserved,sold,inactive','mapped'=>'nullable|in:yes,no','payment_filter'=>'nullable|in:overdue,severe,current','page'=>'nullable|integer|min:1','per_page'=>'nullable|integer|min:1|max:100']);
+        // ANDARMA_FASE1_PREPROD_V1: limitar acceso a datos personales y estados de cobranza.
+        $canViewClients=\App\Support\AndarmaAccess::can($r->user(),'clients.view');
+        $canViewPayments=\App\Support\AndarmaAccess::can($r->user(),'payments.view');
+        if(!empty($d['payment_filter'])) abort_unless($canViewPayments,403,'Sin permiso para consultar cobranza.');
         $query=DB::table('andarma_lots as l')->join('andarma_developments as d','d.id','=','l.development_id')
-          ->leftJoin('andarma_lot_geometries as g','g.lot_id','=','l.id')
-          ->leftJoin('andarma_clients as c','c.id','=','l.client_id')
-          ->select('l.*','d.name as development_name','g.plan_id as mapped_plan_id',
-                   'c.name as buyer_name','c.phone as buyer_phone');
+          ->leftJoin('andarma_lot_geometries as g','g.lot_id','=','l.id');
+        if($canViewClients) $query->leftJoin('andarma_clients as c','c.id','=','l.client_id');
+        $query->select('l.*','d.name as development_name','g.plan_id as mapped_plan_id');
+        if($canViewClients) $query->addSelect('c.name as buyer_name','c.phone as buyer_phone');
         if(!empty($d['q'])) {$like='%'.addcslashes($d['q'],'%_').'%';$query->where(function($w)use($like){$w->where('l.code','like',$like)->orWhere('l.block','like',$like)->orWhere('d.name','like',$like);});}
         if(!empty($d['development_id']))$query->where('l.development_id',$d['development_id']);
         if(!empty($d['status']))$query->where('l.status',$d['status']);
@@ -67,7 +71,12 @@ class AndarmaInventoryMapsController extends Controller
         }
         $page = $query->orderByDesc('l.id')->paginate($d['per_page']??20);
         $lots = $page->getCollection();
-        $this->decorateInventoryPayments($lots);
+        if($canViewPayments) $this->decorateInventoryPayments($lots);
+        foreach($lots as $lot) {
+            $lot->has_buyer=!empty($lot->client_id);
+            if(!$canViewClients) { unset($lot->client_id); $lot->buyer_name=null; $lot->buyer_phone=null; }
+            if(!$canViewPayments) { $lot->payment_tone='neutral'; $lot->payment_label='Sin permiso'; $lot->overdue_months=null; }
+        }
         return response()->json($page);
     }
     // ANDARMA_FASE6_FILTRO_COBRANZA: clasificación compartida entre filtro y página visible.
@@ -146,6 +155,8 @@ class AndarmaInventoryMapsController extends Controller
     public function createLot(Request $r) {
         $data=$this->validatedLot($r);
         $data['block']=trim((string)($data['block']??''));
+        // ANDARMA_FASE2_INTEGRIDAD_V1: un lote sin comprador no puede nacer como vendido.
+        if($data['status']==='sold')return response()->json(['message'=>'Primero crea el terreno y asígnalo a un comprador desde Clientes.'],422);
         $id=DB::table('andarma_lots')->insertGetId([...$data,'created_at'=>now(),'updated_at'=>now()]);
         return response()->json(['data'=>DB::table('andarma_lots')->find($id)],201);
     }
@@ -160,24 +171,46 @@ class AndarmaInventoryMapsController extends Controller
         return response()->json(['data'=>['id'=>$id,'price'=>$data['price'] ?? null], 'message'=>'Precio actualizado.']);
     }
 
+    // ANDARMA_FASE2_INTEGRIDAD_V1: usar el mismo bloqueo de fila que asignación y cobranza.
     public function updateLot(Request $r,int $id) {
-        $lot=DB::table('andarma_lots')->find($id);abort_unless($lot,404);
         $data=$this->validatedLot($r,$id);
         $data['block']=trim((string)($data['block']??''));
-        if(property_exists($lot,'client_id') && $lot->client_id && ($data['status']==='available' || $data['development_id']!=$lot->development_id))
-            return response()->json(['message'=>'La propiedad tiene un cliente vinculado. No se puede liberarla ni cambiar de desarrollo desde este formulario.'],409);
-        if(DB::table('andarma_lot_geometries')->where('lot_id',$id)->exists() && $data['development_id']!=$lot->development_id)
-            return response()->json(['message'=>'El lote está mapeado. Desvincula el polígono antes de cambiar el desarrollo.'],409);
-        DB::table('andarma_lots')->where('id',$id)->update([...$data,'updated_at'=>now()]);
-        return response()->json(['data'=>DB::table('andarma_lots')->find($id)]);
+        return DB::transaction(function()use($id,$data) {
+            $lot=DB::table('andarma_lots')->where('id',$id)->lockForUpdate()->first();
+            abort_unless($lot,404);
+            if($lot->client_id && (!in_array($data['status'],['reserved','sold'],true)
+                || (int)$data['development_id']!==(int)$lot->development_id))
+                return response()->json(['message'=>'El terreno tiene comprador; no puedes liberarlo ni cambiarlo de desarrollo desde Propiedades.'],409);
+            if(!$lot->client_id && $data['status']==='sold' && $lot->status!=='sold')
+                return response()->json(['message'=>'Primero asigna un comprador al terreno desde Clientes.'],422);
+            $financing=DB::table('andarma_lot_financing')->where('lot_id',$id)->first();
+            if($financing) {
+                if(!$lot->client_id || (int)$financing->client_id!==(int)$lot->client_id)
+                    return response()->json(['message'=>'El financiamiento no coincide con el comprador. Requiere conciliación antes de editar.'],409);
+                if($lot->status==='sold' && $data['status']!=='sold')
+                    return response()->json(['message'=>'No puedes cambiar el estado de una venta financiada. Requiere un procedimiento auditado.'],409);
+            }
+            if(DB::table('andarma_lot_geometries')->where('lot_id',$id)->exists()
+                && (int)$data['development_id']!==(int)$lot->development_id)
+                return response()->json(['message'=>'El terreno tiene un polígono asignado. Desvincúlalo antes de cambiar el desarrollo.'],409);
+            DB::table('andarma_lots')->where('id',$id)->update([...$data,'updated_at'=>now()]);
+            return response()->json(['data'=>DB::table('andarma_lots')->find($id)]);
+        });
     }
+    // ANDARMA_FASE2_INTEGRIDAD_V1: no eliminar un terreno si otra operación lo asigna al mismo tiempo.
     public function deleteLot(int $id) {
-        $lot=DB::table('andarma_lots')->find($id);abort_unless($lot,404);
-        if((property_exists($lot,'client_id') && $lot->client_id) || DB::table('andarma_lot_geometries')->where('lot_id',$id)->exists())
-            return response()->json(['message'=>'No se puede eliminar: el lote tiene un comprador o un polígono.'],409);
-        if(Schema::hasTable('andarma_client_payments') && DB::table('andarma_client_payments')->where('lot_id',$id)->exists())
-            return response()->json(['message'=>'No se puede eliminar: existen pagos relacionados.'],409);
-        DB::table('andarma_lots')->where('id',$id)->delete();return response()->json(['message'=>'Lote eliminado.']);
+        return DB::transaction(function()use($id) {
+            $lot=DB::table('andarma_lots')->where('id',$id)->lockForUpdate()->first();
+            abort_unless($lot,404);
+            if($lot->client_id || DB::table('andarma_lot_geometries')->where('lot_id',$id)->exists())
+                return response()->json(['message'=>'No se puede eliminar: el terreno tiene comprador o polígono.'],409);
+            if(DB::table('andarma_client_payments')->where('lot_id',$id)->exists())
+                return response()->json(['message'=>'No se puede eliminar: existen pagos relacionados.'],409);
+            if(DB::table('andarma_lot_financing')->where('lot_id',$id)->exists())
+                return response()->json(['message'=>'No se puede eliminar: existe un contrato de financiamiento.'],409);
+            DB::table('andarma_lots')->where('id',$id)->delete();
+            return response()->json(['message'=>'Lote eliminado.']);
+        });
     }
 // ANDARMA_V36_CONTROLLERS
     public function developmentSummary() {
@@ -248,6 +281,8 @@ class AndarmaInventoryMapsController extends Controller
                 ->get()->keyBy('id');
         }
         foreach($polygons as $poly) {
+            $poly->has_buyer=!empty($poly->client_id);
+            if(!$canViewClients) unset($poly->client_id);
             $poly->points=json_decode($poly->points,true)??[];
             $client=$canViewClients && $poly->client_id ? $clients->get($poly->client_id) : null;
             $poly->buyer_name=$client?->name;

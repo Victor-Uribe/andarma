@@ -31,8 +31,8 @@ class AndarmaRbacController extends Controller
         $unknown=array_diff($d['permissions'],AndarmaAccess::validPermissions());
         // ANDARMA_V51_2: roles.* solo para superadministrador; users.* delegable.
         if ($unknown) throw ValidationException::withMessages(['permissions'=>'Permisos no reconocidos: '.implode(', ',array_slice(array_values($unknown),0,8))]);
-        if (array_filter($d['permissions'],fn($p)=>str_starts_with($p,'roles.')))
-            throw ValidationException::withMessages(['permissions'=>'Los permisos de Roles y permisos son exclusivos del Superadministrador.']);
+        if (array_filter($d['permissions'],fn($p)=>str_starts_with($p,'roles.') || str_starts_with($p,'users.')))
+            throw ValidationException::withMessages(['permissions'=>'Los permisos de Roles y Usuarios son exclusivos del Superadministrador.']);
         return $d;
     }
     public function storeRole(Request $r) {
@@ -79,7 +79,9 @@ class AndarmaRbacController extends Controller
           'andarma_enabled'=>(bool)$u->andarma_enabled,
           'role'=>DB::table('andarma_roles')->where('id',$u->andarma_role_id)->first(['id','name','slug'])];
     }
+    // ANDARMA_FASE1_PREPROD_V1: la administración de usuarios es exclusiva de superadministrador.
     private function userPermission(Request $r,string $action): void {
+        $this->super($r);
         abort_unless(AndarmaAccess::can($r->user(),'users.'.$action),403,'No tienes autorización para gestionar usuarios.');
     }
     private function roleSlug(int $id): ?string {
@@ -87,7 +89,7 @@ class AndarmaRbacController extends Controller
     }
     // Para el selector de usuarios; nunca entrega permisos de roles ni expone el Superadministrador a usuarios normales.
     public function userRoleOptions(Request $r) {
-        abort_unless(AndarmaAccess::can($r->user(),'users.view') || AndarmaAccess::can($r->user(),'users.create') || AndarmaAccess::can($r->user(),'users.edit'),403);
+        $this->super($r);
         $q=DB::table('andarma_roles')->select('id','name','slug')->orderBy('name');
         if (!AndarmaAccess::isSuperadmin($r->user())) $q->where('slug','!=','superadmin');
         return response()->json(['data'=>$q->get()]);

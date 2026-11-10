@@ -88,7 +88,12 @@ class AndarmaClientsController extends Controller {
   });
  }
  public function destroy(int $id){return DB::transaction(function()use($id){$c=DB::table('andarma_clients')->where('id',$id)->lockForUpdate()->first();abort_unless($c,404);
-  if(DB::table('andarma_lots')->where('client_id',$id)->exists()||DB::table('andarma_client_payments')->where('client_id',$id)->exists())return response()->json(['message'=>'No se puede eliminar un cliente con propiedades o pagos. Desactívalo para conservar el historial.'],409);
+  // ANDARMA_FASE2_INTEGRIDAD_V1: conservar contratos y trazabilidad histórica.
+  if(DB::table('andarma_lots')->where('client_id',$id)->exists()
+    || DB::table('andarma_client_payments')->where('client_id',$id)->exists()
+    || DB::table('andarma_lot_financing')->where('client_id',$id)->exists()
+    || DB::table('andarma_client_audit')->where('client_id',$id)->exists())
+      return response()->json(['message'=>'El cliente tiene propiedades, contratos, pagos o historial. Desactívalo para conservar su expediente.'],409);
   DB::table('andarma_clients')->where('id',$id)->delete();return response()->json(['message'=>'Cliente eliminado.']);});}
  public function convert(Request $request,int $leadId){$request->validate([]);
   return DB::transaction(function()use($leadId){$lead=DB::table('andarma_leads')->where('id',$leadId)->lockForUpdate()->first();abort_unless($lead,404);
@@ -101,9 +106,16 @@ class AndarmaClientsController extends Controller {
  }
  public function availableLots(){return response()->json(['data'=>DB::table('andarma_lots as l')->join('andarma_developments as d','d.id','=','l.development_id')->whereNull('l.client_id')->whereIn('l.status',['available','reserved'])->select('l.id','l.code','l.status','l.price','d.name as development_name')->orderBy('d.name')->orderBy('l.code')->limit(500)->get()]);}
  public function assignLot(Request $request,int $id){$data=$request->validate(['lot_id'=>'required|integer|exists:andarma_lots,id','status'=>['required',Rule::in(['reserved','sold'])]]);
-  return DB::transaction(function()use($id,$data){abort_unless(DB::table('andarma_clients')->where('id',$id)->exists(),404);
+  return DB::transaction(function()use($id,$data){
+   // ANDARMA_FASE2_INTEGRIDAD_V1: cliente activo y bloqueo del terreno durante la asignación.
+   $client=DB::table('andarma_clients')->where('id',$id)->lockForUpdate()->first(['id','status']);
+   abort_unless($client,404);
+   if($client->status!=='active')return response()->json(['message'=>'No se pueden asignar propiedades a un cliente inactivo.'],409);
    $lot=DB::table('andarma_lots')->where('id',$data['lot_id'])->lockForUpdate()->first();abort_unless($lot,404);
    if($lot->client_id!==null||!in_array($lot->status,['available','reserved'],true))return response()->json(['message'=>'Esta propiedad ya fue asignada o no está disponible.'],409);
+   if(DB::table('andarma_lot_financing')->where('lot_id',$lot->id)->exists()
+      || DB::table('andarma_client_payments')->where('lot_id',$lot->id)->exists())
+      return response()->json(['message'=>'El terreno conserva un financiamiento o pagos anteriores. Requiere conciliación antes de reasignar.'],409);
    DB::table('andarma_lots')->where('id',$lot->id)->update(['client_id'=>$id,'status'=>$data['status'],'updated_at'=>now()]);
    $this->auditChange('lot.assigned',$id,(int)$lot->id,[
     'previous_client_id'=>$lot->client_id,'new_client_id'=>$id,
@@ -113,6 +125,8 @@ class AndarmaClientsController extends Controller {
   });
  }
  public function releaseLot(int $id,int $lotId){return DB::transaction(function()use($id,$lotId){$lot=DB::table('andarma_lots')->where('id',$lotId)->lockForUpdate()->first();abort_unless($lot&& (int)$lot->client_id===$id,404);
+  // ANDARMA_FASE1_PREPROD_V1: conservar contrato de financiamiento aunque aun no existan pagos.
+  if(DB::table('andarma_lot_financing')->where('lot_id',$lotId)->exists())return response()->json(['message'=>'No se puede liberar una propiedad con financiamiento registrado.'],409);
   if(DB::table('andarma_client_payments')->where('lot_id',$lotId)->exists())return response()->json(['message'=>'No se puede liberar una propiedad con pagos registrados.'],409);
   DB::table('andarma_lots')->where('id',$lotId)->update(['client_id'=>null,'status'=>'available','updated_at'=>now()]);
   $this->auditChange('lot.released',$id,$lotId,[

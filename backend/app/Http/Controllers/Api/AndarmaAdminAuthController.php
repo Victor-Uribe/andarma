@@ -19,8 +19,9 @@ class AndarmaAdminAuthController extends Controller {
     if (!$user || !$user->is_andarma_admin || !$user->andarma_enabled || !$user->andarma_role_id || !Hash::check($data['password'],$user->password))
         return response()->json(['message'=>'Credenciales incorrectas o sin autorización.'],401);
     // ANDARMA_FASE17_TOKEN_SEGURO: solo tokens nuevos de este administrador.
+    // ANDARMA_FASE1_PREPROD_V1: config() respeta la cache de configuracion.
     // Duracion configurable por entorno, limitada a un rango seguro de 1 a 168 horas.
-    $hours = max(1, min(168, (int) env('ANDARMA_ADMIN_TOKEN_HOURS', 12)));
+    $hours = max(1, min(168, (int) config('andarma.admin_token_hours', 12)));
     $token = $user->createToken('andarma-admin', ['*'], now()->addHours($hours));
     return response()->json(['token'=>$token->plainTextToken,'user'=>$this->identity($user)]);
   }

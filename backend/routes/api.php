@@ -57,12 +57,13 @@ Route::delete('/clients/{id}/lots/{lotId}',[\App\Http\Controllers\Api\AndarmaCli
 Route::post('/leads/{leadId}/convert',[\App\Http\Controllers\Api\AndarmaClientsController::class,'convert'])->whereNumber('leadId');
 // ANDARMA_CLIENTES_V30_END
     Route::post('/banners/reorder',[Admin::class,'reorderBanners']);
-    Route::get('/{resource}',[Admin::class,'index'])->where('resource','banners|developments|lots|testimonials|leads');
-    Route::post('/{resource}',[Admin::class,'store'])->where('resource','banners|developments|lots|testimonials|leads');
-    Route::put('/{resource}/{id}',[Admin::class,'update'])->where('resource','banners|developments|lots|testimonials|leads')->whereNumber('id');
-    Route::delete('/{resource}/{id}',[Admin::class,'destroy'])->where('resource','banners|developments|lots|testimonials|leads')->whereNumber('id');
+    Route::get('/{resource}',[Admin::class,'index'])->where('resource','banners|developments|testimonials|leads');
+    Route::post('/{resource}',[Admin::class,'store'])->where('resource','banners|testimonials|leads');
+    Route::put('/{resource}/{id}',[Admin::class,'update'])->where('resource','banners|testimonials|leads')->whereNumber('id');
+    Route::delete('/{resource}/{id}',[Admin::class,'destroy'])->where('resource','banners|testimonials|leads')->whereNumber('id');
 });
 
+// ANDARMA_FASE1_PREPROD_V1: las rutas CRUD heredadas ya no escriben terrenos ni desarrollos.
 // ANDARMA V35: rutas protegidas de Propiedades y Mapas
 require __DIR__.'/andarma_maps_v35.php';
 

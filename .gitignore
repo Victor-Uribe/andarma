@@ -56,3 +56,12 @@ Thumbs.db
 .vscode/
 frontend/node_modules/
 backend/vendor/
+
+# ANDARMA_FASE1_PREPROD_V1 - Respaldos de scripts locales
+.andarma_respaldo_*/
+*.bak_*
+
+/frontend/dist/
+
+# ANDARMA_FASE9_ARCHIVOS_LOCALES
+/ANDARMA_Fase6_Documentos_Revision/

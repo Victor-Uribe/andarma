@@ -208,10 +208,11 @@ class AndarmaFinanceController extends Controller
     public function saveTerms(Request $request, int $lotId)
     {
         $d = $request->validate([
-            'sale_price' => 'required|numeric|gt:0|max:9999999999',
-            'discount_amount' => 'required|numeric|min:0',
-            'down_payment_amount' => 'required|numeric|min:0',
-            'monthly_payment_amount' => 'required|numeric|min:0',
+            // ANDARMA_FASE2_INTEGRIDAD_V1: los importes no admiten fracciones de centavo.
+        'sale_price' => 'required|numeric|decimal:0,2|gt:0|max:9999999999',
+        'discount_amount' => 'required|numeric|decimal:0,2|min:0',
+        'down_payment_amount' => 'required|numeric|decimal:0,2|min:0',
+        'monthly_payment_amount' => 'required|numeric|decimal:0,2|min:0',
             'payment_due_day' => 'required|integer|between:1,31',
             'first_payment_period' => 'nullable|date_format:Y-m',
             'sale_date' => 'nullable|date_format:Y-m-d',
@@ -254,7 +255,8 @@ class AndarmaFinanceController extends Controller
     public function storePayment(Request $request, int $lotId)
     {
         $d = $request->validate([
-            'paid_at' => 'required|date_format:Y-m-d', 'amount' => 'required|numeric|gt:0|max:9999999999',
+            // ANDARMA_FASE2_INTEGRIDAD_V1: no registrar pagos inferiores a un centavo o con más de 2 decimales.
+            'paid_at' => 'required|date_format:Y-m-d', 'amount' => 'required|numeric|decimal:0,2|min:0.01|max:9999999999',
             'payment_type' => ['required', Rule::in(['monthly', 'down_payment'])],
             'applied_period' => 'nullable|date_format:Y-m',
             'payment_method' => ['required', Rule::in(['cash', 'transfer', 'deposit', 'card', 'other'])],
@@ -280,7 +282,12 @@ class AndarmaFinanceController extends Controller
             $amount = $this->cents($d['amount']);
             $existing = DB::table('andarma_client_payments')->where('request_key', $d['request_key'])->first();
             if ($existing) {
-                if ((int) $existing->lot_id !== $lotId || $existing->payment_type !== $d['payment_type']
+                if ((int) $existing->lot_id !== $lotId || (int) $existing->client_id !== (int) $lot->client_id
+                    || $existing->payment_type !== $d['payment_type']
+                    || $existing->payment_method !== $d['payment_method']
+                    || (string)($existing->reference??'') !== (string)($d['reference']??'')
+                    || (string)($existing->folio??'') !== (string)($d['folio']??'')
+                    || (string)($existing->notes??'') !== (string)($d['notes']??'')
                     || (int) round((float) $existing->amount * 100) !== $amount
                     || substr((string) $existing->paid_at, 0, 10) !== $d['paid_at']
                     || ($d['payment_type'] === 'monthly' && substr((string) $existing->applied_period, 0, 7) !== $d['applied_period'])

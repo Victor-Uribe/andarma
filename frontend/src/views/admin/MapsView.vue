@@ -239,16 +239,17 @@ onMounted(async()=>{await loadList();if(route.params.id)await openPlan(route.par
         </form>
         <div class="ad-maplot-v9-client">
           <span class="ad-maplot-v9-avatar"><i class="fa-solid fa-user" aria-hidden="true"></i></span>
+          <!-- ANDARMA_FASE1_PREPROD_V1 -->
           <div class="ad-maplot-v9-client-copy">
             <small>Comprador / titular</small>
-            <strong v-if="selected.client_id && can('clients.view')">{{selected.buyer_name||'Cliente asignado'}}</strong>
-            <strong v-else-if="selected.client_id">Propiedad asignada</strong>
+            <strong v-if="selected.has_buyer && can('clients.view')">{{selected.buyer_name||'Cliente asignado'}}</strong>
+            <strong v-else-if="selected.has_buyer">Propiedad asignada</strong>
             <strong v-else>Sin comprador asignado</strong>
-            <small v-if="selected.client_id && can('clients.view') && selected.buyer_phone">{{selected.buyer_phone}}</small>
+            <small v-if="selected.has_buyer && can('clients.view') && selected.buyer_phone">{{selected.buyer_phone}}</small>
           </div>
           <div class="ad-maplot-v9-client-actions">
-            <button v-if="selected.client_id && can('clients.view')" class="ad-btn" type="button" @click="router.push({path:'/admin/clientes',query:{client:selected.client_id}})"><i class="fa-solid fa-address-card"></i> Ver expediente</button>
-            <button v-if="selected.client_id && can('payments.view')" class="ad-btn ad-btn--primary" type="button" @click="router.push({path:'/admin/pagos',query:{lot:selected.lot_id}})"><i class="fa-solid fa-wallet"></i> Estado de cuenta</button>
+            <button v-if="selected.has_buyer && can('clients.view')" class="ad-btn" type="button" @click="router.push({path:'/admin/clientes',query:{client:selected.client_id}})"><i class="fa-solid fa-address-card"></i> Ver expediente</button>
+            <button v-if="selected.has_buyer && can('payments.view')" class="ad-btn ad-btn--primary" type="button" @click="router.push({path:'/admin/pagos',query:{lot:selected.lot_id}})"><i class="fa-solid fa-wallet"></i> Estado de cuenta</button>
           </div>
         </div>
       </div>
