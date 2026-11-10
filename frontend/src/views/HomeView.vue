@@ -174,25 +174,25 @@ onBeforeUnmount(() => {
 </div>
 <main>
 <AndarmaPublicNavbar />
-<section aria-label="ANDARMA, proyectos inmobiliarios" class="hero" id="inicio">
-<div aria-hidden="false" class="hero-slide active"><img alt="Arquitectura residencial contemporánea con espacios amplios" class="hero-image" decoding="async" fetchpriority="high" loading="eager" src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&amp;fit=crop&amp;w=2400&amp;q=85"/><div class="hero-shade"></div></div>
-<div aria-hidden="true" class="hero-slide"><img alt="Residencia de arquitectura moderna rodeada de jardines" class="hero-image" decoding="async" loading="lazy" src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&amp;fit=crop&amp;w=2400&amp;q=85"/><div class="hero-shade"></div></div>
-<div aria-hidden="true" class="hero-slide"><img alt="Interior residencial cálido con diseño contemporáneo" class="hero-image" decoding="async" loading="lazy" src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&amp;fit=crop&amp;w=2400&amp;q=85"/><div class="hero-shade"></div></div>
-<div aria-hidden="true" class="grid-texture"></div><div aria-hidden="true" class="corner-light"></div>
+<section aria-label="ANDARMA, proyectos inmobiliarios" class="hero ad-showreel" id="inicio">
+<div aria-hidden="false" class="hero-slide active"><img alt="Arquitectura residencial contemporánea" class="hero-image" decoding="async" fetchpriority="high" loading="eager" src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&amp;fit=crop&amp;w=2400&amp;q=85"/><div class="hero-shade"></div></div>
+<div aria-hidden="true" class="hero-slide"><img alt="Arquitectura y entorno natural" class="hero-image" decoding="async" loading="lazy" src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&amp;fit=crop&amp;w=2400&amp;q=85"/><div class="hero-shade"></div></div>
+<div aria-hidden="true" class="hero-slide"><img alt="Diseño interior contemporáneo" class="hero-image" decoding="async" loading="lazy" src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&amp;fit=crop&amp;w=2400&amp;q=85"/><div class="hero-shade"></div></div>
 <div class="hero-inner">
-<div aria-hidden="true" class="editorial-index"><span class="editorial-rule"></span><span class="ml-4">UNA NUEVA FORMA DE HABITAR</span><span class="editorial-coordinate ml-4">ANDARMA ® / MÉXICO</span></div>
-<div aria-atomic="true" aria-live="polite" class="hero-content">
-<div class="editorial-copy">
-<div class="copy-main"><p class="hero-desc" data-andarma-content="inicio.p.1" id="heroDescription">El comienzo de una gran historia merece el lugar correcto. Descubre espacios pensados para construir tu futuro.</p></div>
-<a class="primary-cta" href="/desarrollos" id="heroCta"><span>Explorar desarrollos</span><i aria-hidden="true" class="fa-solid fa-arrow-up-right-from-square"></i></a>
+  <div class="hero-content" aria-live="polite" aria-atomic="true">
+    <p class="hero-slide-label eyebrow"><span id="heroEyebrow">ANDARMA / UNA NUEVA VISIÓN</span></p>
+    <div class="editorial-headline"><h1 class="hero-title" id="heroTitle"><span class="title-line">Aquí empieza</span><span class="title-line title-line--shift accent">lo que sigue.</span></h1></div>
+    <div class="editorial-copy"><div class="copy-main"><p class="hero-desc" id="heroDescription">El comienzo de una gran historia merece el lugar correcto. Descubre espacios pensados para construir tu futuro.</p></div><a class="primary-cta" href="/desarrollos" id="heroCta"><span>Explorar desarrollos</span><i aria-hidden="true" class="fa-solid fa-arrow-up-right-from-square"></i></a></div>
+  </div>
 </div>
-<div class="editorial-headline"><span class="headline-overline">EL FUTURO NO SE ESPERA. SE CONSTRUYE.</span><h1 class="hero-title" id="heroTitle"><span class="title-line">Aquí empieza</span><span class="title-line title-line--shift accent">lo que sigue.</span></h1><span class="headline-foot">ANDARMA / DISEÑANDO POSIBILIDADES</span></div>
-</div>
-</div>
-<div aria-label="Categoría de la escena" class="hero-slide-label eyebrow"><span aria-hidden="true" class="line"></span><span id="heroEyebrow">ANDARMA / UNA NUEVA VISIÓN</span></div>
-<div aria-hidden="true" class="hero-tag">ARQUITECTURA · VISIÓN · FUTURO</div>
-<div aria-hidden="true" class="side-metadata"><span>ESPACIOS CON PROPÓSITO</span><p>Una visión inmobiliaria<br/>para nuevas historias.</p></div>
-<div class="hero-bottom"><div class="hero-bottom-inner"><div aria-label="Diapositiva actual" class="slide-counter"><span class="slide-current" id="slideCurrent">01</span><span class="slide-total">/ 03</span></div><div aria-hidden="true" class="progress-rail"><div class="progress-bar" id="progressBar"></div></div><div class="slide-nav"><button aria-label="Imagen anterior" id="prevSlide" type="button"><i aria-hidden="true" class="fa-solid fa-arrow-left"></i></button><button aria-label="Imagen siguiente" id="nextSlide" type="button"><i aria-hidden="true" class="fa-solid fa-arrow-right"></i></button></div><a class="scroll-hint" href="#nosotros">Desliza para descubrir <i aria-hidden="true" class="fa-solid fa-arrow-down-long"></i></a></div></div>
+<nav class="ad-showreel__controls" aria-label="Controles del banner">
+  <span class="ad-showreel__rail-label">PROYECTOS / ANDARMA</span>
+  <span class="ad-showreel__position" aria-label="Diapositiva actual"><span class="slide-current" id="slideCurrent">01</span><span class="slide-total">/ 03</span></span>
+  <div class="ad-showreel__progress" aria-hidden="true"><span id="progressBar"></span></div>
+  <div class="ad-showreel__arrows"><button type="button" id="prevSlide" aria-label="Diapositiva anterior"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i></button><button type="button" id="nextSlide" aria-label="Diapositiva siguiente"><i class="fa-solid fa-arrow-down" aria-hidden="true"></i></button></div>
+  <button type="button" id="heroPause" class="ad-showreel__pause" aria-label="Pausar reproducción automática" aria-pressed="false"><i class="fa-solid fa-pause" aria-hidden="true"></i><span class="ad-showreel__pause-text">Pausar</span></button>
+</nav>
+<a class="ad-showreel__scroll" href="#nosotros">DESCUBRE ANDARMA <i class="fa-solid fa-arrow-down-long" aria-hidden="true"></i></a>
 </section><span aria-hidden="true" class="ad-showcase__anchor" id="desarrollos"></span><section aria-label="Conoce ANDARMA y nuestros desarrollos" class="ad-showcase" id="nosotros">
 <div class="ad-showcase__shell">
 <header class="ad-showcase__top">

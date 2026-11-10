@@ -62,7 +62,7 @@ import '../../assets/andarma-fase4a-v2-hero-editorial.css'
         <h1 class="ad4a-hero__title">{{ development?.name || 'Nuestros desarrollos' }}</h1>
         <span class="ad4a-hero__rule" aria-hidden="true"></span>
         <p class="ad4a-hero__description">{{ development?.description || 'Conoce nuestro desarrollo y explora los terrenos disponibles.' }}</p>
-        <a class="primary-cta mt-5" href="#mapa-de-terrenos">
+        <a class="ad4a-hero__cta" href="#mapa-de-terrenos">
           <span>Explorar terrenos</span>
           <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
         </a>

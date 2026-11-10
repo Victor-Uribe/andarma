@@ -77,6 +77,7 @@ window.addEventListener('andarma:mounted',()=>{
   const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let active=0,locked=false,autoTimer=null,progressTween=null;
   const duration=6.5;
+  let paused=false;
   function fillContent(index){
     const d=slides[index];
     eyebrow.textContent=d.eyebrow;title.innerHTML=d.title;desc.textContent=d.description;
@@ -93,7 +94,7 @@ window.addEventListener('andarma:mounted',()=>{
     }
   }
   fillContent(0);
-  function schedule(){clearTimeout(autoTimer);if(progressTween)progressTween.kill();if(document.hidden||reduce)return;if(typeof gsap!=='undefined'){gsap.set(progress,{width:'0%'});progressTween=gsap.to(progress,{width:'100%',duration,ease:'none'});}autoTimer=setTimeout(()=>goTo((active+1)%slides.length),duration*1000);}
+  function schedule(){clearTimeout(autoTimer);if(progressTween)progressTween.kill();if(document.hidden||reduce||paused||slides.length<2)return;if(typeof gsap!=='undefined'){gsap.set(progress,{height:'0%',width:'100%'});progressTween=gsap.to(progress,{height:'100%',duration,ease:'none'});}autoTimer=setTimeout(()=>goTo((active+1)%slides.length),duration*1000);}
   function goTo(next){if(locked||next===active)return;locked=true;clearTimeout(autoTimer);if(progressTween)progressTween.kill();const prev=panels[active],incoming=panels[next];const old=active;active=next;incoming.style.visibility='visible';incoming.setAttribute('aria-hidden','false');
     if(reduce||typeof gsap==='undefined'){prev.classList.remove('active');prev.setAttribute('aria-hidden','true');incoming.classList.add('active');fillContent(next);locked=false;schedule();return;}
     gsap.killTweensOf([prev,incoming,prev.querySelector('img'),incoming.querySelector('img'),eyebrow,title,desc,cta]);
@@ -107,6 +108,22 @@ window.addEventListener('andarma:mounted',()=>{
   }
   document.querySelector('#prevSlide').addEventListener('click',()=>goTo((active-1+slides.length)%slides.length));
   document.querySelector('#nextSlide').addEventListener('click',()=>goTo((active+1)%slides.length));
+
+  // ANDARMA_SHOWREEL_EDITORIAL_V2: pausa/reanuda de verdad, no solo icono.
+  const pauseControl=document.querySelector('#heroPause');
+  if(pauseControl){
+    pauseControl.addEventListener('click',()=>{
+      paused=!paused;
+      pauseControl.setAttribute('aria-pressed',String(paused));
+      pauseControl.setAttribute('aria-label',paused?'Reanudar reproducción automática':'Pausar reproducción automática');
+      const ico=pauseControl.querySelector('i');
+      if(ico)ico.className=paused?'fa-solid fa-play':'fa-solid fa-pause';
+      const lbl=pauseControl.querySelector('.ad-showreel__pause-text');
+      if(lbl)lbl.textContent=paused?'Reanudar':'Pausar';
+      if(paused){clearTimeout(autoTimer);if(progressTween)progressTween.pause();}
+      else schedule();
+    });
+  }
   const toggle=document.querySelector('#menuToggle'),mobile=document.querySelector('#mobileNav');toggle.addEventListener('click',()=>{const isOpen=mobile.classList.toggle('open');toggle.setAttribute('aria-expanded',String(isOpen));toggle.setAttribute('aria-label',isOpen?'Cerrar menú':'Abrir menú');toggle.querySelector('i').className=isOpen?'fa-solid fa-xmark':'fa-solid fa-bars';});mobile.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{mobile.classList.remove('open');toggle.setAttribute('aria-expanded','false');toggle.setAttribute('aria-label','Abrir menú');toggle.querySelector('i').className='fa-solid fa-bars';}));
   document.addEventListener('keydown',(event)=>{if(event.key==='Escape'&&mobile.classList.contains('open')){mobile.classList.remove('open');toggle.setAttribute('aria-expanded','false');toggle.setAttribute('aria-label','Abrir menú');toggle.querySelector('i').className='fa-solid fa-bars';toggle.focus();}});
   document.addEventListener('click',(event)=>{if(mobile.classList.contains('open')&&!mobile.contains(event.target)&&!toggle.contains(event.target)){mobile.classList.remove('open');toggle.setAttribute('aria-expanded','false');toggle.setAttribute('aria-label','Abrir menú');toggle.querySelector('i').className='fa-solid fa-bars';}});

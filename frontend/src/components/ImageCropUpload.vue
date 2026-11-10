@@ -28,8 +28,11 @@ const exportInfo=computed(()=>{
   const g=geometry()
   const nativeCropW=Math.round(g.w*im.naturalWidth/g.dw)
   const nativeCropH=Math.round(g.h*im.naturalHeight/g.dh)
-  const targetW=props.ratio>=1.65?1920:props.ratio>=1.2?1600:1200
-  const targetH=Math.round(targetW/props.ratio)
+  // ANDARMA_NATIVE_RES_EXPORT_V3: no escalar el recorte por encima de sus píxeles reales.
+  // El tamaño máximo se adapta a cada formato, pero se limita al detalle nativo útil.
+  const maxW=props.ratio>=1.65?1920:props.ratio>=1.2?1600:1200
+  const targetW=Math.max(1,Math.floor(Math.min(maxW,nativeCropW,nativeCropH*props.ratio)))
+  const targetH=Math.max(1,Math.round(targetW/props.ratio))
   return {sourceW:im.naturalWidth,sourceH:im.naturalHeight,
     nativeCropW,nativeCropH,targetW,targetH,lowResolution:nativeCropW<targetW||nativeCropH<targetH}
 })
