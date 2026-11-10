@@ -61,8 +61,8 @@
 
 window.addEventListener('andarma:mounted',()=>{
   const slides=[
-    {eyebrow:'ANDARMA / UNA NUEVA VISIÓN',title:'<span class="title-line">Aquí empieza</span><span class="title-line title-line--shift accent">lo que sigue.</span>',description:'El comienzo de una gran historia merece el lugar correcto. Descubre espacios pensados para construir tu futuro.',cta:'Explorar desarrollos',href:'#desarrollos'},
-    {eyebrow:'ANDARMA / DESARROLLOS',title:'<span class="title-line">Tu próximo</span><span class="title-line title-line--shift accent">gran capítulo.</span>',description:'Terrenos y proyectos inmobiliarios para visualizar el futuro que quieres construir, paso a paso.',cta:'Conocer proyectos',href:'#desarrollos'},
+    {eyebrow:'ANDARMA / UNA NUEVA VISIÓN',title:'<span class="title-line">Aquí empieza</span><span class="title-line title-line--shift accent">lo que sigue.</span>',description:'El comienzo de una gran historia merece el lugar correcto. Descubre espacios pensados para construir tu futuro.',cta:'Explorar desarrollos',href:'/desarrollos'},
+    {eyebrow:'ANDARMA / DESARROLLOS',title:'<span class="title-line">Tu próximo</span><span class="title-line title-line--shift accent">gran capítulo.</span>',description:'Terrenos y proyectos inmobiliarios para visualizar el futuro que quieres construir, paso a paso.',cta:'Conocer proyectos',href:'/desarrollos'},
     {eyebrow:'ANDARMA / TU PRÓXIMA ETAPA',title:'<span class="title-line">Un lugar.</span><span class="title-line title-line--shift accent">Mil posibilidades.</span>',description:'Conoce nuestras alternativas inmobiliarias y recibe orientación para dar el siguiente paso con confianza.',cta:'Hablar con nosotros',href:'#contacto'}
   ];
   // ANDARMA_V41: los textos de cada diapositiva se leen del administrador cuando existen.

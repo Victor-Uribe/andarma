@@ -1,4 +1,5 @@
 import { createRouter,createWebHistory } from 'vue-router'
+import { installAndarmaSeo } from '../utils/andarmaPublicSeo'
 import { getToken,api,setToken } from '../services/api'
 import {setAccess,clearAccess,can} from '../utils/andarmaPermissions'
 const routes=[
@@ -33,6 +34,7 @@ const routes=[
  {path:'/:pathMatch(.*)*',redirect:'/'}
 ]
 const router=createRouter({history:createWebHistory(),routes,scrollBehavior(to){if(to.hash)return {el:to.hash,behavior:'smooth'}; return {top:0}}})
+installAndarmaSeo(router)
 router.beforeEach(async to=>{
  if(to.meta.requiresAuth){
    if(!getToken()) return {name:'login',query:{redirect:to.fullPath}}

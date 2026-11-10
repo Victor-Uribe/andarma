@@ -1,0 +1,249 @@
+/* ANDARMA | FASE 2B | COMPOSICION INTEGRAL PUBLICA
+   Encima de la Fase 2A; solo composicion, espaciados y ritmo entre secciones.
+   No usar para modificar hero #inicio, indicadores V6, SVG, poligonos, filtros,
+   funciones de mapas, administracion ni contenido del CMS.
+*/
+:root {
+  --ad2b-width: 1480px;
+  --ad2b-edge: clamp(20px, 4.5vw, 84px);
+  --ad2b-space: clamp(76px, 8vw, 128px);
+  --ad2b-line: #dce7f2;
+  --ad2b-ink: #092c5b;
+  --ad2b-muted: #4d647e;
+  --ad2b-surface: #f5f9fe;
+}
+
+/* 01 | ACERCA DE / NUESTROS DESARROLLOS: reticula editorial real.
+   Mantener las dos escenas del carrusel y todos sus textos; no tocar su JS. */
+#nosotros.ad-showcase {
+  padding: var(--ad2b-space) var(--ad2b-edge) clamp(48px, 5vw, 80px);
+  background: linear-gradient(180deg, #f5f9ff 0%, #ffffff 100%);
+}
+#nosotros .ad-showcase__shell { width: 100%; max-width: var(--ad2b-width); margin-inline: auto; }
+#nosotros .ad-showcase__top { gap: clamp(16px, 3vw, 42px); }
+#nosotros .ad-showcase__intro {
+  grid-template-columns: minmax(0, 1.15fr) minmax(250px, .85fr);
+  gap: clamp(30px, 5vw, 90px);
+  align-items: end;
+  margin-bottom: clamp(34px, 4vw, 64px);
+}
+#nosotros .ad-showcase__intro-title { max-width: 16ch; }
+#nosotros .ad-showcase__intro-copy { max-width: 51ch; min-width: 0; }
+#nosotros .ad-showcase__slides { min-width: 0; }
+#nosotros .ad-showcase__slide {
+  box-sizing: border-box;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 1.16fr) minmax(235px, .76fr);
+  min-height: clamp(655px, 53vw, 810px);
+}
+#nosotros .ad-showcase__copy {
+  min-width: 0;
+  padding: clamp(34px, 3.8vw, 62px) clamp(26px, 3.3vw, 54px);
+  gap: 0;
+}
+#nosotros .ad-showcase__story { min-width: 0; max-width: 54ch; }
+#nosotros .ad-showcase__fact { max-width: 54ch; }
+#nosotros .ad-showcase__media { min-width: 0; overflow: hidden; }
+#nosotros .ad-showcase__image { object-fit: cover; object-position: center; }
+#nosotros .ad-showcase__sidebar { min-width: 0; }
+#nosotros .ad-showcase__sidebar :is(h3, p, a, strong, small) { overflow-wrap: anywhere; }
+#nosotros .ad-showcase__bottom { min-height: 64px; }
+
+/* 02 | VIVIENDAS Y TERRENOS: conservar las dos fotos y el recorte diagonal.
+   Evita desborde de contenido y mejora lectura sobre fotografia. */
+#opciones.choice-duo { width: 100%; min-height: clamp(560px, 46vw, 740px); }
+#opciones .choice-panel { box-sizing: border-box; min-width: 0; }
+#opciones .choice-content { min-width: 0; max-width: min(100%, 555px); }
+#opciones .choice-title { max-width: 15ch; margin-bottom: 20px; }
+#opciones .choice-description { max-width: 45ch; margin-bottom: 28px; }
+#opciones .choice-panel::after {
+  background: linear-gradient(180deg, rgba(2, 15, 36, .1) 0%, rgba(2, 15, 36, .18) 29%, rgba(2, 15, 36, .88) 100%);
+}
+#opciones .choice-action { max-width: min(100%, 350px); }
+
+/* 03 | POR QUE ANDARMA: contenido legible antes que efectos decorativos. */
+#por-que-andarma.why-andarma {
+  box-sizing: border-box;
+  padding: var(--ad2b-space) var(--ad2b-edge);
+}
+#por-que-andarma .why-shell { max-width: var(--ad2b-width); margin-inline: auto; }
+#por-que-andarma .why-heading {
+  column-gap: clamp(38px, 5vw, 95px);
+  row-gap: 26px;
+  align-items: end;
+  margin-bottom: clamp(44px, 5vw, 78px);
+}
+#por-que-andarma .why-title { max-width: 16ch; }
+#por-que-andarma .why-intro { max-width: 51ch; }
+#por-que-andarma .why-benefits { gap: clamp(14px, 2.2vw, 32px); }
+#por-que-andarma .why-benefit { min-width: 0; }
+#por-que-andarma .why-benefit p { overflow-wrap: normal; }
+
+/* 04 | COMO COMPRAR: respiracion consistente; sin reordenar pasos o cambiar datos. */
+#como-comprar.purchase {
+  box-sizing: border-box;
+  padding: var(--ad2b-space) var(--ad2b-edge);
+  background: linear-gradient(180deg, #f6faff 0%, #ffffff 65%);
+}
+#como-comprar .purchase-container { max-width: var(--ad2b-width); margin-inline: auto; }
+#como-comprar .purchase-top {
+  grid-template-columns: minmax(0, 1.08fr) minmax(250px, .92fr);
+  column-gap: clamp(30px, 5vw, 90px);
+  row-gap: 24px;
+  align-items: end;
+  margin-bottom: clamp(44px, 5.5vw, 78px);
+}
+#como-comprar .purchase-heading { max-width: 17ch; }
+#como-comprar .purchase-intro { max-width: 50ch; }
+#como-comprar .purchase-step { min-width: 0; }
+#como-comprar .purchase-step h3 { overflow-wrap: normal; }
+#como-comprar .purchase-foot { max-width: 100%; }
+
+/* 05 | TESTIMONIOS: rejilla editorial, imagen proporcionada, control accesible.
+   No alterar flex-basis, scrollLeft, translateX ni el JS del carrusel. */
+#testimonios.stories {
+  padding: var(--ad2b-space) var(--ad2b-edge);
+  background: #ffffff;
+}
+#testimonios .stories-shell {
+  max-width: var(--ad2b-width);
+  margin-inline: auto;
+  grid-template-columns: minmax(250px, .30fr) minmax(0, .70fr);
+  gap: clamp(32px, 5vw, 74px);
+}
+#testimonios .stories-heading { min-width: 0; padding-top: 8px; }
+#testimonios .stories-title { max-width: 12ch; }
+#testimonios .stories-subnote { max-width: 39ch; }
+#testimonios .stories-right { min-width: 0; }
+#testimonios .stories-toolbar { margin-bottom: 20px; }
+#testimonios .story-photo { height: clamp(155px, 15vw, 205px); object-fit: cover; }
+#testimonios .story-content { min-width: 0; }
+#testimonios .story-quote { overflow-wrap: break-word; }
+#testimonios .story-person { min-width: 0; }
+#testimonios .stories-note { max-width: 80ch; }
+
+/* 06 | CONTACTO: la accion debe destacar sin tapar el encuadre de la foto.
+   No cambiar clip-path, JS de revelado ni posicion de la foto. */
+#contacto.contact-feature { box-sizing: border-box; }
+#contacto .contact-feature__shell {
+  box-sizing: border-box;
+  width: 100%; max-width: var(--ad2b-width);
+  margin-inline: auto; padding-inline: var(--ad2b-edge);
+}
+#contacto .contact-feature__copy { width: 100%; max-width: 600px; min-width: 0; }
+#contacto .contact-feature__title { max-width: 15ch; }
+#contacto .contact-feature__intro { max-width: 51ch; }
+#contacto .contact-feature__cta { max-width: min(100%, 365px); }
+#contacto .contact-feature__note { max-width: 55ch; overflow-wrap: break-word; }
+
+/* 07 | FOOTER: columnas equilibradas y separacion clara de navegacion/legal. */
+#pie-de-pagina.ad-footer { box-sizing: border-box; }
+#pie-de-pagina .ad-footer__inner {
+  width: 100%; max-width: var(--ad2b-width);
+  margin-inline: auto;
+  padding: clamp(62px, 6vw, 92px) var(--ad2b-edge) 28px;
+}
+#pie-de-pagina .ad-footer__grid {
+  grid-template-columns: minmax(260px, 1.45fr) repeat(3, minmax(130px, .75fr));
+  column-gap: clamp(28px, 4vw, 68px);
+  row-gap: 42px;
+  align-items: start;
+}
+#pie-de-pagina .ad-footer__identity { min-width: 0; }
+#pie-de-pagina .ad-footer__description { max-width: 49ch; }
+#pie-de-pagina .ad-footer__links { min-width: 0; }
+#pie-de-pagina :is(.ad-footer__links a, .ad-footer__links button) {
+  max-width: 100%; overflow-wrap: break-word; text-align: left;
+}
+#pie-de-pagina .ad-footer__base { row-gap: 22px; }
+
+/* 08 | DESARROLLOS Y MAPA: ajustar encabezados y marco SIN alterar SVG,
+   geomatria del plano, dimensiones del canvas o coordenadas de terrenos. */
+.adp-map-page #mapa-de-terrenos.adp-map-page__content { isolation: isolate; }
+.adp-map-page #mapa-de-terrenos .ad3l-map { max-width: 1600px; }
+.adp-map-page #mapa-de-terrenos .ad3l-intro { min-width: 0; }
+.adp-map-page #mapa-de-terrenos .ad3l-intro__grid > :is(h2, p) { min-width: 0; }
+.adp-map-page #mapa-de-terrenos .ad3l-story { box-sizing: border-box; }
+.adp-map-page #mapa-de-terrenos .ad3l-center { min-width: 0; }
+.adp-map-page #mapa-de-terrenos .ad3l-sidebar { min-width: 0; }
+.adp-map-page #mapa-de-terrenos .ad3l-sidebar :is(h3, p, dd) { overflow-wrap: anywhere; }
+.adp-map-page .adp-map-bottom { gap: clamp(20px, 4vw, 65px); align-items: center; }
+.adp-map-page .adp-map-bottom > :first-child { min-width: 0; }
+
+/* 09 | TABLET: la tercera columna de la escena editorial pasa abajo.
+   Preservar el mismo orden: texto, imagen, lateral. */
+@media (max-width: 1310px) and (min-width: 901px) {
+  #nosotros .ad-showcase__slide {
+    grid-template-columns: minmax(0, 1.04fr) minmax(0, 1fr);
+    min-height: 0;
+  }
+  #nosotros .ad-showcase__media { min-height: 565px; }
+  #nosotros .ad-showcase__sidebar { grid-column: 1 / -1; }
+  #testimonios .stories-shell { grid-template-columns: minmax(225px, .31fr) minmax(0, .69fr); }
+}
+@media (max-width: 1100px) {
+  #pie-de-pagina .ad-footer__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 42px clamp(25px, 5vw, 70px);
+  }
+  #pie-de-pagina .ad-footer__identity { max-width: 560px; }
+  #testimonios .stories-shell { grid-template-columns: minmax(0, 1fr); gap: 30px; }
+  #testimonios .stories-title { max-width: 18ch; }
+  #testimonios .stories-subnote { max-width: 62ch; }
+}
+@media (max-width: 900px) {
+  #nosotros .ad-showcase__intro { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  #nosotros .ad-showcase__intro-title { max-width: 22ch; }
+  #nosotros .ad-showcase__intro-copy { max-width: 65ch; }
+  #nosotros .ad-showcase__slide { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); min-height: 0; }
+  #nosotros .ad-showcase__media { min-height: 555px; }
+  #nosotros .ad-showcase__sidebar { grid-column: 1 / -1; }
+  #por-que-andarma .why-heading { grid-template-columns: minmax(0, 1fr); }
+  #por-que-andarma .why-title { max-width: 19ch; }
+  #como-comprar .purchase-top { grid-template-columns: minmax(0, 1fr); }
+  #como-comprar .purchase-intro { max-width: 65ch; }
+  #pie-de-pagina .ad-footer__inner { padding-top: 64px; }
+}
+@media (max-width: 700px) {
+  :root { --ad2b-edge: clamp(18px, 5vw, 24px); --ad2b-space: 72px; }
+  #nosotros.ad-showcase { padding-top: 68px; padding-bottom: 42px; }
+  #nosotros .ad-showcase__top { align-items: flex-start; }
+  #nosotros .ad-showcase__intro { margin-bottom: 30px; }
+  #nosotros .ad-showcase__slide { display: flex; flex-direction: column; gap: 0; min-height: 0; }
+  #nosotros .ad-showcase__copy {
+    order: 1; width: 100%; min-width: 0;
+    padding: clamp(28px, 6vw, 40px) clamp(20px, 5vw, 26px);
+  }
+  #nosotros .ad-showcase__media {
+    order: 2; width: 100%; height: clamp(295px, 75vw, 420px); min-height: 0;
+  }
+  #nosotros .ad-showcase__sidebar { order: 3; width: 100%; min-width: 0; }
+  #nosotros .ad-showcase__bottom { gap: 14px; }
+  #opciones.choice-duo { min-height: 0; }
+  #opciones .choice-panel { min-height: 430px; }
+  #opciones .choice-content { max-width: 100%; }
+  #opciones .choice-title { max-width: 16ch; }
+  #opciones .choice-description { max-width: 40ch; }
+  #por-que-andarma .why-heading { margin-bottom: 42px; }
+  #como-comprar .purchase-top { gap: 20px; }
+  #testimonios .stories-heading { padding-top: 0; }
+  #testimonios .story-photo { height: clamp(180px, 46vw, 235px); }
+  #contacto .contact-feature__shell { padding-inline: var(--ad2b-edge); }
+  #contacto .contact-feature__copy { max-width: min(100%, 500px); }
+  #contacto .contact-feature__title { max-width: 15ch; }
+  #pie-de-pagina .ad-footer__grid { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  #pie-de-pagina .ad-footer__inner { padding: 62px var(--ad2b-edge) 28px; }
+  .adp-map-page .adp-map-bottom { align-items: flex-start; }
+}
+@media (max-width: 380px) {
+  #nosotros .ad-showcase__intro-title { overflow-wrap: break-word; }
+  #nosotros .ad-showcase__topline { letter-spacing: .1em; }
+  #nosotros .ad-showcase__copy { padding: 28px 18px 34px; }
+  #testimonios .stories-shell { gap: 23px; }
+  #testimonios .stories-title { max-width: 100%; }
+  #pie-de-pagina .ad-footer__word { overflow-wrap: anywhere; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #nosotros .ad-showcase__image { transition: none; }
+  #opciones .choice-visual img { transition: none; }
+}
+/* ANDARMA_FASE2B_COMPOSICION_INTEGRAL_END */

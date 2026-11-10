@@ -117,11 +117,11 @@
 .adp-map-page #mapa-de-terrenos .ad3l-center .adp-map-canvas {height:auto !important;min-height:0 !important;line-height:0}
 .adp-map-page #mapa-de-terrenos .ad3l-center .adp-map-canvas img {display:block;width:100%;height:auto;max-height:none;object-fit:contain}
 .adp-map-page #mapa-de-terrenos .ad3l-center .adp-map-canvas svg {position:absolute;inset:0;width:100%;height:100%}
-.adp-map-page #mapa-de-terrenos .ad3l-center .adp-map-picture,
+/* .adp-map-page #mapa-de-terrenos .ad3l-center .adp-map-picture, */
 .adp-map-page #mapa-de-terrenos .ad3l-center .adp-map-legend,
-.adp-map-page #mapa-de-terrenos .ad3l-center .adp-map-search,
+/* .adp-map-page #mapa-de-terrenos .ad3l-center .adp-map-search, */
 .adp-map-page #mapa-de-terrenos .ad3l-center .ad3l-filters,
-.adp-map-page #mapa-de-terrenos .ad3l-center .ad3l-filters button,
+/* .adp-map-page #mapa-de-terrenos .ad3l-center .ad3l-filters button, */
 .adp-map-page #mapa-de-terrenos .ad3l-sidebar :is(h3,h3 em,.ad3l-sidebar__intro,.ad3l-sidebar__empty,.ad3l-sidebar__quantity,.ad3l-sidebar__disclaimer) {color:#eef7ff !important}
 .adp-map-page #mapa-de-terrenos .ad3l-sidebar .ad3l-eyebrow {color:#9dd5ff}
 .adp-map-page #mapa-de-terrenos :is(a,button,input):focus-visible {outline:3px solid #89d5ff;outline-offset:3px}
@@ -227,3 +227,4 @@
     filter: blur(1px);
   }
 }
+

@@ -1,0 +1,168 @@
+/* ANDARMA_FASE2C_MICROINTERACCIONES_PUBLICAS_BEGIN
+   Movimiento editorial: una misma duracion, curva y respuesta.
+   El contenido permanece visible aun sin JavaScript. No modificar geometria
+   del mapa, hero, controles laterales V6 ni transformaciones de los sliders.
+*/
+
+/* 01 / Contrato de movimiento del sitio publico. */
+#nosotros, #opciones, #por-que-andarma, #como-comprar,
+#testimonios, #contacto, #pie-de-pagina, .adp-page {
+  --ad2c-fast: 180ms;
+  --ad2c-standard: 260ms;
+  --ad2c-ease: cubic-bezier(.22, 1, .36, 1);
+  --ad2c-shadow: 0 15px 34px rgba(4, 45, 100, .14);
+}
+
+/* 02 / CTAs: misma velocidad, icono con desplazamiento minimo.
+   Respetar los colores y medidas de las fases 2A/2B. */
+#nosotros :is(a.about-cta, a.developments-link),
+#opciones a.choice-action,
+#contacto a.contact-feature__cta,
+.adp-page :is(a.adp-button, a.adp-map-whatsapp) {
+  transition-property: background-color, border-color, color, box-shadow, transform;
+  transition-duration: var(--ad2c-standard, 260ms);
+  transition-timing-function: var(--ad2c-ease, cubic-bezier(.22, 1, .36, 1));
+}
+#nosotros :is(a.about-cta, a.developments-link) :is(i, svg, .ad-showcase__cta-arrow, .about-cta-arrow),
+#opciones a.choice-action :is(i, svg),
+#contacto a.contact-feature__cta :is(i, svg, .contact-feature__arrow),
+.adp-page :is(a.adp-button, a.adp-map-whatsapp) :is(i, svg) {
+  transition: transform var(--ad2c-standard, 260ms) var(--ad2c-ease, ease);
+}
+
+/* 03 / Tarjetas: feedback de superficie sin mover la cuadricula.
+   En testimonios NO trasladar la tarjeta: el JS controla el carrusel. */
+#por-que-andarma .why-benefit,
+#testimonios .story,
+#como-comprar .purchase-step {
+  transition: background-color var(--ad2c-standard, 260ms) ease,
+              border-color var(--ad2c-standard, 260ms) ease,
+              box-shadow var(--ad2c-standard, 260ms) var(--ad2c-ease, ease);
+}
+#como-comprar .purchase-step::before {
+  transition: width 340ms var(--ad2c-ease, ease);
+}
+
+/* 04 / Controles de los carruseles editoriales.
+   Excluye expresamente #inicio y .ad4a-hero__controls (indicadores V6). */
+#nosotros .ad-showcase__arrow,
+#testimonios .stories-arrow {
+  transition-property: background-color, border-color, color, box-shadow;
+  transition-duration: var(--ad2c-fast, 180ms);
+  transition-timing-function: ease;
+}
+#nosotros .ad-showcase__arrow:disabled,
+#testimonios .stories-arrow:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+/* 05 / La fotografia editorial ya tiene una animacion de entrada.
+   Hover deliberado y localizado; no se cambia opacidad ni se anade un segundo reveal. */
+#nosotros .ad-showcase__slide.is-active:hover .ad-showcase__image {
+  transform: scale(1.035);
+}
+
+/* 06 / Navegacion y pie: respuesta sencilla, sin subrayados decorativos permanentes. */
+.topbar .desktop-nav .nav-link,
+#pie-de-pagina .ad-footer__links :is(a, button),
+#pie-de-pagina .ad-footer__backtop {
+  transition: color var(--ad2c-fast, 180ms) ease,
+              text-decoration-color var(--ad2c-fast, 180ms) ease;
+}
+#pie-de-pagina .ad-footer__links :is(a, button) {
+  text-decoration-line: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+}
+
+/* 07 / Interacciones de puntero fino: en pantallas tactiles no quedan hovers pegados. */
+@media (hover: hover) and (pointer: fine) {
+  #nosotros :is(a.about-cta, a.developments-link):hover,
+  #opciones a.choice-action:hover,
+  #contacto a.contact-feature__cta:hover,
+  .adp-page :is(a.adp-button, a.adp-map-whatsapp):hover {
+    box-shadow: var(--ad2c-shadow, 0 15px 34px rgba(4,45,100,.14));
+  }
+  #nosotros :is(a.about-cta, a.developments-link):hover :is(i, svg, .ad-showcase__cta-arrow, .about-cta-arrow),
+  #opciones a.choice-action:hover :is(i, svg),
+  #contacto a.contact-feature__cta:hover :is(i, svg, .contact-feature__arrow),
+  .adp-page :is(a.adp-button, a.adp-map-whatsapp):hover :is(i, svg) {
+    transform: translateX(3px);
+  }
+  #por-que-andarma .why-benefit:hover {
+    background-color: rgba(230, 241, 255, .4);
+    border-color: #b7d7f8;
+  }
+  #testimonios .story:hover {
+    border-color: #b8d8f6;
+    box-shadow: 0 17px 38px rgba(4,45,100,.11);
+  }
+  #como-comprar .purchase-step:hover::before { width: 58%; }
+  #nosotros :is(.ad-showcase__arrow):not(:disabled):hover,
+  #testimonios .stories-arrow:not(:disabled):hover {
+    box-shadow: 0 8px 18px rgba(0,58,140,.13);
+  }
+  #nosotros .ad-showcase__slide.is-active .ad-showcase__media:hover .ad-showcase__image {
+    transform: scale(1.06);
+  }
+  #pie-de-pagina .ad-footer__links :is(a, button):hover {
+    text-decoration-color: currentColor;
+  }
+}
+
+/* 08 / Teclado y tacto: el estado activo no desplaza otros elementos. */
+#nosotros :is(a.about-cta, a.developments-link):active,
+#opciones a.choice-action:active,
+#contacto a.contact-feature__cta:active,
+.adp-page :is(a.adp-button, a.adp-map-whatsapp):active {
+  transform: translateY(0);
+}
+#nosotros .ad-showcase__arrow:focus-visible,
+#testimonios .stories-arrow:focus-visible,
+#pie-de-pagina .ad-footer__backtop:focus-visible {
+  outline: 3px solid #89d1ff;
+  outline-offset: 4px;
+}
+#pie-de-pagina .ad-footer__links :is(a, button):focus-visible {
+  text-decoration-color: currentColor;
+}
+
+/* 09 / Modos de accesibilidad: se conserva la informacion visible.
+   No anulamos controles, desplazamientos o animaciones de terceros. */
+@media (prefers-reduced-motion: reduce) {
+  #nosotros :is(a.about-cta, a.developments-link),
+  #opciones a.choice-action,
+  #contacto a.contact-feature__cta,
+  .adp-page :is(a.adp-button, a.adp-map-whatsapp),
+  #por-que-andarma .why-benefit,
+  #testimonios .story,
+  #como-comprar .purchase-step,
+  #como-comprar .purchase-step::before,
+  #nosotros .ad-showcase__arrow,
+  #testimonios .stories-arrow,
+  #pie-de-pagina .ad-footer__links :is(a, button),
+  #pie-de-pagina .ad-footer__backtop,
+  .topbar .desktop-nav .nav-link,
+  #nosotros a :is(i, svg, .ad-showcase__cta-arrow, .about-cta-arrow),
+  #opciones a :is(i, svg),
+  #contacto a :is(i, svg),
+  .adp-page a :is(i, svg) {
+    transition-duration: 0.01ms;
+  }
+  #nosotros .ad-showcase__slide.is-active:hover .ad-showcase__image,
+  #nosotros .ad-showcase__slide.is-active .ad-showcase__media:hover .ad-showcase__image {
+    transform: none;
+  }
+}
+@media (prefers-contrast: more) {
+  #testimonios .story { border-color: #003a8c; }
+  #nosotros .ad-showcase__arrow,
+  #testimonios .stories-arrow { border-color: #003a8c; }
+  #pie-de-pagina .ad-footer__links :is(a, button) {
+    color: #fff;
+    text-decoration-color: currentColor;
+  }
+}
+/* ANDARMA_FASE2C_MICROINTERACCIONES_PUBLICAS_END */

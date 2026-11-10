@@ -51,7 +51,7 @@
 .ad3l-sidebar h3 em{font-style:normal;color:#6abaff}
 .ad3l-sidebar__head{display:flex;gap:8px;justify-content:space-between;align-items:flex-start}
 .ad3l-sidebar .adp2c-clear{flex:none;width:32px;height:32px;color:#fff;background:#ffffff12;border-color:#ffffff3f}
-.ad3l-sidebar .adp-map-state{margin-top:6px}.ad3l-sidebar .adp-map-state i{font-size:8px;margin-right:7px}
+.ad3l-sidebar .adp-map-state{margin-top:6px}.ad3l-sidebar .adp-map-state i{    font-size: 11px; margin-right: 7px;margin-top: 3px;}
 .ad3l-sidebar__line{height:1px;background:#ffffff30;margin:24px 0}
 .adp-map-page .ad3l-sidebar .ad3l-details{margin:0;gap:13px}
 .adp-map-page .ad3l-sidebar .ad3l-details>div{border-bottom:1px solid #ffffff25;padding:0 0 12px;gap:10px}

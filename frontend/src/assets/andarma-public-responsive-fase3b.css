@@ -1,0 +1,212 @@
+/* ANDARMA_FASE3B_RESPONSIVE_ACCESIBILIDAD_BEGIN
+   Refinamiento puntual, no cambio de arquitectura de layouts.
+   Solo sitio publico. Conserva estructura y mapa interactivo.
+   No modifica transformaciones, posicion ni dimensiones de los controles V6.
+*/
+
+/* 01. Textos y controles flexibles: conservar la informacion visible.
+   Los min-width de tarjetas y columnas suelen provocar scroll horizontal. */
+#nosotros :is(.ad-showcase__shell, .ad-showcase__slide,
+  .ad-showcase__copy, .ad-showcase__sidebar, .ad-showcase__story),
+#opciones :is(.choice-panel, .choice-content),
+#por-que-andarma :is(.why-shell, .why-heading, .why-benefit),
+#como-comprar :is(.purchase-container, .purchase-top, .purchase-step),
+#testimonios :is(.stories-shell, .stories-right, .story-content),
+#contacto :is(.contact-feature__shell, .contact-feature__copy),
+#pie-de-pagina :is(.ad-footer__inner, .ad-footer__grid, .ad-footer__identity),
+.adp-page :is(.adp-map-message, .adp-map-bottom, .ad3l-intro__grid, .ad3l-story) {
+  min-width: 0;
+}
+#nosotros :is(.ad-showcase__fact, .ad-showcase__fact small,
+  .ad-showcase__side-links a, .about-feature-title),
+#testimonios :is(.story-quote, .story-person, .story-name),
+#pie-de-pagina :is(.ad-footer__links a, .ad-footer__links button,
+  .ad-footer__description, .ad-footer__base),
+.adp-page :is(.adp-map-message, .ad3l-sidebar h3, .ad3l-sidebar p) {
+  overflow-wrap: break-word;
+}
+
+/* 02. Controles de teclado: foco visible en superficies claras y oscuras.
+   No dependemos exclusivamente de cambios sutiles de color al hacer hover. */
+#nosotros :is(a, button):focus-visible,
+#opciones :is(a, button):focus-visible,
+#por-que-andarma :is(a, button):focus-visible,
+#como-comprar :is(a, button):focus-visible,
+#testimonios :is(a, button):focus-visible,
+.adp-map-page #mapa-de-terrenos :is(a, button, input, select):focus-visible {
+  outline: 3px solid #003a8c;
+  outline-offset: 3px;
+}
+#contacto :is(a, button):focus-visible,
+#pie-de-pagina :is(a, button):focus-visible,
+.topbar:not(.is-scrolled) :is(a, button):focus-visible,
+.adp-map-page .ad4a-hero :is(a, button):focus-visible {
+  outline: 3px solid #9de0ff;
+  outline-offset: 4px;
+}
+.topbar.is-scrolled :is(a, button):focus-visible {
+  outline: 3px solid #003a8c;
+  outline-offset: 3px;
+}
+/* Foco SVG solo cambia la apariencia momentanea, nunca puntos ni coordenadas. */
+.adp-map-page #mapa-de-terrenos polygon.adp2d-lot-face:focus-visible {
+  stroke: #003a8c;
+  stroke-width: 4;
+  filter: drop-shadow(0 0 3px rgba(255,255,255,.9));
+}
+
+/* 03. Controles tactiles reales fuera de los indicadores laterales V6. */
+#nosotros .ad-showcase__arrow,
+#testimonios .stories-arrow,
+#pie-de-pagina .ad-footer__backtop,
+#pie-de-pagina .ad-footer__links button,
+.topbar .mobile-toggle,
+.adp-map-page #mapa-de-terrenos :is(.ad3l-filters button,
+  .adp-map-plans button, .adp-map-zoom button, .adp2c-clear) {
+  box-sizing: border-box;
+  min-height: 44px;
+}
+#pie-de-pagina .ad-footer__links button {
+  display: inline-flex;
+  align-items: center;
+  padding-block: 9px;
+}
+#nosotros .ad-showcase__arrow,
+#testimonios .stories-arrow,
+.topbar .mobile-toggle,
+.adp-map-page #mapa-de-terrenos .adp-map-zoom button {
+  min-width: 44px;
+}
+
+/* 04. Texto auxiliar visible y campos de formulario sin zoom en iOS. */
+.adp-map-page #mapa-de-terrenos :is(.adp-map-search input, select) {
+  font-size: 16px;
+  max-width: 100%;
+}
+#testimonios .stories-note,
+#contacto .contact-feature__note,
+#pie-de-pagina .ad-footer__social-note {
+  line-height: 1.65;
+}
+
+/* 05. TABLET: ajustar anchos existentes sin cambiar la logica de carrusel. */
+@media (max-width: 1024px) and (min-width: 701px) {
+  #nosotros .ad-showcase__slide {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  #nosotros .ad-showcase__copy { padding: 36px clamp(22px, 3vw, 38px); }
+  #nosotros .ad-showcase__media { min-height: 480px; }
+  #nosotros .ad-showcase__sidebar { grid-column: 1 / -1; }
+  #testimonios .stories-shell { grid-template-columns: minmax(0, 1fr); }
+  #pie-de-pagina .ad-footer__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* 06. MOVIL: espacios proporcionales, tarjetas sin desbordes ni textos cortados. */
+@media (max-width: 700px) {
+  #nosotros .ad-showcase__intro-title,
+  #por-que-andarma .why-title,
+  #como-comprar .purchase-heading,
+  #testimonios .stories-title {
+    max-width: 100%;
+    text-wrap: balance;
+  }
+  #nosotros .ad-showcase__slide {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  #nosotros .ad-showcase__copy { width: 100%; }
+  #nosotros .ad-showcase__media { width: 100%; }
+  #nosotros .ad-showcase__sidebar { width: 100%; }
+  #nosotros .ad-showcase__bottom { flex-wrap: wrap; }
+  #nosotros .ad-showcase__count { white-space: nowrap; }
+  #opciones .choice-content { width: 100%; }
+  #opciones .choice-description { max-width: 42ch; }
+  #como-comprar .purchase-foot { max-width: 100%; }
+  #testimonios .stories-toolbar { gap: 10px; }
+  #testimonios .stories-right { width: 100%; }
+  #contacto .contact-feature__intro { max-width: 55ch; }
+  #pie-de-pagina .ad-footer__base { align-items: flex-start; }
+
+  /* Buscador y filtros del mapa: permitir varias filas, no forzar ancho. */
+  .adp-map-page #mapa-de-terrenos .ad3l-filters {
+    flex-wrap: wrap;
+    max-width: 100%;
+  }
+  .adp-map-page #mapa-de-terrenos .adp-map-search {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .adp-map-page #mapa-de-terrenos .adp-map-legend {
+    flex-wrap: wrap;
+  }
+  .adp-map-page #mapa-de-terrenos .ad3l-intro__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .adp-map-page .adp-map-bottom {
+    flex-wrap: wrap;
+  }
+}
+
+/* 07. MOVILES ESTRECHOS: reducir el ruido sin quitar informacion. */
+@media (max-width: 600px) {
+  #inicio.ad-showreel .hero-desc {
+    font-size: 14px !important;
+    line-height: 1.65 !important;
+  }
+  .adp-map-page .ad4a-hero__description {
+    font-size: 14px !important;
+    line-height: 1.65 !important;
+  }
+  #testimonios .story-quote { font-size: 16px; line-height: 1.7; }
+  #como-comprar .purchase-step p { font-size: 15px; line-height: 1.7; }
+  #pie-de-pagina .ad-footer__links :is(a, button) { font-size: 15px; }
+  #pie-de-pagina .ad-footer__description { font-size: 15px; }
+  #contacto .contact-feature__note { font-size: 13px; }
+  .adp-map-page #mapa-de-terrenos .ad3l-filters button {
+    padding-inline: 12px;
+    white-space: normal;
+  }
+}
+@media (max-width: 390px) {
+  #nosotros .ad-showcase__topline { letter-spacing: .08em; }
+  #nosotros .ad-showcase__fact { gap: 10px; }
+  #nosotros .ad-showcase__side-links a { overflow-wrap: break-word; }
+  #testimonios .stories-shell { min-width: 0; }
+  #pie-de-pagina .ad-footer__logo { max-width: 100%; }
+}
+
+/* 08. Accesibilidad del sistema: contraste reforzado y movimiento reducido. */
+@media (prefers-contrast: more) {
+  #nosotros .ad-showcase__intro-copy,
+  #nosotros :is(.about-text, .developments-description, .ad-showcase__more),
+  #por-que-andarma .why-intro,
+  #como-comprar .purchase-step p,
+  #testimonios :is(.story-quote, .stories-subnote),
+  #contacto .contact-feature__note {
+    color: #173b64;
+  }
+  #pie-de-pagina .ad-footer__links :is(a, button) {
+    color: #fff;
+    text-decoration-color: currentColor;
+  }
+  #nosotros :is(.ad-showcase__arrow, a.about-cta, a.developments-link),
+  #testimonios .stories-arrow {
+    border-color: #003a8c;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #nosotros .ad-showcase__image,
+  #opciones .choice-visual img,
+  #contacto .contact-feature__image,
+  #testimonios .stories-track {
+    transition-duration: .01ms;
+  }
+  #nosotros .ad-showcase__slide.is-active .ad-showcase__image,
+  #nosotros .ad-showcase__slide.is-active:hover .ad-showcase__image,
+  #opciones .choice-visual img,
+  #contacto .contact-feature__image {
+    animation: none !important;
+  }
+}
+/* ANDARMA_FASE3B_RESPONSIVE_ACCESIBILIDAD_END */

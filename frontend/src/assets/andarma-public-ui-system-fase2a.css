@@ -1,0 +1,217 @@
+/* ANDARMA · FASE 2A · SISTEMA VISUAL PUBLICO
+   Regla: diseño incremental. No modifica el admin ni geometria de mapas.
+   Importado solo en vistas publicas. NO sobrescribir componentes sin revisar.
+*/
+:root {
+  --ad2-ink: #061C39;
+  --ad2-deep: #003A8C;
+  --ad2-blue: #0066E0;
+  --ad2-bright: #0891FF;
+  --ad2-soft: #E6F1FF;
+  --ad2-white: #FFFFFF;
+  --ad2-muted: #465E7B;
+  --ad2-line: #D4E2F0;
+  --ad2-font-head: 'Manrope', system-ui, sans-serif;
+  --ad2-font-body: 'DM Sans', system-ui, sans-serif;
+  --ad2-ease: cubic-bezier(.22, 1, .36, 1);
+  --ad2-radius: 5px;
+  --ad2-focus: #89D1FF;
+}
+
+/* 1. Titulos: mismo lenguaje editorial, sin alterar el H1 de los heroes. */
+.ad-showcase :is(.about-title, .developments-title),
+.why-andarma .why-title,
+.purchase .purchase-heading,
+.stories .stories-title,
+.contact-feature .contact-feature__title,
+.choice-duo .choice-title {
+  font-family: var(--ad2-font-head);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -.045em;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+
+.ad-showcase :is(.ad-showcase__intro-title, .ad-showcase__sidebar-intro h3),
+.ad-footer .ad-footer__heading {
+  font-family: var(--ad2-font-head);
+  text-wrap: balance;
+}
+
+/* 2. Lectura: tamanos legibles y longitudes razonables. */
+.ad-showcase :is(.about-text, .developments-description, .ad-showcase__more, .ad-showcase__intro-copy),
+.why-andarma .why-intro,
+.purchase .purchase-intro,
+.stories .stories-subnote,
+.contact-feature .contact-feature__intro,
+.choice-duo .choice-description {
+  font-family: var(--ad2-font-body);
+  font-size: clamp(1rem, 1.08vw, 1.125rem);
+  font-weight: 400;
+  line-height: 1.68;
+  letter-spacing: 0;
+  max-width: 64ch;
+}
+
+.stories .story-quote,
+.purchase .purchase-step p {
+  font-family: var(--ad2-font-body);
+  font-size: clamp(.9375rem, 1vw, 1.0625rem);
+  line-height: 1.65;
+}
+
+.ad-showcase :is(.about-kicker, .developments-label),
+.why-andarma .why-kicker,
+.purchase .purchase-kicker,
+.stories .stories-kicker,
+.contact-feature .contact-feature__kicker {
+  font-family: var(--ad2-font-body);
+  font-size: clamp(.75rem, .78vw, .8125rem);
+  font-weight: 700;
+  letter-spacing: .13em;
+  line-height: 1.5;
+}
+
+/* 3. Acciones: misma metrica y radio, conservando fondos de cada seccion.
+   No se modifica #inicio .primary-cta, ni controles de V6 del hero. */
+.ad-showcase a.about-cta,
+.ad-showcase a.developments-link,
+.choice-duo a.choice-action,
+.contact-feature a.contact-feature__cta,
+.adp-map-page a.ad4a-hero__cta,
+.adp-map-page a.adp-map-whatsapp,
+.adp-map-page a.adp-button {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(12px, 1.5vw, 22px);
+  min-height: 56px;
+  max-width: 100%;
+  padding: 13px 22px;
+  border-radius: var(--ad2-radius);
+  font-family: var(--ad2-font-body);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: .012em;
+  text-decoration: none;
+  transition: background-color .23s ease, border-color .23s ease,
+              color .23s ease, box-shadow .23s ease,
+              transform .23s var(--ad2-ease);
+}
+
+/* CTAs sobre fotografia: preservar contraste y no cubrir texto. */
+.choice-duo a.choice-action,
+.adp-map-page a.ad4a-hero__cta {
+  color: #fff;
+}
+.adp-map-page a.ad4a-hero__cta {
+  background: rgba(3, 26, 54, .76);
+  border-color: rgba(255, 255, 255, .84);
+}
+.adp-map-page a.ad4a-hero__cta:hover {
+  background: var(--ad2-blue);
+  border-color: var(--ad2-bright);
+}
+
+/* CTA del encabezado: no cambiar la barra, solo mejorar lectura/tacto. */
+.topbar a.nav-contact {
+  min-height: 48px;
+  padding: 12px 16px;
+  border-radius: var(--ad2-radius);
+  font-family: var(--ad2-font-body);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: .045em;
+}
+
+/* 4. Iconos y controles tactiles de bajo riesgo (sin tocar indicadores V6). */
+.stories .stories-arrow,
+.topbar .mobile-toggle,
+.adp-map-page .adp-map-zoom button {
+  box-sizing: border-box;
+  min-width: 44px;
+  min-height: 44px;
+  cursor: pointer;
+}
+
+/* 5. Foco consistente en acciones y controles publicos. */
+.ad-showcase :is(a, button):focus-visible,
+.choice-duo a:focus-visible,
+.why-andarma a:focus-visible,
+.purchase :is(a, button):focus-visible,
+.stories :is(a, button):focus-visible,
+.contact-feature a:focus-visible,
+.ad-footer :is(a, button):focus-visible,
+.topbar :is(a, button):focus-visible,
+.adp-map-page :is(a, button, input, select):focus-visible {
+  outline: 3px solid var(--ad2-focus);
+  outline-offset: 4px;
+}
+
+/* 6. Anclas: evitar que el navbar tape el titulo al desplazarse. */
+.ad-showcase#nosotros,
+.choice-duo#opciones,
+.why-andarma#por-que-andarma,
+.purchase#como-comprar,
+.stories#testimonios,
+.contact-feature#contacto,
+.adp-map-page #mapa-de-terrenos {
+  scroll-margin-top: clamp(76px, 7vw, 108px);
+}
+
+@media (max-width: 900px) {
+  .topbar a.nav-contact { font-size: 12px; }
+  .ad-showcase :is(.about-title, .developments-title),
+  .why-andarma .why-title,
+  .purchase .purchase-heading,
+  .stories .stories-title,
+  .contact-feature .contact-feature__title,
+  .choice-duo .choice-title {
+    letter-spacing: -.04em;
+  }
+}
+
+@media (max-width: 600px) {
+  .ad-showcase :is(.about-text, .developments-description, .ad-showcase__more, .ad-showcase__intro-copy),
+  .why-andarma .why-intro,
+  .purchase .purchase-intro,
+  .stories .stories-subnote,
+  .contact-feature .contact-feature__intro,
+  .choice-duo .choice-description {
+    font-size: 16px;
+    line-height: 1.7;
+  }
+  .ad-showcase a.about-cta,
+  .ad-showcase a.developments-link,
+  .choice-duo a.choice-action,
+  .contact-feature a.contact-feature__cta,
+  .adp-map-page a.ad4a-hero__cta,
+  .adp-map-page a.adp-map-whatsapp,
+  .adp-map-page a.adp-button {
+    min-height: 52px;
+    max-width: 100%;
+    padding: 13px 16px;
+    font-size: 14px;
+    letter-spacing: 0;
+  }
+  .purchase .purchase-step p { font-size: 15px; }
+  .stories .story-quote { font-size: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ad-showcase a.about-cta,
+  .ad-showcase a.developments-link,
+  .choice-duo a.choice-action,
+  .contact-feature a.contact-feature__cta,
+  .adp-map-page a.ad4a-hero__cta,
+  .adp-map-page a.adp-map-whatsapp,
+  .adp-map-page a.adp-button,
+  .topbar a.nav-contact {
+    transition: none;
+  }
+}
+/* ANDARMA_FASE2A_SISTEMA_VISUAL_PUBLICO_END */

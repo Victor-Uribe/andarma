@@ -175,7 +175,7 @@ import '../../assets/andarma-fase3t-filtros-sticky.css' // ANDARMA_FASE3T_FILTRO
             <div class="adp2d-map-stage">
               <div class="adp-map-viewport" ref="viewport" :class="{'adp2b-can-drag':mapIsZoomed,'adp2b-is-dragging':dragging}" @pointerdown="startDrag" @pointermove="moveDrag" @pointerup="stopDrag" @pointercancel="stopDrag" @lostpointercapture="stopDrag">
                 <div class="adp-map-canvas" :style="{width:zoom+'%'}">
-                  <img :src="plan.image_url" :alt="`Plano del desarrollo ${development.name}: ${plan.title}`" />
+                  <img :src="plan.image_url" :alt="`Plano del desarrollo ${development.name}: ${plan.title}`" loading="lazy" decoding="async" />
                   <svg viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-label="Terrenos ubicados dentro del plano">
                     <template v-for="lot in polygons" :key="lot.lot_id">
                       <polygon v-if="isVisibleLot(lot)" class="adp2d-lot-depth" :class="{'is-selected':selected?.lot_id===lot.lot_id}" :points="points(lot)" :fill="statusColors[lot.status]" :fill-opacity="selected?.lot_id === lot.lot_id ? .74 : .08" stroke="none" transform="translate(0 7)" pointer-events="none" aria-hidden="true" />
@@ -207,7 +207,8 @@ import '../../assets/andarma-fase3t-filtros-sticky.css' // ANDARMA_FASE3T_FILTRO
             </dl>
             <div v-if="selected.status==='available'" class="ad3l-price"><span>Precio</span><strong>{{displayPrice}}</strong><small v-if="currentPrice===null">Consulta el importe con un asesor.</small></div>
             <p v-else class="ad3l-price__notice">Este terreno no está disponible para venta. Consulta otras opciones.</p>
-            <a class="adp-map-whatsapp" :href="directWhatsapp" :target="publicWhatsapp?'_blank':undefined" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp"></i> Solicitar información <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+            <a v-if="publicWhatsapp" class="adp-map-whatsapp" :href="directWhatsapp" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp"></i> Solicitar información <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+            <p v-else class="ad3l-sidebar__disclaimer" role="status">La atención por WhatsApp estará disponible cuando se configure el número oficial.</p>
             <p class="ad3l-sidebar__disclaimer">Disponibilidad y condiciones sujetas a confirmación. Seleccionar un lote no constituye una reserva.</p>
           </template>
           <template v-else>
@@ -218,7 +219,8 @@ import '../../assets/andarma-fase3t-filtros-sticky.css' // ANDARMA_FASE3T_FILTRO
             <div class="ad3l-sidebar__empty"><i class="fa-solid fa-location-crosshairs" aria-hidden="true"></i><span>Explora el plano y elige el espacio para tu futuro.</span></div>
             <div class="ad3l-sidebar__line"></div>
             <span class="ad3l-sidebar__quantity">{{availableCount}} {{availableCount===1?'terreno disponible':'terrenos disponibles'}}</span>
-            <a class="adp-map-whatsapp" :href="directWhatsapp" :target="publicWhatsapp?'_blank':undefined" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp"></i> Hablar con un asesor</a>
+            <a v-if="publicWhatsapp" class="adp-map-whatsapp" :href="directWhatsapp" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp"></i> Hablar con un asesor</a>
+            <p v-else class="ad3l-sidebar__disclaimer" role="status">La atención por WhatsApp se habilitará al configurar el contacto oficial.</p>
           </template>
         </aside>
       </div>
