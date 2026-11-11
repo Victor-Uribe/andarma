@@ -1,0 +1,15 @@
+# ANDARMA — Desarrollos inmobiliarios
+
+> ANDARMA es una desarrolladora inmobiliaria en México. Su sitio público presenta proyectos inmobiliarios, terrenos y opciones de vivienda, además de información para contactar a sus asesores.
+
+## Páginas públicas
+
+- [Inicio de ANDARMA](https://andarma.com.mx/): presentación de la empresa y sus servicios inmobiliarios.
+- [Desarrollos y terrenos](https://andarma.com.mx/desarrollos): información de los desarrollos inmobiliarios y terrenos publicados.
+- [Contacto](https://andarma.com.mx/#contacto): opciones de contacto para solicitar información.
+
+## Información importante
+
+La disponibilidad, características y condiciones de los terrenos y viviendas deben confirmarse con ANDARMA. El contenido público no debe interpretarse como una oferta vinculante ni como garantía de disponibilidad.
+
+No hay acceso público a herramientas automatizadas del administrador en este documento.

@@ -219,7 +219,7 @@ import '../../assets/andarma-fase3t-filtros-sticky.css' // ANDARMA_FASE3T_FILTRO
             <div class="ad3l-sidebar__empty"><i class="fa-solid fa-location-crosshairs" aria-hidden="true"></i><span>Explora el plano y elige el espacio para tu futuro.</span></div>
             <div class="ad3l-sidebar__line"></div>
             <span class="ad3l-sidebar__quantity">{{availableCount}} {{availableCount===1?'terreno disponible':'terrenos disponibles'}}</span>
-            <a v-if="publicWhatsapp" class="adp-map-whatsapp" :href="directWhatsapp" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp"></i> Hablar con un asesor</a>
+            <a v-if="publicWhatsapp" class="adp-map-whatsapp" :href="directWhatsapp" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp fa-lg pr-5"></i> Hablar con un asesor</a>
             <p v-else class="ad3l-sidebar__disclaimer" role="status">La atención por WhatsApp se habilitará al configurar el contacto oficial.</p>
           </template>
         </aside>

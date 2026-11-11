@@ -1455,3 +1455,15 @@ a.andarma-backtop-floating.is-visible:hover {transform:translateY(-3px) scale(1)
   }
 }
 /* ANDARMA_AUDITORIA_A11Y_V1_END */
+
+.andarma-admin .andarma-field-label {
+    display: grid;
+    gap: 7px;
+    font-size: 12px;
+    font-weight: 650;
+    color: var(--ad-text);
+}
+
+.pr-5{
+  padding-right: 5px;
+}

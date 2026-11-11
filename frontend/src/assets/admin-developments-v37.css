@@ -20,7 +20,7 @@
 .andarma-admin .ad-dev37-section strong{font-size:12px;color:#234461;letter-spacing:.04em}
 .andarma-admin .ad-dev37-hint{font-size:11px;color:#70869b;line-height:1.5;margin:6px 0 0}
 .andarma-admin .ad-dev37-formgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.andarma-admin .ad-dev37-formgrid .full{grid-column:1/-1}
+/* .andarma-admin .ad-dev37-formgrid .full{grid-column:1/-1} */
 .andarma-admin .ad-dev37-advanced{border:1px solid #dfebf5;border-radius:12px;padding:12px 14px;background:#fafcff}
 .andarma-admin .ad-dev37-advanced summary{cursor:pointer;color:#486986;font-size:12px;font-weight:700}
 .andarma-admin .ad-dev37-advanced label{margin-top:12px;display:grid;gap:6px}

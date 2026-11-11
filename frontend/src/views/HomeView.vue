@@ -258,7 +258,7 @@ onBeforeUnmount(() => {
 <div><span class="why-kicker">¿POR QUÉ ANDARMA?</span><h2 class="why-title" id="whyTitle">Más que terrenos,<br/>construimos <strong>bienestar</strong></h2></div>
 <p class="why-intro" data-andarma-content="por-que-andarma.p.1">Nos distingue la atención personalizada, la seguridad en cada paso y el compromiso con crear comunidades en armonía con su entorno.</p>
 </div>
-<div aria-label="Beneficios de elegir ANDARMA" class="why-benefits"><div class="why-benefit"><i class="fa-solid fa-location-dot" aria-hidden="true"></i><p>Ubicaciones<br/>estratégicas</p></div>
+<div role="group" aria-label="Beneficios de elegir ANDARMA" class="why-benefits"><div class="why-benefit"><i class="fa-solid fa-location-dot" aria-hidden="true"></i><p>Ubicaciones<br/>estratégicas</p></div>
 <div class="why-benefit"><i class="fa-solid fa-tree" aria-hidden="true"></i><p>Entornos<br/>naturales</p></div>
 <div class="why-benefit"><i class="fa-solid fa-people-roof" aria-hidden="true"></i><p>Comunidades<br/>planeadas</p></div>
 <div class="why-benefit"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i><p>Seguridad<br/>y tranquilidad</p></div>

@@ -274,15 +274,15 @@ onMounted(load)
 <div>
             <div class="ad-dev37-section"><span class="number">01</span><strong>Información del desarrollo</strong></div>
             <div class="ad-dev37-formgrid">
-              <label class="ad-label">Nombre del desarrollo *<input v-model.trim="form.name" class="ad-input" required minlength="2" maxlength="255" placeholder="Ej. Prados del Rosario" /></label>
-              <label class="ad-label">Ubicación<input v-model.trim="form.location" class="ad-input" maxlength="255" placeholder="Municipio, estado o localidad" /></label>
-              <label class="ad-label full">Descripción<textarea v-model.trim="form.description" class="ad-textarea" rows="3" maxlength="10000" placeholder="Describe las características principales del proyecto"></textarea></label>
+              <label class="andarma-field-label">Nombre del desarrollo *<input v-model.trim="form.name" class="ad-input" required minlength="2" maxlength="255" placeholder="Ej. Prados del Rosario" /></label>
+              <label class="andarma-field-label">Ubicación<input v-model.trim="form.location" class="ad-input" maxlength="255" placeholder="Municipio, estado o localidad" /></label>
+              <label class="andarma-field-label full">Descripción<textarea v-model.trim="form.description" class="ad-textarea" rows="3" maxlength="10000" placeholder="Describe las características principales del proyecto"></textarea></label>
             </div>
           </div>
 <div>
             <div class="ad-dev37-section"><span class="number">04</span><strong>Estado y publicación</strong></div>
             <div class="ad-dev37-formgrid">
-              <label class="ad-label">Estado<select v-model="form.status" class="ad-select"><option value="active">Activo</option><option value="upcoming">Próximamente</option><option value="inactive">Inactivo</option></select><span class="ad-dev37-hint">Solo los desarrollos activos se publican en el sitio público.</span></label>
+              <label class="andarma-field-label">Estado<select v-model="form.status" class="ad-select"><option value="active">Activo</option><option value="upcoming">Próximamente</option><option value="inactive">Inactivo</option></select><span class="ad-dev37-hint">Solo los desarrollos activos se publican en el sitio público.</span></label>
               <div class="ad-dev37-advanced" role="note"><strong><i class="fa-solid fa-link" aria-hidden="true"></i> Dirección web automática</strong><p class="ad-dev37-hint">El sistema genera la dirección del desarrollo a partir de su nombre. No necesitas configurarla.</p></div>
             </div>
           </div>

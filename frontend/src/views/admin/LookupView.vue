@@ -81,7 +81,7 @@ if(q.value.trim().length>=2)search()
 <section class="ad-lookup ad-u-list">
   <header class="ad-lookup__heading"><div><span class="admin-kicker">GESTIÓN INMOBILIARIA / CONSULTA</span><h1>Consulta rápida<span class="heading-dot">.</span></h1><p>Encuentra un comprador, teléfono, desarrollo, manzana o terreno desde un solo lugar.</p></div></header>
   <div class="ad-card ad-lookup__searchbox">
-    <label class="ad-label" for="ad-lookup-query">Buscar en ANDARMA</label>
+    <label class="andarma-field-label" for="ad-lookup-query">Buscar en ANDARMA</label>
     <div class="ad-lookup__search"><Search :size="19"/><input id="ad-lookup-query" ref="searchInput" v-model="q" class="ad-input" type="search" maxlength="120" autocomplete="off" placeholder="Ej. María González, 5512345678, lote 0181, M5 o Prados del Rosario"/><button class="ad-btn" type="button" :disabled="loading||q.trim().length<2" @click="search"><RefreshCw :size="15"/> Buscar</button></div>
     <p class="ad-lookup__hint">Escribe al menos dos caracteres. La búsqueda no distingue entre mayúsculas y minúsculas en configuraciones SQL habituales.</p>
   </div>

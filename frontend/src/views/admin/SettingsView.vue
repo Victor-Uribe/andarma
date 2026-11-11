@@ -34,25 +34,25 @@ onMounted(load)
    <fieldset :disabled="!editable||saving||loading" class="settings-v50-fields">
     <template v-if="active==='contact'"><header><h2>Datos de contacto</h2><p>Estos datos identifican a ANDARMA y permiten que los clientes se comuniquen.</p></header><div class="ad-form-grid">
      <label class="ad-label ad-form-span">Nombre comercial<input v-model="values.business_name" class="ad-input" maxlength="150" placeholder="ANDARMA"/></label>
-     <label class="ad-label">Teléfono de oficina<input v-model="values.phone" type="tel" class="ad-input" maxlength="30" placeholder="55 1234 5678"/></label>
-     <label class="ad-label">WhatsApp de atención<input v-model="values.whatsapp" type="tel" class="ad-input" maxlength="30" placeholder="55 1234 5678"/></label>
+     <label class="andarma-field-label">Teléfono de oficina<input v-model="values.phone" type="tel" class="ad-input" maxlength="30" placeholder="55 1234 5678"/></label>
+     <label class="andarma-field-label">WhatsApp de atención<input v-model="values.whatsapp" type="tel" class="ad-input" maxlength="30" placeholder="55 1234 5678"/></label>
      <label class="ad-label ad-form-span">Correo de contacto<input v-model="values.email" type="email" class="ad-input" maxlength="180" placeholder="contacto@andarma.mx"/></label>
      <label class="ad-label ad-form-span">Horario de atención<input v-model="values.hours" class="ad-input" maxlength="200" placeholder="Lunes a viernes de 9:00 a 18:00"/></label>
      <label class="ad-label ad-form-span">Mensaje inicial de WhatsApp<textarea v-model="values.whatsapp_message" rows="2" class="ad-textarea" maxlength="350" placeholder="Hola, quiero información sobre sus desarrollos."></textarea></label>
     </div><a v-if="waLink" class="ad-btn settings-v50-verify" :href="waLink" target="_blank" rel="noopener noreferrer"><MessageCircle :size="15"/> Probar enlace de WhatsApp <ExternalLink :size="13"/></a></template>
     <template v-else-if="active==='address'"><header><h2>Dirección y ubicación</h2><p>Escribe la dirección de la oficina, no la de un desarrollo inmobiliario.</p></header><div class="ad-form-grid">
      <label class="ad-label ad-form-span">Calle y número<input v-model="values.address" class="ad-input" maxlength="255" placeholder="Ej. Av. Principal 100"/></label>
-     <label class="ad-label">Colonia<input v-model="values.neighborhood" class="ad-input" maxlength="120" placeholder="Colonia"/></label>
-     <label class="ad-label">Municipio o ciudad<input v-model="values.city" class="ad-input" maxlength="120" placeholder="Ej. Ixtapaluca"/></label>
-     <label class="ad-label">Estado<input v-model="values.state" class="ad-input" maxlength="120" placeholder="Estado de México"/></label>
-     <label class="ad-label">Código postal<input v-model="values.postal_code" class="ad-input" maxlength="12" placeholder="56530"/></label>
+     <label class="andarma-field-label">Colonia<input v-model="values.neighborhood" class="ad-input" maxlength="120" placeholder="Colonia"/></label>
+     <label class="andarma-field-label">Municipio o ciudad<input v-model="values.city" class="ad-input" maxlength="120" placeholder="Ej. Ixtapaluca"/></label>
+     <label class="andarma-field-label">Estado<input v-model="values.state" class="ad-input" maxlength="120" placeholder="Estado de México"/></label>
+     <label class="andarma-field-label">Código postal<input v-model="values.postal_code" class="ad-input" maxlength="12" placeholder="56530"/></label>
      <label class="ad-label ad-form-span">Enlace de Google Maps<input v-model="values.maps_url" type="url" class="ad-input" maxlength="1500" placeholder="https://maps.google.com/..."/></label>
     </div><a v-if="values.maps_url&&validUrl(values.maps_url)" class="ad-btn settings-v50-verify" :href="values.maps_url" target="_blank" rel="noopener noreferrer"><MapPin :size="15"/> Comprobar ubicación <ExternalLink :size="13"/></a></template>
     <template v-else><header><h2>Redes sociales</h2><p>Agrega únicamente las redes que ANDARMA utiliza. Las demás pueden quedar vacías.</p></header><div class="ad-form-grid">
-      <label class="ad-label">Facebook<input v-model="values.facebook_url" class="ad-input" type="url" maxlength="500" placeholder="https://facebook.com/..."/></label>
-      <label class="ad-label">Instagram<input v-model="values.instagram_url" class="ad-input" type="url" maxlength="500" placeholder="https://instagram.com/..."/></label>
-      <label class="ad-label">TikTok<input v-model="values.tiktok_url" class="ad-input" type="url" maxlength="500" placeholder="https://tiktok.com/@..."/></label>
-      <label class="ad-label">YouTube<input v-model="values.youtube_url" class="ad-input" type="url" maxlength="500" placeholder="https://youtube.com/@..."/></label>
+      <label class="andarma-field-label">Facebook<input v-model="values.facebook_url" class="ad-input" type="url" maxlength="500" placeholder="https://facebook.com/..."/></label>
+      <label class="andarma-field-label">Instagram<input v-model="values.instagram_url" class="ad-input" type="url" maxlength="500" placeholder="https://instagram.com/..."/></label>
+      <label class="andarma-field-label">TikTok<input v-model="values.tiktok_url" class="ad-input" type="url" maxlength="500" placeholder="https://tiktok.com/@..."/></label>
+      <label class="andarma-field-label">YouTube<input v-model="values.youtube_url" class="ad-input" type="url" maxlength="500" placeholder="https://youtube.com/@..."/></label>
       <label class="ad-label ad-form-span">Sitio web oficial<input v-model="values.website_url" class="ad-input" type="url" maxlength="500" placeholder="https://andarma.mx"/></label>
     </div></template>
    </fieldset>

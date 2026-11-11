@@ -270,10 +270,10 @@ onMounted(async()=>{
         <button :class="{active:tab==='month'}" @click="tab='month'">Mes</button>
         <button :class="{active:tab==='range'}" @click="tab='range'">Rango</button>
       </div>
-      <label v-if="tab==='range'" class="ad-label">Desde <input v-model="from" type="date" class="ad-input"/></label>
-      <label v-if="tab==='range'" class="ad-label">Hasta <input v-model="to" type="date" class="ad-input"/></label>
+      <label v-if="tab==='range'" class="andarma-field-label">Desde <input v-model="from" type="date" class="ad-input"/></label>
+      <label v-if="tab==='range'" class="andarma-field-label">Hasta <input v-model="to" type="date" class="ad-input"/></label>
       <label class="ad-label ad-pay-search">Buscar <input v-model="search" class="ad-input" placeholder="Cliente, terreno, folio o referencia" /></label>
-      <label class="ad-label">Estado <select v-model="statusFilter" class="ad-select"><option value="all">Todos</option><option value="applied">Aplicados</option><option value="cancelled">Cancelados</option></select></label>
+      <label class="andarma-field-label">Estado <select v-model="statusFilter" class="ad-select"><option value="all">Todos</option><option value="applied">Aplicados</option><option value="cancelled">Cancelados</option></select></label>
     </div>
     <div class="ad-table-wrap">
       <table class="ad-table ad-pay-table">
@@ -333,7 +333,7 @@ onMounted(async()=>{
           <small class="ad-f13b-disclaimer">Confirmación administrativa. No es comprobante fiscal ni confirma transferencia bancaria.</small>
         </div>
         <template v-else-if="modal==='picker'">
-          <label class="ad-label">Buscar propiedad o comprador<input class="ad-input" v-model="lotSearch" placeholder="Cliente, manzana, lote o desarrollo" /></label>
+          <label class="andarma-field-label">Buscar propiedad o comprador<input class="ad-input" v-model="lotSearch" placeholder="Cliente, manzana, lote o desarrollo" /></label>
           <div class="ad-pay-picker-list">
             <button v-for="lot in clientsLots" :key="lot.id" class="ad-pay-picker-item" @click="openSummary(lot.id)">
               <span><strong>{{lot.development_name}} · {{lot.block||''}} {{lot.code}}</strong><small>{{lot.client_name}} · {{lot.status==='sold'?'Vendida':'Apartada'}}</small></span>
@@ -393,12 +393,12 @@ onMounted(async()=>{
         <form v-else-if="modal==='terms'" id="termsForm" class="space-y-4" @submit.prevent="saveTerms">
           <p class="ad-pay-warning"><i class="fa-solid fa-circle-info"></i> El enganche acordado no se considera pagado hasta registrar su movimiento. Las condiciones se bloquean cuando existe historial de pagos.</p>
           <div class="ad-form-grid">
-            <label class="ad-label">Precio de venta (MXN) *<input v-model.lazy="terms.sale_price" v-money3="mxnMask" type="text" inputmode="decimal" autocomplete="off" class="ad-input" required/></label>
-            <label class="ad-label">Descuento (MXN)<input v-model.lazy="terms.discount_amount" v-money3="mxnMask" type="text" inputmode="decimal" autocomplete="off" class="ad-input" required/></label>
-            <label class="ad-label">Enganche acordado (MXN)<input v-model.lazy="terms.down_payment_amount" v-money3="mxnMask" type="text" inputmode="decimal" autocomplete="off" class="ad-input" required/></label>
-            <label class="ad-label">Mensualidad (MXN) *<input v-model.lazy="terms.monthly_payment_amount" v-money3="mxnMask" type="text" inputmode="decimal" autocomplete="off" class="ad-input" required/></label>
-            <label class="ad-label">Día límite de pago<input v-model="terms.payment_due_day" type="number" min="1" max="31" required class="ad-input"/></label>
-            <label class="ad-label">Primer mes a pagar<input v-model="terms.first_payment_period" type="month" class="ad-input"/></label>
+            <label class="andarma-field-label">Precio de venta (MXN) *<input v-model.lazy="terms.sale_price" v-money3="mxnMask" type="text" inputmode="decimal" autocomplete="off" class="ad-input" required/></label>
+            <label class="andarma-field-label">Descuento (MXN)<input v-model.lazy="terms.discount_amount" v-money3="mxnMask" type="text" inputmode="decimal" autocomplete="off" class="ad-input" required/></label>
+            <label class="andarma-field-label">Enganche acordado (MXN)<input v-model.lazy="terms.down_payment_amount" v-money3="mxnMask" type="text" inputmode="decimal" autocomplete="off" class="ad-input" required/></label>
+            <label class="andarma-field-label">Mensualidad (MXN) *<input v-model.lazy="terms.monthly_payment_amount" v-money3="mxnMask" type="text" inputmode="decimal" autocomplete="off" class="ad-input" required/></label>
+            <label class="andarma-field-label">Día límite de pago<input v-model="terms.payment_due_day" type="number" min="1" max="31" required class="ad-input"/></label>
+            <label class="andarma-field-label">Primer mes a pagar<input v-model="terms.first_payment_period" type="month" class="ad-input"/></label>
             <label class="ad-label ad-form-span">Fecha de venta (opcional)<input v-model="terms.sale_date" type="date" class="ad-input"/></label>
           </div>
           <p class="ad-pay-muted">Monto a financiar: <strong>{{money(Math.max(0,Number(terms.sale_price||0)-Number(terms.discount_amount||0)-Number(terms.down_payment_amount||0)))}}</strong></p>
@@ -408,13 +408,13 @@ onMounted(async()=>{
           <div class="ad-pay-property"><div><span class="ad-pay-kicker">COMPRADOR</span><h3>{{detail?.lot?.client_name}}</h3><p>{{detail?.lot?.development_name}} · {{detail?.lot?.code}}</p></div><span class="ad-badge ad-badge--success">Registro administrativo</span></div>
           <div class="ad-pay-f3-receipt-heading"><strong>Registrar un movimiento</strong><span>Comprueba la fecha, el mes y el importe antes de confirmar.</span></div>
            <div class="ad-form-grid">
-             <label class="ad-label">Fecha real de pago *<input v-model="receipt.paid_at" type="date" required class="ad-input"/></label>
-            <label class="ad-label">Concepto *<select v-model="receipt.payment_type" class="ad-select" @change="setSuggestedAmount"><option value="monthly">Mensualidad</option><option value="down_payment">Enganche</option></select></label>
+             <label class="andarma-field-label">Fecha real de pago *<input v-model="receipt.paid_at" type="date" required class="ad-input"/></label>
+            <label class="andarma-field-label">Concepto *<select v-model="receipt.payment_type" class="ad-select" @change="setSuggestedAmount"><option value="monthly">Mensualidad</option><option value="down_payment">Enganche</option></select></label>
             <label v-if="receipt.payment_type==='monthly'" class="ad-label ad-form-span">Mes al que se aplica *<select v-model="receipt.applied_period" required class="ad-select" @change="onPeriodChange"><option value="">Seleccionar mensualidad</option><option v-for="p in periodOptions" :key="p.period" :value="p.period">{{labelPeriod(p.period)}} · Pendiente {{money(p.pending)}}</option></select></label>
-            <label class="ad-label">Monto registrado (MXN) *<input v-model.lazy="receipt.amount" v-money3="mxnMask" type="text" inputmode="decimal" autocomplete="off" class="ad-input" required/></label>
-            <label class="ad-label">Método de pago *<select v-model="receipt.payment_method" required class="ad-select"><option v-for="(name,key) in methods" :key="key" :value="key">{{name}}</option></select></label>
-            <label class="ad-label">Referencia<input v-model.trim="receipt.reference" class="ad-input" maxlength="150" placeholder="Referencia bancaria"/></label>
-            <label class="ad-label">Folio<input v-model.trim="receipt.folio" class="ad-input" maxlength="150" placeholder="Folio interno"/></label>
+            <label class="andarma-field-label">Monto registrado (MXN) *<input v-model.lazy="receipt.amount" v-money3="mxnMask" type="text" inputmode="decimal" autocomplete="off" class="ad-input" required/></label>
+            <label class="andarma-field-label">Método de pago *<select v-model="receipt.payment_method" required class="ad-select"><option v-for="(name,key) in methods" :key="key" :value="key">{{name}}</option></select></label>
+            <label class="andarma-field-label">Referencia<input v-model.trim="receipt.reference" class="ad-input" maxlength="150" placeholder="Referencia bancaria"/></label>
+            <label class="andarma-field-label">Folio<input v-model.trim="receipt.folio" class="ad-input" maxlength="150" placeholder="Folio interno"/></label>
             <label class="ad-label ad-form-span">Notas<textarea v-model.trim="receipt.notes" class="ad-textarea" maxlength="3000" placeholder="Observaciones del cobro"></textarea></label>
           </div>
           <div class="ad-pay-f3-preview" aria-live="polite">

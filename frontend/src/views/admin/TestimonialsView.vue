@@ -68,7 +68,7 @@ onMounted(load)
  <section class="ad-card ad-test-list">
   <div class="ad-test-toolbar">
    <label class="ad-label ad-test-search">Buscar<input v-model="query" class="ad-input" placeholder="Cliente o comentario" /></label>
-   <label class="ad-label">Mostrar<select v-model="visibility" class="ad-select"><option value="all">Todos</option><option value="active">Visibles</option><option value="inactive">Ocultos</option></select></label>
+   <label class="andarma-field-label">Mostrar<select v-model="visibility" class="ad-select"><option value="all">Todos</option><option value="active">Visibles</option><option value="inactive">Ocultos</option></select></label>
    <span class="ad-badge">{{filtered.length}} testimonios</span>
    <button type="button" class="ad-btn" :disabled="loading" @click="load"><i class="fa-solid fa-rotate"></i> Actualizar</button>
   </div>
@@ -95,8 +95,8 @@ onMounted(load)
    <header class="ad-modal__header"><div><span class="ad-kicker">TESTIMONIOS / {{editing?'EDITAR':'NUEVO'}}</span><h2 id="ad-test-form-title" class="ad-modal-title">{{editing?'Editar testimonio':'Nuevo testimonio'}}</h2><p class="ad-muted">Completa la experiencia del cliente y guarda.</p></div><button type="button" class="ad-icon-btn" aria-label="Cerrar" @click="close"><i class="fa-solid fa-xmark"></i></button></header>
    <form class="ad-test-form" @submit.prevent="save"><div class="ad-modal__body">
     <div class="ad-test-fields">
-     <label class="ad-label">Nombre del cliente *<input v-model.trim="form.name" required minlength="2" maxlength="255" class="ad-input" placeholder="Ej. Familia Ramírez"/></label>
-     <label class="ad-label">Tipo de experiencia<input v-model.trim="form.role" maxlength="255" class="ad-input" placeholder="Ej. Compra de terreno"/></label>
+     <label class="andarma-field-label">Nombre del cliente *<input v-model.trim="form.name" required minlength="2" maxlength="255" class="ad-input" placeholder="Ej. Familia Ramírez"/></label>
+     <label class="andarma-field-label">Tipo de experiencia<input v-model.trim="form.role" maxlength="255" class="ad-input" placeholder="Ej. Compra de terreno"/></label>
      <label class="ad-label ad-test-full">¿Qué comentó el cliente? *<textarea v-model.trim="form.quote" class="ad-textarea" required minlength="10" maxlength="1400" rows="4" placeholder="Escribe aquí sus palabras…"></textarea><span class="ad-test-count">{{form.quote.length}} / 1400</span></label>
      <div class="ad-test-property-photo ad-test-full"><span class="ad-test-label">Imagen de la propiedad o terreno (opcional)</span><p class="ad-muted">Es la fotografía horizontal que aparece arriba del testimonio público.</p><ImageCropUpload v-model="form.property_image_url" label="Fotografía del terreno o vivienda" :ratio="16/9"/><small>Recorta a 16:9. Si no agregas una, se conservará la imagen arquitectónica ilustrativa.</small></div>
      <div class="ad-test-photo"><span class="ad-test-label">Fotografía del cliente (opcional)</span><ImageCropUpload v-model="form.image_url" label="Fotografía del cliente" :ratio="1"/><small>Usa una fotografía autorizada. Si no tienes una, aparecerá su inicial.</small></div>
