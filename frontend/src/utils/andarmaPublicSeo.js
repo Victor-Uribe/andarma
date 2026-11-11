@@ -30,7 +30,9 @@ function setDocumentMeta(title, description, admin = false) {
   document.title = title
   setName('description', description)
   // Indexacion bloqueada: el dominio ANDARMA actual es un entorno temporal.
-  setName('robots', admin ? 'noindex, nofollow' : 'noindex, follow')
+  // Sitio publico principal indexable; admin y preview no indexables.
+  const isProductionDomain = ['andarma.com.mx', 'www.andarma.com.mx'].includes(window.location.hostname)
+  setName('robots', admin ? 'noindex, nofollow' : (isProductionDomain ? 'index, follow' : 'noindex, follow'))
   setProperty('og:type', 'website')
   setProperty('og:site_name', 'ANDARMA')
   setProperty('og:locale', 'es_MX')

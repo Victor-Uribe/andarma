@@ -45,16 +45,17 @@
   const loader=document.getElementById('brandLoader');
   const heroImage=document.querySelector('.hero-slide.active .hero-image');
   const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const mobile=window.matchMedia('(max-width: 767px)').matches;
   const start=performance.now();
   let completed=false;
   function release(){
     if(completed)return;completed=true;
-    const remaining=reduced?0:Math.max(0,950-(performance.now()-start));
+    const remaining=reduced?0:Math.max(0,(mobile?350:950)-(performance.now()-start));
     setTimeout(()=>{loader.classList.add('is-done');document.body.classList.remove('is-loading');setTimeout(()=>loader.remove(),800)},remaining);
   }
   if(!heroImage||heroImage.complete)release();
   else {heroImage.addEventListener('load',release,{once:true});heroImage.addEventListener('error',release,{once:true});}
-  setTimeout(release,3200);
+  setTimeout(release,mobile?1600:3200);
 })();
 
 

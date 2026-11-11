@@ -32,13 +32,14 @@ async function hydrateHeroBanners() {
       editorial_label:b.editorial_label||'',side_title:b.side_title||'',side_description:b.side_description||''
     }))
     const anchor = originals[0]
-    for (const b of banners) {
+    for (const [bannerIndex, b] of banners.entries()) {
       const panel=document.createElement('div')
       panel.className='hero-slide'
       panel.setAttribute('aria-hidden','true')
       const img=document.createElement('img')
       img.className='hero-image';img.alt=b.title
-      img.src=b.image_url;img.decoding='async';img.loading='lazy'
+      img.src=b.image_url;img.decoding='async';img.loading=bannerIndex===0?'eager':'lazy'
+      if (bannerIndex===0) img.fetchPriority='high'
       const shade=document.createElement('div');shade.className='hero-shade'
       panel.append(img,shade)
       anchor.parentNode.insertBefore(panel,anchor)
@@ -55,7 +56,6 @@ async function hydrateHeroBanners() {
   }
 }
 async function hydrateContent() {
-  controller = new AbortController()
   try {
     const response = await fetch(`${API}/public/site-content`, {signal: controller.signal, headers: {Accept:'application/json'}})
     if (!response.ok) return
@@ -111,8 +111,11 @@ onMounted(async () => {
   document.addEventListener('click', trackWhatsAppClick, {capture:true})
   await nextTick()
   initBackTop()
-  await hydrateContent()
-  await hydrateTestimonials()
+  controller = new AbortController()
+  // Contenido y testimonios no deben retrasar el hero ni su loader.
+  void hydrateContent()
+  void hydrateTestimonials()
+  // Conservar el comportamiento de los banners y su inicialización animada.
   await hydrateHeroBanners()
   // Original animation controller retained temporarily for visual fidelity in migration stage 1.
   legacyScript = document.createElement('script')
@@ -132,7 +135,7 @@ onBeforeUnmount(() => {
 <div aria-label="Cargando ANDARMA" aria-live="polite" class="brand-loader" id="brandLoader" role="status">
 <div aria-hidden="true" class="brand-loader__grid"></div>
 <div class="brand-loader__center">
-<div class="brand-loader__mark"><img alt="" height="80" src="/andarma-assets/andarma-logo-02373ac32d254be1.png" width="152"/></div>
+<div class="brand-loader__mark"><img alt="" height="80" src="/andarma-logo-original.webp" width="152"/></div>
 <div class="brand-loader__name">ANDARMA</div>
 <div class="brand-loader__sub">D E S A R R O L L O S</div>
 <div aria-hidden="true" class="brand-loader__track"><span></span></div>
@@ -144,7 +147,7 @@ onBeforeUnmount(() => {
 <main>
 <AndarmaPublicNavbar />
 <section aria-label="ANDARMA, proyectos inmobiliarios" class="hero ad-showreel" id="inicio">
-<div aria-hidden="false" class="hero-slide active"><img alt="Arquitectura residencial contemporánea" class="hero-image" decoding="async" fetchpriority="high" loading="eager" src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&amp;fit=crop&amp;w=2400&amp;q=85"/><div class="hero-shade"></div></div>
+<div aria-hidden="false" class="hero-slide active"><img alt="Arquitectura residencial contemporánea" class="hero-image" decoding="async" fetchpriority="high" loading="eager" src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&amp;fit=crop&amp;w=1280&amp;q=72" srcset="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&amp;fit=crop&amp;w=480&amp;q=72 480w, https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&amp;fit=crop&amp;w=720&amp;q=72 720w, https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&amp;fit=crop&amp;w=960&amp;q=72 960w, https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&amp;fit=crop&amp;w=1280&amp;q=72 1280w, https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&amp;fit=crop&amp;w=1600&amp;q=72 1600w, https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&amp;fit=crop&amp;w=1920&amp;q=72 1920w" sizes="100vw" data-andarma-pagespeed-f4="hero-inicial"/><div class="hero-shade"></div></div>
 <div aria-hidden="true" class="hero-slide"><img alt="Arquitectura y entorno natural" class="hero-image" decoding="async" loading="lazy" src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&amp;fit=crop&amp;w=2400&amp;q=85"/><div class="hero-shade"></div></div>
 <div aria-hidden="true" class="hero-slide"><img alt="Diseño interior contemporáneo" class="hero-image" decoding="async" loading="lazy" src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&amp;fit=crop&amp;w=2400&amp;q=85"/><div class="hero-shade"></div></div>
 <div class="hero-inner">
@@ -186,7 +189,7 @@ onBeforeUnmount(() => {
 <a class="about-cta" href="#contacto"><span>Hablar con un asesor</span><span aria-hidden="true" class="ad-showcase__cta-arrow">↗</span></a>
 </div>
 <div class="ad-showcase__media">
-<img alt="Vivienda contemporánea rodeada de vegetación; fotografía ilustrativa de la visión de ANDARMA" class="ad-showcase__image" decoding="async" loading="lazy" src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&amp;fit=crop&amp;w=1800&amp;q=85"/>
+<img alt="Vivienda contemporánea rodeada de vegetación; fotografía ilustrativa de la visión de ANDARMA" class="ad-showcase__image" decoding="async" loading="lazy" src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&amp;fit=crop&amp;w=1000&amp;q=70" srcset="https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&amp;fit=crop&amp;w=400&amp;q=70 400w, https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&amp;fit=crop&amp;w=640&amp;q=70 640w, https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&amp;fit=crop&amp;w=800&amp;q=70 800w, https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&amp;fit=crop&amp;w=1000&amp;q=70 1000w, https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&amp;fit=crop&amp;w=1280&amp;q=70 1280w, https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&amp;fit=crop&amp;w=1600&amp;q=70 1600w" sizes="(max-width: 750px) 100vw, (max-width: 1150px) 60vw, 50vw" data-andarma-pagespeed-f4="acerca-de-andarma"/>
 <div class="ad-showcase__image-top"><span class="ad-showcase__image-line"></span> UNA FORMA DE VIVIR</div>
 <span class="ad-showcase__image-caption"><small>01 / NUESTRO ENFOQUE</small> Espacios para lo que viene.</span>
 </div>

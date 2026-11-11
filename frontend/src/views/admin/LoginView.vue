@@ -1,4 +1,5 @@
 <script setup>
+import '../../assets/andarma-admin-route-styles.js'
 import '../../assets/andarma-brand-admin.css'
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'

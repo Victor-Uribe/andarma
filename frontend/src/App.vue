@@ -33,7 +33,7 @@ onBeforeUnmount(clearLoaderTimer)
     <div v-if="showLoader" aria-label="Cargando ANDARMA" aria-live="polite" class="brand-loader" id="adRouteBrandLoader" role="status">
     <div aria-hidden="true" class="brand-loader__grid"></div>
     <div class="brand-loader__center">
-    <div class="brand-loader__mark"><img alt="" height="80" src="/andarma-assets/andarma-logo-02373ac32d254be1.png" width="152"/></div>
+    <div class="brand-loader__mark"><img alt="" height="80" src="/andarma-logo-original.webp" width="152"/></div>
     <div class="brand-loader__name">ANDARMA</div>
     <div class="brand-loader__sub">D E S A R R O L L O S</div>
     <div aria-hidden="true" class="brand-loader__track"><span></span></div>

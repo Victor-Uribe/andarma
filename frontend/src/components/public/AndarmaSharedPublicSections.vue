@@ -200,7 +200,7 @@ onBeforeUnmount(()=>{requestController?.abort();observer?.disconnect();cleanup.f
 <div class="ad-footer__grid">
 <div class="ad-footer__identity">
 <a aria-label="ANDARMA — regresar al inicio" class="ad-footer__logo" :href="homeAnchor('inicio')">
-<img alt="" class="ad-footer__mark" height="58" loading="lazy" src="/andarma-assets/andarma-logo-02373ac32d254be1.png" width="68"/>
+<img alt="" class="ad-footer__mark" height="58" loading="lazy" src="/andarma-logo-original.webp" width="68"/>
 <span><span class="ad-footer__word">ANDARMA</span><span class="ad-footer__subword">DESARROLLOS</span></span>
 </a>
 <p class="ad-footer__description">Espacios para construir nuevas historias. Conoce nuestras opciones de terrenos y viviendas, y recibe acompañamiento en tu próximo proyecto.</p>

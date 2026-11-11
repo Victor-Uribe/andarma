@@ -9,8 +9,20 @@ const menuOpen = ref(false)
 // ANDARMA_FASE3G_NAVBAR_SCROLL_HOME
 // Misma transición que Home: fondo transparente sobre el hero y blanco al bajar.
 const scrolled = ref(false)
+// La altura de la ventana se calcula al iniciar y al cambiar tamaño,
+// no durante cada evento de desplazamiento.
+let scrollThreshold = 75
+let scrollFrame = null
 const updateScrolled = () => {
-  scrolled.value = window.scrollY > Math.max(75, window.innerHeight * .4)
+  if (scrollFrame !== null) return
+  scrollFrame = window.requestAnimationFrame(() => {
+    scrollFrame = null
+    scrolled.value = window.scrollY > scrollThreshold
+  })
+}
+const updateViewport = () => {
+  scrollThreshold = Math.max(75, window.innerHeight * .4)
+  updateScrolled()
 }
 const { whatsAppUrl } = useAndarmaPublicWhatsApp()
 function toggleMobile() {menuOpen.value = !menuOpen.value}
@@ -19,19 +31,20 @@ watch(() => route.fullPath, () => {menuOpen.value=false})
 onMounted(() => {
   window.addEventListener('keydown',closeOnEscape)
   window.addEventListener('scroll',updateScrolled,{passive:true})
-  window.addEventListener('resize',updateScrolled,{passive:true})
-  updateScrolled()
+  window.addEventListener('resize',updateViewport,{passive:true})
+  updateViewport()
 })
 onBeforeUnmount(() => {
   window.removeEventListener('keydown',closeOnEscape)
   window.removeEventListener('scroll',updateScrolled)
-  window.removeEventListener('resize',updateScrolled)
+  window.removeEventListener('resize',updateViewport)
+  if (scrollFrame !== null) window.cancelAnimationFrame(scrollFrame)
 })
 </script>
 <template>
 <header class="topbar" :class="{'is-scrolled': scrolled}">
 <div class="topbar-inner">
-<a aria-label="ANDARMA, ir al inicio" class="brand" :href="isHome ? '#inicio' : '/#inicio'"><span aria-hidden="true" class="brand-symbol"><img class="andarma-brand-blue" alt="" decoding="async" height="40" src="/andarma-assets/andarma-logo-02373ac32d254be1.png" width="60"/><img class="andarma-brand-white" src="/andarma-logo-blanco.png" alt="" aria-hidden="true" decoding="async" width="52" height="52"/></span><span><span class="brand-word">ANDARMA</span><span class="brand-caption">DESARROLLO INMOBILIARIO</span></span></a>
+<a aria-label="ANDARMA, ir al inicio" class="brand" :href="isHome ? '#inicio' : '/#inicio'"><span aria-hidden="true" class="brand-symbol"><img class="andarma-brand-blue" alt="" decoding="async" height="40" src="/andarma-logo-original.webp" width="60"/><img class="andarma-brand-white" src="/andarma-logo-blanco.webp" alt="" aria-hidden="true" decoding="async" width="52" height="52"/></span><span><span class="brand-word">ANDARMA</span><span class="brand-caption">DESARROLLO INMOBILIARIO</span></span></a>
 <nav aria-label="Navegación principal" class="desktop-nav flex items-center gap-9"><a class="nav-link" :href="isHome ? '#inicio' : '/#inicio'">Inicio</a><a class="nav-link" :href="isHome ? '#nosotros' : '/#nosotros'">Nosotros</a><a class="nav-link" href="/desarrollos">Desarrollos</a><a class="nav-link" :href="isHome ? '#como-comprar' : '/#como-comprar'">Cómo comprar</a><a class="nav-link" :href="isHome ? '#contacto' : '/#contacto'">Contacto</a></nav>
 <a class="nav-contact" :href="whatsAppUrl || '/desarrollos'" :target="whatsAppUrl ? '_blank' : undefined" rel="noopener noreferrer">{{ whatsAppUrl ? 'Hablemos de tu proyecto' : 'Explorar desarrollos' }} <i aria-hidden="true" class="fa-solid fa-arrow-up-right-from-square"></i></a>
 <button aria-controls="mobileNav" :aria-expanded="isHome ? false : menuOpen" :aria-label="isHome ? 'Abrir menú' : (menuOpen ? 'Cerrar menú' : 'Abrir menú')" class="mobile-toggle" id="menuToggle" @click="!isHome && toggleMobile()"><i aria-hidden="true" class="fa-solid fa-bars"></i></button>
