@@ -178,7 +178,7 @@ import '../../assets/andarma-fase3t-filtros-sticky.css' // ANDARMA_FASE3T_FILTRO
                   <img :src="plan.image_url" :alt="`Plano del desarrollo ${development.name}: ${plan.title}`" loading="lazy" decoding="async" />
                   <svg viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-label="Terrenos ubicados dentro del plano">
                     <template v-for="lot in polygons" :key="lot.lot_id">
-                      <polygon v-if="isVisibleLot(lot)" class="adp2d-lot-depth" :class="{'is-selected':selected?.lot_id===lot.lot_id}" :points="points(lot)" :fill="statusColors[lot.status]" :fill-opacity="selected?.lot_id === lot.lot_id ? .74 : .08" stroke="none" transform="translate(0 7)" pointer-events="none" aria-hidden="true" />
+                      <polygon v-if="isVisibleLot(lot)" class="adp2d-lot-depth" :class="{'is-selected':selected?.lot_id===lot.lot_id}" :points="points(lot)" :fill="statusColors[lot.status]" :fill-opacity="selected?.lot_id === lot.lot_id ? .5 : .08" stroke="none" transform="translate(0)" pointer-events="none" aria-hidden="true" />
                       <polygon v-if="isVisibleLot(lot)" class="adp2d-lot-face" :class="{'is-selected':selected?.lot_id===lot.lot_id}" :points="points(lot)" :fill="statusColors[lot.status]" :fill-opacity="selected?.lot_id === lot.lot_id ? .68 : .33" :stroke="selected?.lot_id===lot.lot_id?'#0066e0':'#ffffffc9'" :stroke-width="selected?.lot_id===lot.lot_id?5:2" vector-effect="non-scaling-stroke" tabindex="0" role="button" :aria-label="`Lote ${lot.code}, ${statusNames[lot.status]}`" @pointerdown.stop="startDrag($event)" @click.stop="choose(lot)" @keydown.enter.prevent="choose(lot)" @keydown.space.prevent="choose(lot)" />
                     </template>
                   </svg>

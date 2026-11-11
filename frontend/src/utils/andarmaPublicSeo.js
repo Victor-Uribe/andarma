@@ -1,9 +1,9 @@
 // ANDARMA_FASE4A_SEO_PREVIEW_V1
 // Sitio temporal. No generar canonical/sitemap ni liberar la indexacion.
-const HOME_TITLE = 'ANDARMA | Espacios para lo que viene'
-const HOME_DESCRIPTION = 'Conoce los desarrollos inmobiliarios de ANDARMA, terrenos y opciones de vivienda para construir tu siguiente etapa.'
-const DESARROLLOS_TITLE = 'Desarrollos y terrenos | ANDARMA'
-const DESARROLLOS_DESCRIPTION = 'Explora los desarrollos de ANDARMA, consulta los planos de terrenos y conoce las opciones disponibles para tu patrimonio.'
+const HOME_TITLE = 'ANDARMA | Desarrollos inmobiliarios en el Estado de México'
+const HOME_DESCRIPTION = 'Conoce los proyectos inmobiliarios de ANDARMA. Explora desarrollos, ubicaciones y planos de terrenos en el Estado de México.'
+const DESARROLLOS_TITLE = 'Desarrollos y terrenos en el Estado de México | ANDARMA'
+const DESARROLLOS_DESCRIPTION = 'Explora los desarrollos publicados de ANDARMA. Consulta ubicaciones, características y planos para conocer cada proyecto inmobiliario.'
 const DETAIL_TITLE = 'Información del desarrollo | ANDARMA'
 const DETAIL_DESCRIPTION = 'Consulta la ubicación, la información y el plano interactivo de los desarrollos inmobiliarios de ANDARMA.'
 
@@ -38,9 +38,31 @@ function setDocumentMeta(title, description, admin = false) {
   setProperty('og:locale', 'es_MX')
   setProperty('og:title', title)
   setProperty('og:description', description)
-  setName('twitter:card', 'summary')
+  setName('twitter:card', 'summary_large_image')
   setName('twitter:title', title)
   setName('twitter:description', description)
+  // ANDARMA_SEO_V2_CLIENT: metadatos al navegar sin recargar el sitio.
+  // La vista previa del enlace al entrar directamente depende del HTML servido por PHP.
+  const base = 'https://andarma.com.mx'
+  const pathname = window.location.pathname.replace(/\/$/, '') || '/'
+  let canonical = document.head.querySelector('link[rel="canonical"]')
+  if (admin || !isProductionDomain) {
+    canonical?.remove()
+  } else {
+    const canonicalUrl = base + (pathname === '/' ? '/' : pathname)
+    if (!canonical) {
+      canonical = document.createElement('link')
+      canonical.rel = 'canonical'
+      document.head.appendChild(canonical)
+    }
+    canonical.href = canonicalUrl
+    setProperty('og:url', canonicalUrl)
+    const image = pathname === '/desarrollos' ? '/og-andarma.jpg' : '/og-andarma.jpg'
+    setProperty('og:image', base + image)
+    setName('twitter:image', base + image)
+    setProperty('og:image:alt', title)
+  }
+
 }
 
 export function applyAndarmaSeo(route) {
@@ -71,6 +93,18 @@ export function updateAndarmaDevelopmentSeo(path, development) {
   const where = location ? ` en ${location}` : ''
   const description = `Conoce ${name}${where}. Explora la información del desarrollo y consulta su plano interactivo de terrenos en ANDARMA.`
   setDocumentMeta(`${name} | Desarrollos ANDARMA`, description)
+  // En detalles dinamicos priorizar portada REAL del desarrollo publicada en la API.
+  const image = String(development.image_url || development.cover_image_url || development.hero_image_url || '').trim()
+  if (image) {
+    try {
+      const u = new URL(image, window.location.origin)
+      if (u.protocol === 'https:' && ['andarma.com.mx','www.andarma.com.mx'].includes(u.hostname)) {
+        setProperty('og:image', u.href)
+        setName('twitter:image', u.href)
+      }
+    } catch (_err) { /* conservar imagen de respaldo */ }
+  }
+
 }
 
 export function installAndarmaSeo(router) {
