@@ -42,6 +42,134 @@ function mapPanEnd(event) {
 const mapSearch = ref('') // filtro local: no agrega solicitudes al servidor
 const plans = ref([]), developments = ref([]), superadmin = ref(false), plan = ref(null), polygons = ref([]), available = ref([]), loading = ref(false), modal = ref(false), saving = ref(false), imageEl = ref(null), viewport = ref(null)
 const selected = ref(null), drawing = ref(false), draft = ref([]), lotId = ref(''), editGeometryId = ref(null)
+// ANDARMA_GEOMETRY_EDITOR_DRAG_V1: correcciones locales sin alterar el lote asociado.
+const draftHistory = ref([]), originalEditPoints = ref([]), activeVertex = ref(null), editLotLabel = ref('')
+let draggingVertex = null
+const edgeMidpoints = computed(() => editGeometryId.value && draft.value.length >= 3
+  ? draft.value.map((pt, index) => {
+      const other = draft.value[(index + 1) % draft.value.length]
+      return { index, x: (Number(pt.x) + Number(other.x)) / 2, y: (Number(pt.y) + Number(other.y)) / 2 }
+    })
+  : [])
+const clonePoints = pts => (pts || []).map(pt => ({ x: Number(pt.x), y: Number(pt.y) }))
+const clampMap = value => Math.max(0, Math.min(1000, Math.round(value * 10) / 10))
+function pointerMapPoint(event) {
+  if (!viewport.value) return null
+  const bounds = viewport.value.getBoundingClientRect()
+  if (!bounds.width || !bounds.height) return null
+  return {
+    x: clampMap((event.clientX - bounds.left) / bounds.width * 1000),
+    y: clampMap((event.clientY - bounds.top) / bounds.height * 1000)
+  }
+}
+function rememberDraft() {
+  draftHistory.value = [...draftHistory.value.slice(-29), clonePoints(draft.value)]
+}
+function undoDraft() {
+  if (!draftHistory.value.length) return
+  draft.value = draftHistory.value[draftHistory.value.length - 1]
+  draftHistory.value = draftHistory.value.slice(0, -1)
+  activeVertex.value = null
+}
+function resetDraft() {
+  rememberDraft()
+  draft.value = editGeometryId.value ? clonePoints(originalEditPoints.value) : []
+  activeVertex.value = null
+}
+function startVertexDrag(event, index, saveHistory = true) {
+  if (!drawing.value || !editGeometryId.value || !superadmin.value) return
+  if (event.pointerType === 'mouse' && event.button !== 0) return
+  event.preventDefault()
+  event.stopPropagation()
+  if (saveHistory) rememberDraft()
+  activeVertex.value = index
+  draggingVertex = { pointerId: event.pointerId, index }
+  const svg = event.currentTarget.ownerSVGElement || event.currentTarget
+  try { svg.setPointerCapture(event.pointerId) } catch (_) { /* La edición sigue con eventos locales */ }
+}
+function moveVertexDrag(event) {
+  if (!draggingVertex || event.pointerId !== draggingVertex.pointerId) return
+  const point = pointerMapPoint(event)
+  if (!point) return
+  const next = clonePoints(draft.value)
+  next[draggingVertex.index] = point
+  draft.value = next
+  if (event.cancelable) event.preventDefault()
+}
+function finishVertexDrag(event) {
+  if (!draggingVertex || (event && draggingVertex.pointerId !== event.pointerId)) return
+  if (event) {
+    const svg = event.currentTarget.ownerSVGElement || event.currentTarget
+    try { if (svg.hasPointerCapture(event.pointerId)) svg.releasePointerCapture(event.pointerId) } catch (_) { }
+  }
+  draggingVertex = null
+}
+function insertEdgeVertex(event, edgeIndex) {
+  if (!drawing.value || !editGeometryId.value || draft.value.length >= 40) return
+  if (event.pointerType === 'mouse' && event.button !== 0) return
+  event.preventDefault()
+  event.stopPropagation()
+  const start = draft.value[edgeIndex]
+  const end = draft.value[(edgeIndex + 1) % draft.value.length]
+  const pointer = pointerMapPoint(event)
+  if (!pointer || !start || !end) return
+  // El punto nuevo siempre se inserta ENTRE los dos vértices del borde elegido.
+  const dx = Number(end.x) - Number(start.x), dy = Number(end.y) - Number(start.y)
+  const lenSq = dx * dx + dy * dy
+  const t = lenSq ? Math.max(.05, Math.min(.95, ((pointer.x - start.x) * dx + (pointer.y - start.y) * dy) / lenSq)) : .5
+  const inserted = { x: clampMap(Number(start.x) + dx * t), y: clampMap(Number(start.y) + dy * t) }
+  rememberDraft()
+  const newPoints = clonePoints(draft.value)
+  newPoints.splice(edgeIndex + 1, 0, inserted)
+  draft.value = newPoints
+  startVertexDrag(event, edgeIndex + 1, false)
+}
+function removeActiveVertex() {
+  if (!editGeometryId.value || activeVertex.value === null || draft.value.length <= 3) return
+  rememberDraft()
+  draft.value = draft.value.filter((_, i) => i !== activeVertex.value)
+  activeVertex.value = null
+}
+function nudgeVertex(event, index) {
+  if (!editGeometryId.value) return
+  const delta = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[event.key]
+  if (!delta) return
+  event.preventDefault()
+  event.stopPropagation()
+  rememberDraft()
+  const step = event.shiftKey ? .5 : 2
+  const next = clonePoints(draft.value)
+  next[index] = { x: clampMap(next[index].x + step * delta[0]), y: clampMap(next[index].y + step * delta[1]) }
+  draft.value = next
+  activeVertex.value = index
+}
+function invalidGeometry(points) {
+  if (points.length < 3) return 'El terreno necesita al menos tres vértices.'
+  if (points.some((p, i) => { const q = points[(i + 1) % points.length]; return Math.hypot(p.x - q.x, p.y - q.y) < .5 }))
+    return 'Hay vértices consecutivos demasiado cercanos.'
+  let area = 0
+  for (let i = 0; i < points.length; i++) { const j = (i + 1) % points.length; area += points[i].x * points[j].y - points[j].x * points[i].y }
+  if (Math.abs(area) < 10) return 'El polígono está alineado o es demasiado pequeño.'
+  const cross = (a, b, c) => (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x)
+  const onSegment = (a, b, p) => Math.abs(cross(a, b, p)) < .0001 && p.x >= Math.min(a.x, b.x) - .0001 && p.x <= Math.max(a.x, b.x) + .0001 && p.y >= Math.min(a.y, b.y) - .0001 && p.y <= Math.max(a.y, b.y) + .0001
+  function intersects(a, b, c, d) {
+    const abC = cross(a, b, c), abD = cross(a, b, d), cdA = cross(c, d, a), cdB = cross(c, d, b)
+    return (abC * abD < 0 && cdA * cdB < 0) ||
+      (Math.abs(abC) < .0001 && onSegment(a, b, c)) ||
+      (Math.abs(abD) < .0001 && onSegment(a, b, d)) ||
+      (Math.abs(cdA) < .0001 && onSegment(c, d, a)) ||
+      (Math.abs(cdB) < .0001 && onSegment(c, d, b))
+  }
+  for (let i = 0; i < points.length; i++) {
+    for (let j = i + 1; j < points.length; j++) {
+      if ((i + 1) % points.length === j || (j + 1) % points.length === i) continue
+      if (intersects(points[i], points[(i + 1) % points.length], points[j], points[(j + 1) % points.length]))
+        return 'El contorno se cruza consigo mismo. Ajusta los vértices antes de guardar.'
+    }
+  }
+  return ''
+}
+
 const priceEditing = ref(false), priceDraft = ref(''), priceSaving = ref(false), showMapLibrary = ref(false)
 const selectedDialog = ref(null), selectedCloseButton = ref(null)
 let selectedReturnFocus = null
@@ -106,11 +234,51 @@ async function saveRename() {
 
 async function create() { if (saving.value) return; if (!planForm.value.development_id || !planForm.value.title.trim() || !planForm.value.image) { err(new Error('Selecciona desarrollo, título e imagen del plano.')); return } saving.value = true; try { const fd = new FormData(); fd.append('development_id', planForm.value.development_id); fd.append('title', planForm.value.title); fd.append('image', planForm.value.image); const r = await post('/admin/im/maps', fd); modal.value = false; ok('Mapa creado'); await loadList(); router.push('/admin/mapas/' + r.data.id) } catch (e) { err(e) } finally { saving.value = false } }
 async function delPlan(p) { if (!await confirmAction('Eliminar plano', 'Solo podrás eliminar mapas sin polígonos. El inventario de lotes nunca se eliminará.')) return; try { await remove('/admin/im/maps/' + p.id); ok('Mapa eliminado'); await loadList() } catch (e) { err(e) } }
-function begin() { if (!superadmin.value) return; drawing.value = true; draft.value = []; editGeometryId.value = null; selected.value = null; lotId.value = '' }
-function redraw() { if (!superadmin.value || !selected.value) return; editGeometryId.value = selected.value.id; draft.value = [...selected.value.points.map(p => ({ ...p }))]; lotId.value = String(selected.value.lot_id); drawing.value = true }
-function cancelDraw() { drawing.value = false; draft.value = []; editGeometryId.value = null; lotId.value = '' }
-function clickImage(e) { if (!drawing.value || !superadmin.value || !viewport.value || draft.value.length >= 40) return; const bounds = viewport.value.getBoundingClientRect(); if (!bounds.width || !bounds.height) return; const x = Math.max(0, Math.min(1000, ((e.clientX - bounds.left) / bounds.width) * 1000)); const y = Math.max(0, Math.min(1000, ((e.clientY - bounds.top) / bounds.height) * 1000)); draft.value = [...draft.value, { x: Math.round(x * 10) / 10, y: Math.round(y * 10) / 10 }] }
-async function savePolygon() { if (saving.value) return; if (draft.value.length < 3) { err(new Error('Marca al menos tres vértices del terreno.')); return } if (!editGeometryId.value && !lotId.value) { err(new Error('Selecciona el terreno que corresponde a este polígono.')); return } saving.value = true; try { if (editGeometryId.value) await put('/admin/im/maps/' + plan.value.id + '/polygons/' + editGeometryId.value, { points: draft.value }); else await post('/admin/im/maps/' + plan.value.id + '/polygons', { lot_id: Number(lotId.value), points: draft.value }); ok(editGeometryId.value ? 'Polígono actualizado' : 'Lote vinculado al mapa'); await openPlan(plan.value.id) } catch (e) { err(e) } finally { saving.value = false } }
+function begin() {
+  if (!superadmin.value) return
+  drawing.value = true; draft.value = []; editGeometryId.value = null; selected.value = null; lotId.value = ''
+  originalEditPoints.value = []; draftHistory.value = []; activeVertex.value = null; editLotLabel.value = ''
+}
+function redraw() {
+  if (!superadmin.value || !selected.value) return
+  const poly = selected.value
+  editGeometryId.value = poly.id
+  draft.value = clonePoints(poly.points)
+  originalEditPoints.value = clonePoints(poly.points)
+  lotId.value = String(poly.lot_id)
+  editLotLabel.value = [poly.block, poly.code].filter(Boolean).join(' · ')
+  draftHistory.value = []; activeVertex.value = null
+  drawing.value = true
+  selected.value = null // Cierra la ficha para permitir editar directamente sobre el mapa.
+}
+function cancelDraw() {
+  drawing.value = false; draft.value = []; editGeometryId.value = null; lotId.value = ''
+  draftHistory.value = []; originalEditPoints.value = []; activeVertex.value = null; editLotLabel.value = ''
+  draggingVertex = null; selected.value = null
+}
+function clickImage(e) {
+  // En edición NO agregar al final: los puntos nuevos solo se insertan sobre un borde.
+  if (!drawing.value || editGeometryId.value || !superadmin.value || draft.value.length >= 40) return
+  const point = pointerMapPoint(e)
+  if (!point) return
+  rememberDraft()
+  draft.value = [...draft.value, point]
+}
+async function savePolygon() {
+  if (saving.value) return
+  const issue = invalidGeometry(draft.value)
+  if (issue) { err(new Error(issue)); return }
+  if (!editGeometryId.value && !lotId.value) { err(new Error('Selecciona el terreno que corresponde a este polígono.')); return }
+  saving.value = true
+  try {
+    if (editGeometryId.value)
+      await put('/admin/im/maps/' + plan.value.id + '/polygons/' + editGeometryId.value, { points: draft.value })
+    else
+      await post('/admin/im/maps/' + plan.value.id + '/polygons', { lot_id: Number(lotId.value), points: draft.value })
+    ok(editGeometryId.value ? 'Contorno actualizado' : 'Lote vinculado al mapa')
+    await openPlan(plan.value.id)
+  } catch (e) { err(e) } finally { saving.value = false }
+}
 async function delPolygon() { if (!selected.value) return; if (!await confirmAction('Desvincular polígono', 'Solo se elimina la ubicación visual; la propiedad, su comprador y pagos se conservan.')) return; try { await remove('/admin/im/maps/' + plan.value.id + '/polygons/' + selected.value.id); ok('Polígono desvinculado'); await openPlan(plan.value.id) } catch (e) { err(e) } }
 function selectedPolygon(poly) { if (drawing.value || Date.now() < mapPanSuppressUntil) return; selectedReturnFocus = typeof document !== 'undefined' ? document.activeElement : null; selected.value = poly }
 function closeSelected() { selected.value = null; priceEditing.value = false }
@@ -275,39 +443,67 @@ onMounted(async () => { await loadList(); if (route.params.id) await openPlan(ro
           :class="{ 'ad-pan-scroll--drawing': drawing, 'ad-pan-scroll--dragging': mapDragging }" @pointerdown="mapPanDown"
           @pointermove="mapPanMove" @pointerup="mapPanEnd" @pointercancel="mapPanEnd" @lostpointercapture="mapPanEnd">
           <div ref="viewport" class="ad-plan-canvas" :style="mapZoomStyle" :class="{ drawing: drawing }"
-            @click="clickImage"><img ref="imageEl" :src="plan.image_url" :alt="plan.title" draggable="false" /><svg
-              class="ad-plan-svg" viewBox="0 0 1000 1000" preserveAspectRatio="none"
-              aria-label="Polígonos de los terrenos">
-              <g v-for="poly in polygons" :key="poly.id" @click.stop="selectedPolygon(poly)">
-                <polygon :points="pointsString(poly.points)" :fill="statusColor(poly.status)"
-                  :fill-opacity="selected?.id === poly.id ? .48 : .25"
-                  :stroke="selected?.id === poly.id ? '#003A8C' : statusColor(poly.status)" stroke-width="3"
-                  vector-effect="non-scaling-stroke" class="ad-shape" /><text :x="center(poly).x" :y="center(poly).y"
-                  text-anchor="middle" dominant-baseline="middle" fill="#102F4B" font-size="20" font-weight="750"
-                  style="pointer-events:none">{{ poly.code }}</text>
-              </g>
-              <polyline v-if="drawing && draft.length" :points="pointsString(draft)" fill="none" stroke="#0066E0"
-                stroke-width="3" vector-effect="non-scaling-stroke" />
-              <circle v-for="(pt, i) in draft" :key="i" :cx="pt.x" :cy="pt.y" r="6" fill="#fff" stroke="#0066E0"
-                stroke-width="2" vector-effect="non-scaling-stroke" />
-            </svg></div>
+             @click="clickImage"><img ref="imageEl" :src="plan.image_url" :alt="plan.title" draggable="false" /><svg
+               class="ad-plan-svg" :class="{ 'ad-geometry-edit': drawing && editGeometryId }"
+               viewBox="0 0 1000 1000" preserveAspectRatio="none"
+               aria-label="Polígonos de los terrenos" @pointermove="moveVertexDrag"
+               @pointerup="finishVertexDrag" @pointercancel="finishVertexDrag">
+               <g v-for="poly in polygons" :key="poly.id" @click.stop="selectedPolygon(poly)"
+                 v-show="!(drawing && editGeometryId === poly.id)">
+                 <polygon :points="pointsString(poly.points)" :fill="statusColor(poly.status)"
+                   :fill-opacity="selected?.id === poly.id ? .48 : .25"
+                   :stroke="selected?.id === poly.id ? '#003A8C' : statusColor(poly.status)" stroke-width="3"
+                   vector-effect="non-scaling-stroke" class="ad-shape" /><text :x="center(poly).x" :y="center(poly).y"
+                   text-anchor="middle" dominant-baseline="middle" fill="#102F4B" font-size="20" font-weight="750"
+                   style="pointer-events:none">{{ poly.code }}</text>
+               </g>
+               <polyline v-if="drawing && !editGeometryId && draft.length" :points="pointsString(draft)" fill="none" stroke="#0066E0"
+                 stroke-width="3" vector-effect="non-scaling-stroke" style="pointer-events:none" />
+               <circle v-for="(pt, i) in (!editGeometryId ? draft : [])" :key="'new-' + i" :cx="pt.x" :cy="pt.y" r="6" fill="#fff" stroke="#0066E0"
+                 stroke-width="2" vector-effect="non-scaling-stroke" style="pointer-events:none" />
+               <!-- El polígono en edición se cierra visualmente, no se dibuja como línea abierta. -->
+               <polygon v-if="drawing && editGeometryId && draft.length >= 3" :points="pointsString(draft)"
+                 fill="#0891FF" fill-opacity=".12" stroke="#0066E0" stroke-width="3"
+                 stroke-linejoin="round" vector-effect="non-scaling-stroke" style="pointer-events:none" />
+               <!-- Puntos de inserción: uno por borde, incluyendo el último con el primero. -->
+               <g v-for="mid in (drawing && editGeometryId ? edgeMidpoints : [])" :key="'edge-' + mid.index">
+                 <circle :cx="mid.x" :cy="mid.y" r="19" fill="transparent" class="ad-geometry-edge-hit"
+                   :aria-label="'Insertar vértice en borde ' + (mid.index + 1)" role="button"
+                   @pointerdown.stop.prevent="insertEdgeVertex($event, mid.index)" />
+                 <circle :cx="mid.x" :cy="mid.y" r="9" fill="#00B2D9" stroke="#fff" stroke-width="2"
+                   vector-effect="non-scaling-stroke" style="pointer-events:none" />
+               </g>
+               <!-- Puntos blancos arrastrables: nunca se modifican otros terrenos. -->
+               <g v-for="(pt, i) in (drawing && editGeometryId ? draft : [])" :key="'vertex-' + i">
+                 <circle :cx="pt.x" :cy="pt.y" r="19" fill="transparent" class="ad-geometry-vertex-hit"
+                   :aria-label="'Mover vértice ' + (i + 1)" role="button" tabindex="0"
+                   @pointerdown.stop.prevent="startVertexDrag($event, i)" @keydown="nudgeVertex($event, i)" />
+                 <circle :cx="pt.x" :cy="pt.y" :r="activeVertex === i ? 11 : 9" fill="#fff"
+                   :stroke="activeVertex === i ? '#003A8C' : '#0066E0'" stroke-width="3"
+                   vector-effect="non-scaling-stroke" style="pointer-events:none" />
+               </g>
+             </svg></div>
         </div>
         <div class="ad-legend ad-maps-v8__legend"><span><i style="background:#12A677"></i> Disponible</span><span><i
               style="background:#EA9C34"></i> Apartado</span><span><i style="background:#D3545B"></i>
             Vendido</span><span><i style="background:#7C90A5"></i> Inactivo</span></div>
       </div>
       <div v-if="superadmin && drawing" class="ad-card space-y-3">
-        <h2 class="font-bold">{{ editGeometryId ? 'Modificar trazado' : 'Nuevo polígono' }}</h2>
-        <p class="ad-muted">Marca vértices sobre el plano siguiendo el contorno del lote. Se guardan coordenadas
-          relativas a la imagen.</p>
+        <h2 class="font-bold">{{ editGeometryId ? 'Editar contorno · ' + editLotLabel : 'Nuevo polígono' }}</h2>
+         <p class="ad-muted" v-if="editGeometryId">Arrastra las esquinas blancas para corregir el terreno. Arrastra un punto azul de cualquier borde
+           para crear una nueva esquina. Selecciona un vértice para eliminarlo; utiliza Deshacer si necesitas volver atrás.
+           También puedes mover un punto con las flechas del teclado.</p>
+         <p class="ad-muted" v-else>Haz clic sobre el plano para marcar las esquinas del nuevo terreno.</p>
         <div class="flex flex-wrap gap-3 items-end"><label v-if="!editGeometryId"
             class="andarma-field-label grow min-w-48">Terreno<select v-model="lotId" class="ad-select">
               <option value="">Seleccionar lote del desarrollo</option>
               <option v-for="lot in available" :key="lot.id" :value="String(lot.id)">{{ lot.block ? lot.block + ' · ':''}}{{ lot.code }} · {{ statusLabel[lot.status] }}</option>
             </select></label>
-          <div class="ad-badge">{{ draft.length }} vértices</div><button class="ad-btn" :disabled="!draft.length"
-            @click="draft = draft.slice(0, -1)"><i class="fa-solid fa-rotate-left"></i> Deshacer punto</button><button
-            class="ad-btn" @click="draft = []"><i class="fa-solid fa-eraser"></i> Reiniciar</button><button
+          <div class="ad-badge">{{ draft.length }} vértices</div><button class="ad-btn" :disabled="!draftHistory.length"
+             @click="undoDraft"><i class="fa-solid fa-rotate-left"></i> Deshacer</button><button
+             v-if="editGeometryId" class="ad-btn" :disabled="activeVertex === null || draft.length <= 3"
+             @click="removeActiveVertex"><i class="fa-solid fa-minus"></i> Quitar vértice</button><button
+             class="ad-btn" @click="resetDraft"><i class="fa-solid fa-eraser"></i> {{ editGeometryId ? 'Restaurar original' : 'Reiniciar' }}</button><button
             v-can="'maps.edit'" class="ad-btn ad-btn--primary"
             :disabled="saving || draft.length < 3 || (!editGeometryId && !lotId)" @click="savePolygon"><i
               class="fa-solid fa-floppy-disk"></i> Guardar polígono</button>
@@ -2130,6 +2326,27 @@ body .ad-maplot-v9-dialog :is(button, a):focus-visible {
 
 .andarma-admin .ad-maps-v8 .ad-pan-scroll:not(.ad-pan-scroll--drawing) .ad-shape {
   cursor: pointer;
+}
+/* Editor de contorno: solo habilitado al elegir "Editar trazado". */
+.andarma-admin .ad-maps-v8 .ad-plan-svg.ad-geometry-edit {
+  touch-action: none;
+}
+.andarma-admin .ad-maps-v8 .ad-geometry-vertex-hit {
+  cursor: grab;
+  touch-action: none;
+  pointer-events: all;
+}
+.andarma-admin .ad-maps-v8 .ad-geometry-vertex-hit:active {
+  cursor: grabbing;
+}
+.andarma-admin .ad-maps-v8 .ad-geometry-edge-hit {
+  cursor: copy;
+  touch-action: none;
+  pointer-events: all;
+}
+.andarma-admin .ad-maps-v8 .ad-geometry-vertex-hit:focus-visible {
+  stroke: #003A8C;
+  stroke-width: 3;
 }
 
 @media(prefers-reduced-motion:reduce) {

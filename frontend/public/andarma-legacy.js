@@ -3,26 +3,7 @@
   const dialog = document.getElementById('adLegalDialog');
   const title = document.getElementById('adLegalTitle');
   const body = document.getElementById('adLegalBody');
-  const legal = {
-    privacidad: {
-      title: 'Aviso de privacidad',
-      html: `<p class="ad-legal-dialog__warning"><strong>Documento pendiente de validación.</strong> Antes de publicar, ANDARMA debe facilitar los datos de la entidad responsable, domicilio, medios de contacto y prácticas reales de tratamiento de datos.</p>
-      <p>El aviso definitivo deberá informar qué datos personales se recaban, con qué finalidades, cómo pueden ejercerse los derechos que correspondan y cómo se comunicarán las modificaciones.</p>
-      <p>Esta ventana es un marcador de implementación y <strong>no sustituye un aviso de privacidad aprobado.</strong></p>`
-    },
-    terminos: {
-      title: 'Términos y condiciones',
-      html: `<p class="ad-legal-dialog__warning"><strong>Documento pendiente de aprobación.</strong> Deben confirmarse la entidad comercial, la información de los desarrollos, los alcances del sitio y las condiciones aplicables antes de publicar.</p>
-      <p>La información de terrenos, viviendas, disponibilidad, precios y financiamiento debe verificarse en cada operación. El sitio no debe presentar condiciones contractuales no autorizadas.</p>
-      <p>Este contenido es provisional y <strong>no constituye un contrato ni términos legales definitivos.</strong></p>`
-    },
-    cookies: {
-      title: 'Política de cookies',
-      html: `<p class="ad-legal-dialog__warning"><strong>Política por completar.</strong> Se requiere inventariar las cookies, almacenamiento local y servicios de terceros realmente usados en la versión publicada.</p>
-      <p>Antes de habilitar analítica, publicidad o rastreo no esencial, deberán definirse la información y los controles de consentimiento adecuados.</p>
-      <p>Este texto se incluye únicamente como referencia de implementación.</p>`
-    }
-  };
+  const legal = window.ANDARMA_LEGAL;
   document.querySelectorAll('[data-legal]').forEach(button => button.addEventListener('click', () => {
     const doc = legal[button.dataset.legal];
     if (!doc) return;

@@ -63,26 +63,7 @@ function enhanceShared() {
   const legalTitle=document.getElementById('adLegalTitle')
   const legalBody=document.getElementById('adLegalBody')
   if (legalDialog && legalTitle && legalBody) {
-    const legal = {
-      privacidad: {
-        title: 'Aviso de privacidad',
-        html: `<p class="ad-legal-dialog__warning"><strong>Documento pendiente de validación.</strong> Antes de publicar, ANDARMA debe facilitar los datos de la entidad responsable, domicilio, medios de contacto y prácticas reales de tratamiento de datos.</p>
-        <p>El aviso definitivo deberá informar qué datos personales se recaban, con qué finalidades, cómo pueden ejercerse los derechos que correspondan y cómo se comunicarán las modificaciones.</p>
-        <p>Esta ventana es un marcador de implementación y <strong>no sustituye un aviso de privacidad aprobado.</strong></p>`
-      },
-      terminos: {
-        title: 'Términos y condiciones',
-        html: `<p class="ad-legal-dialog__warning"><strong>Documento pendiente de aprobación.</strong> Deben confirmarse la entidad comercial, la información de los desarrollos, los alcances del sitio y las condiciones aplicables antes de publicar.</p>
-        <p>La información de terrenos, viviendas, disponibilidad, precios y financiamiento debe verificarse en cada operación. El sitio no debe presentar condiciones contractuales no autorizadas.</p>
-        <p>Este contenido es provisional y <strong>no constituye un contrato ni términos legales definitivos.</strong></p>`
-      },
-      cookies: {
-        title: 'Política de cookies',
-        html: `<p class="ad-legal-dialog__warning"><strong>Política por completar.</strong> Se requiere inventariar las cookies, almacenamiento local y servicios de terceros realmente usados en la versión publicada.</p>
-        <p>Antes de habilitar analítica, publicidad o rastreo no esencial, deberán definirse la información y los controles de consentimiento adecuados.</p>
-        <p>Este texto se incluye únicamente como referencia de implementación.</p>`
-      }
-    };
+    const legal = window.ANDARMA_LEGAL;
     for (const trigger of document.querySelectorAll('[data-legal]')) {
       const openLegal = () => {
         const doc=legal[trigger.dataset.legal]
@@ -140,15 +121,15 @@ onBeforeUnmount(()=>{requestController?.abort();observer?.disconnect();cleanup.f
 <div class="purchase-container">
 <div class="purchase-top">
 <div><span class="purchase-kicker">¿CÓMO PUEDO COMPRAR?</span><h2 class="purchase-heading" id="purchaseHeading">Un proceso sencillo<br/>y seguro</h2></div>
-<p class="purchase-intro" data-andarma-content="como-comprar.p.1">Te acompañamos en cada paso, desde la elección del terreno o vivienda hasta la entrega de tu nuevo patrimonio.</p>
+<p class="purchase-intro" data-andarma-content="como-comprar.p.1">Te acompañamos en cada paso, desde la elección del terreno hasta la entrega de tu nuevo patrimonio.</p>
 </div>
 <div class="purchase-track">
 <span aria-hidden="true" class="purchase-progress"></span>
 <article class="purchase-step"><div class="purchase-step-head"><span aria-hidden="true" class="purchase-icon"><i class="fa-solid fa-magnifying-glass-location" aria-hidden="true"></i></span><span class="purchase-num">01</span></div><h3 data-andarma-content="como-comprar.h3.2">Conoce</h3><p data-andarma-content="como-comprar.p.3">Explora nuestros desarrollos y elige la opción ideal para tus necesidades.</p><span aria-hidden="true" class="purchase-arrow"><svg viewbox="0 0 24 24"><path d="M3 12h17m-7-7 7 7-7 7"></path></svg></span></article>
-<article class="purchase-step"><div class="purchase-step-head"><span aria-hidden="true" class="purchase-icon"><i class="fa-solid fa-calendar-check" aria-hidden="true"></i></span><span class="purchase-num">02</span></div><h3 data-andarma-content="como-comprar.h3.4">Aparta</h3><p data-andarma-content="como-comprar.p.5">Reserva el terreno o vivienda que elegiste con un pago inicial.</p><span aria-hidden="true" class="purchase-arrow"><svg viewbox="0 0 24 24"><path d="M3 12h17m-7-7 7 7-7 7"></path></svg></span></article>
+<article class="purchase-step"><div class="purchase-step-head"><span aria-hidden="true" class="purchase-icon"><i class="fa-solid fa-calendar-check" aria-hidden="true"></i></span><span class="purchase-num">02</span></div><h3 data-andarma-content="como-comprar.h3.4">Aparta</h3><p data-andarma-content="como-comprar.p.5">Reserva el terreno  que elegiste con un pago inicial.</p><span aria-hidden="true" class="purchase-arrow"><svg viewbox="0 0 24 24"><path d="M3 12h17m-7-7 7 7-7 7"></path></svg></span></article>
 <article class="purchase-step"><div class="purchase-step-head"><span aria-hidden="true" class="purchase-icon"><i class="fa-solid fa-wallet" aria-hidden="true"></i></span><span class="purchase-num">03</span></div><h3 data-andarma-content="como-comprar.h3.6">Financiamiento</h3><p data-andarma-content="como-comprar.p.7">Conoce las opciones y condiciones de pago disponibles para tu proyecto.</p><span aria-hidden="true" class="purchase-arrow"><svg viewbox="0 0 24 24"><path d="M3 12h17m-7-7 7 7-7 7"></path></svg></span></article>
 <article class="purchase-step"><div class="purchase-step-head"><span aria-hidden="true" class="purchase-icon"><i class="fa-solid fa-helmet-safety" aria-hidden="true"></i></span><span class="purchase-num">04</span></div><h3>Construcción <small style="font-size:.65em;font-weight:500">(viviendas)</small></h3><p data-andarma-content="como-comprar.p.8">En proyectos de vivienda, construimos con atención a la calidad y cada detalle.</p><span aria-hidden="true" class="purchase-arrow"><svg viewbox="0 0 24 24"><path d="M3 12h17m-7-7 7 7-7 7"></path></svg></span></article>
-<article class="purchase-step"><div class="purchase-step-head"><span aria-hidden="true" class="purchase-icon"><i class="fa-solid fa-house-circle-check" aria-hidden="true"></i></span><span class="purchase-num">05</span></div><h3 data-andarma-content="como-comprar.h3.9">Tu patrimonio</h3><p data-andarma-content="como-comprar.p.10">Recibe tu terreno o vivienda y comienza una nueva etapa.</p></article>
+<article class="purchase-step"><div class="purchase-step-head"><span aria-hidden="true" class="purchase-icon"><i class="fa-solid fa-house-circle-check" aria-hidden="true"></i></span><span class="purchase-num">05</span></div><h3 data-andarma-content="como-comprar.h3.9">Tu patrimonio</h3><p data-andarma-content="como-comprar.p.10">Recibe tu terreno y comienza una nueva etapa.</p></article>
 </div><div class="purchase-foot">Nuestro equipo te orienta en cada etapa. Las condiciones pueden variar según el desarrollo y el tipo de propiedad.</div>
 </div>
 </section>
@@ -192,6 +173,7 @@ onBeforeUnmount(()=>{requestController?.abort();observer?.disconnect();cleanup.f
 </a>
 <a v-else class="contact-feature__cta" href="/desarrollos"><span>Explorar desarrollos</span><svg aria-hidden="true" class="contact-feature__arrow" viewBox="0 0 24 24"><path d="M4 12h16m-7-7 7 7-7 7"></path></svg></a>
 <p v-if="!whatsAppUrl" class="contact-feature__note" role="status">El canal oficial de WhatsApp todavía no está configurado. Consulta nuestros desarrollos mientras se habilita la atención.</p>
+<p class="ad-contact-privacy-note">Al contactarnos, utilizaremos los datos que nos proporciones para responder y dar seguimiento a tu consulta. <button data-legal="privacidad" type="button">Consulta el aviso de privacidad.</button></p>
 </div></div>
 </section>
 <footer aria-label="Pie de página ANDARMA" class="ad-footer" id="pie-de-pagina">
@@ -212,7 +194,6 @@ onBeforeUnmount(()=>{requestController?.abort();observer?.disconnect();cleanup.f
 <li><a :href="homeAnchor('inicio')">Inicio</a></li>
 <li><a :href="homeAnchor('nosotros')">Nosotros</a></li>
 <li><a :href="homeAnchor('desarrollos')">Desarrollos</a></li>
-<li><a :href="homeAnchor('opciones')">Viviendas y terrenos</a></li>
 <li><a :href="homeAnchor('como-comprar')">Cómo comprar</a></li>
 <li><a :href="homeAnchor('testimonios')">Testimonios</a></li>
 <li><a :href="homeAnchor('contacto')">Contacto</a></li>
@@ -224,6 +205,7 @@ onBeforeUnmount(()=>{requestController?.abort();observer?.disconnect();cleanup.f
 <li><button data-legal="privacidad" type="button">Aviso de privacidad</button></li>
 <li><button data-legal="terminos" type="button">Términos y condiciones</button></li>
 <li><button data-legal="cookies" type="button">Política de cookies</button></li>
+<li><button data-ad-cookie-open type="button">Configurar cookies</button></li>
 </ul>
 </nav>
 <div>
