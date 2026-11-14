@@ -1,7 +1,5 @@
 <script setup>
-import { Money3Directive } from 'v-money3'
-import { mxnMask, decimalMask } from '../../config/numberMasks'
-const vMoney3 = Money3Directive
+import MoneyInput from '../../components/admin/AndarmaMoneyInput.vue'
 import {computed, onMounted, ref, watch} from 'vue'
 import {useRoute,useRouter} from 'vue-router'
 import {can} from '../../utils/andarmaPermissions'
@@ -393,10 +391,10 @@ onMounted(async()=>{
         <form v-else-if="modal==='terms'" id="termsForm" class="space-y-4" @submit.prevent="saveTerms">
           <p class="ad-pay-warning"><i class="fa-solid fa-circle-info"></i> El enganche acordado no se considera pagado hasta registrar su movimiento. Las condiciones se bloquean cuando existe historial de pagos.</p>
           <div class="ad-form-grid">
-            <label class="andarma-field-label">Precio de venta (MXN) *<input v-model.lazy="terms.sale_price" v-money3="mxnMask" type="text" inputmode="decimal" autocomplete="off" class="ad-input" required/></label>
-            <label class="andarma-field-label">Descuento (MXN)<input v-model.lazy="terms.discount_amount" v-money3="mxnMask" type="text" inputmode="decimal" autocomplete="off" class="ad-input" required/></label>
-            <label class="andarma-field-label">Enganche acordado (MXN)<input v-model.lazy="terms.down_payment_amount" v-money3="mxnMask" type="text" inputmode="decimal" autocomplete="off" class="ad-input" required/></label>
-            <label class="andarma-field-label">Mensualidad (MXN) *<input v-model.lazy="terms.monthly_payment_amount" v-money3="mxnMask" type="text" inputmode="decimal" autocomplete="off" class="ad-input" required/></label>
+            <label class="andarma-field-label">Precio de venta (MXN) *<MoneyInput v-model="terms.sale_price" class="ad-input" required /></label>
+            <label class="andarma-field-label">Descuento (MXN)<MoneyInput v-model="terms.discount_amount" class="ad-input" required /></label>
+            <label class="andarma-field-label">Enganche acordado (MXN)<MoneyInput v-model="terms.down_payment_amount" class="ad-input" required /></label>
+            <label class="andarma-field-label">Mensualidad (MXN) *<MoneyInput v-model="terms.monthly_payment_amount" class="ad-input" required /></label>
             <label class="andarma-field-label">Día límite de pago<input v-model="terms.payment_due_day" type="number" min="1" max="31" required class="ad-input"/></label>
             <label class="andarma-field-label">Primer mes a pagar<input v-model="terms.first_payment_period" type="month" class="ad-input"/></label>
             <label class="ad-label ad-form-span">Fecha de venta (opcional)<input v-model="terms.sale_date" type="date" class="ad-input"/></label>
@@ -411,7 +409,7 @@ onMounted(async()=>{
              <label class="andarma-field-label">Fecha real de pago *<input v-model="receipt.paid_at" type="date" required class="ad-input"/></label>
             <label class="andarma-field-label">Concepto *<select v-model="receipt.payment_type" class="ad-select" @change="setSuggestedAmount"><option value="monthly">Mensualidad</option><option value="down_payment">Enganche</option></select></label>
             <label v-if="receipt.payment_type==='monthly'" class="ad-label ad-form-span">Mes al que se aplica *<select v-model="receipt.applied_period" required class="ad-select" @change="onPeriodChange"><option value="">Seleccionar mensualidad</option><option v-for="p in periodOptions" :key="p.period" :value="p.period">{{labelPeriod(p.period)}} · Pendiente {{money(p.pending)}}</option></select></label>
-            <label class="andarma-field-label">Monto registrado (MXN) *<input v-model.lazy="receipt.amount" v-money3="mxnMask" type="text" inputmode="decimal" autocomplete="off" class="ad-input" required/></label>
+            <label class="andarma-field-label">Monto registrado (MXN) *<MoneyInput v-model="receipt.amount" class="ad-input" required /></label>
             <label class="andarma-field-label">Método de pago *<select v-model="receipt.payment_method" required class="ad-select"><option v-for="(name,key) in methods" :key="key" :value="key">{{name}}</option></select></label>
             <label class="andarma-field-label">Referencia<input v-model.trim="receipt.reference" class="ad-input" maxlength="150" placeholder="Referencia bancaria"/></label>
             <label class="andarma-field-label">Folio<input v-model.trim="receipt.folio" class="ad-input" maxlength="150" placeholder="Folio interno"/></label>

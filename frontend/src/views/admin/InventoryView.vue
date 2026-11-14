@@ -1,7 +1,5 @@
 <script setup>
-import { Money3Directive } from 'v-money3'
-import { mxnMask, decimalMask } from '../../config/numberMasks'
-const vMoney3 = Money3Directive
+import MoneyInput from '../../components/admin/AndarmaMoneyInput.vue'
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import Swal from 'sweetalert2'
@@ -40,7 +38,7 @@ function removeFilter(key) {
   else if (key === 'payment') paymentFilter.value = ''
 }
 
-const fmt = x => x === null || x === undefined || x === '' ? 'Sin registrar' : new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 }).format(Number(x))
+const fmt = x => x === null || x === undefined || x === '' ? 'Sin registrar' : new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(x))
 const area = x => x === null || x === undefined || x === '' ? 'Sin registrar' : `${new Intl.NumberFormat('es-MX', { maximumFractionDigits: 2 }).format(Number(x))} m²`
 const alertBase = { customClass: { popup: 'andarma-swal', title: 'andarma-swal__title', htmlContainer: 'andarma-swal__text', actions: 'andarma-swal__actions', confirmButton: 'andarma-swal__confirm', cancelButton: 'andarma-swal__cancel' }, buttonsStyling: false }
 function err(e) { Swal.fire({ ...alertBase, icon: 'error', title: 'No se pudo realizar la operación', text: e.message || 'Ocurrió un error' }) }
@@ -88,7 +86,15 @@ async function save() {
   saving.value = true
   try {
     const data = { ...form.value, development_id: Number(form.value.development_id) }
-    for (const k of ['area_m2', 'front_m', 'depth_m', 'price']) data[k] = parseCapturedNumber(data[k], k)
+    // ANDARMA_DECIMAL_PAYLOAD_V3: ni máscaras ni valores con >2 decimales al backend.
+    for (const k of ['area_m2', 'front_m', 'depth_m', 'price']) {
+      const captured = data[k]
+      if (captured !== '' && captured !== null && captured !== undefined) {
+        const raw = String(captured).trim()
+        if (!/^\d+(?:\.\d{0,2})?$/.test(raw)) throw new Error(`El campo ${k} tiene un número inválido o más de dos decimales: ${raw}`)
+      }
+      data[k] = parseCapturedNumber(captured, k)
+    }
     const wasEditing = Boolean(editing.value)
     if (wasEditing) await put('/admin/im/inventory/' + editing.value.id, data)
     else await post('/admin/im/inventory', data)
@@ -276,14 +282,10 @@ onMounted(async () => { await loadDevs(); await load() })
                 *<input v-model.trim="form.code" required maxlength="255" class="ad-input"
                   placeholder="Ej. L01" /></label>
               <div class="ad-f2c-section"><strong>Medidas y precio</strong><small>Datos comerciales del terreno</small>
-              </div><label class="andarma-field-label">Superficie (m²)<input v-model="form.area_m2" v-money3="decimalMask"
-                  type="text" inputmode="decimal" autocomplete="off" class="ad-input" /></label><label
-                class="andarma-field-label">Precio (MXN)<input v-model="form.price" v-money3="mxnMask" type="text"
-                  inputmode="decimal" autocomplete="off" class="ad-input" /></label><label class="andarma-field-label">Frente
-                (m)<input v-model="form.front_m" v-money3="decimalMask" type="text" inputmode="decimal"
-                  autocomplete="off" class="ad-input" /></label><label class="andarma-field-label">Fondo (m)<input
-                  v-model="form.depth_m" v-money3="decimalMask" type="text" inputmode="decimal" autocomplete="off"
-                  class="ad-input" /></label>
+              </div><label class="andarma-field-label">Superficie (m²)<MoneyInput v-model="form.area_m2" class="ad-input"  :currency="false" /></label><label
+                class="andarma-field-label">Precio (MXN)<MoneyInput v-model="form.price" class="ad-input" /></label><label class="andarma-field-label">Frente
+                (m)<MoneyInput v-model="form.front_m" class="ad-input"  :currency="false" /></label><label class="andarma-field-label">Fondo (m)<MoneyInput v-model="form.depth_m"
+                  class="ad-input"  :currency="false" /></label>
               <div class="ad-f2c-section"><strong>Estado y observaciones</strong><small>Información adicional</small>
               </div><label class="ad-label ad-form-span">Disponibilidad<select v-model="form.status"
                   class="ad-select"><!-- ANDARMA_FASE2_INTEGRIDAD_V1: para vender se necesita asignar primero el comprador -->

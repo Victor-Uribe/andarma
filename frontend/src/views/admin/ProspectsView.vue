@@ -154,7 +154,7 @@ onUnmounted(()=>window.removeEventListener('keydown',onKey))
   <div class="prospects-v29 ad-u-list">
     <header class="pv-page-header">
       <div><span class="pv-eyebrow">GESTIÓN COMERCIAL / PROSPECTOS</span><h1>Prospectos</h1><p>Registra interesados, da seguimiento y prepara oportunidades de venta.</p></div>
-      <button v-can="'prospects.create'" class="pv-btn pv-btn-primary" type="button" @click="openNew"><Plus :size="17"/> Nuevo prospecto</button>
+      <button v-can="'prospects.create'" class="ad-btn ad-btn--primary" type="button" @click="openNew"><Plus :size="17"/> Nuevo prospecto</button>
     </header>
 
     <div v-if="error" class="pv-alert pv-alert-error" role="alert"><AlertCircle :size="18"/>{{error}}</div>

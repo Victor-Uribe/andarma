@@ -260,7 +260,7 @@ watch(()=>route.query.client,async id=>{
       </div>
       <div class="crm-header__actions">
         <button class="crm-btn crm-btn--ghost" :disabled="loading" @click="load"><RefreshCw :size="16"/> {{ loading ? 'Actualizando…' : 'Actualizar' }}</button>
-        <button v-can="'clients.create'" class="crm-btn crm-btn--soft" @click="openCreate"><UserRoundPlus :size="16"/> Nuevo cliente</button>
+        <button v-can="'clients.create'" class="ad-btn ad-btn--primary" @click="openCreate"><UserRoundPlus :size="16"/> Nuevo cliente</button>
       </div>
     </header>
 

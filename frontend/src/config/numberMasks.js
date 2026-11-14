@@ -7,7 +7,7 @@ const base = {
   decimal: '.',
   disableNegative: true,
   allowBlank: true,
-  modelModifiers: { number: true }
+  // modelModifiers: { number: true }
 }
 export const mxnMask = { ...base, prefix: '$ ', precision: 2, min: 0 }
 export const decimalMask = { ...base, prefix: '', precision: 2, min: 0 }
